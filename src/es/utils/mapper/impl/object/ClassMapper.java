@@ -1,11 +1,9 @@
 package es.utils.mapper.impl.object;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -116,8 +114,8 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	}
 	
 	private void createDefaultMappingForFields() {
-		Map<String,FieldHolder> fieldsSrc = getAllFields(from);
-		Map<String,FieldHolder> fieldsDest = getAllFields(to);
+		Map<String,FieldHolder> fieldsSrc = mapper.getFieldsHolderFromCache(from);
+		Map<String,FieldHolder> fieldsDest = mapper.getFieldsHolderFromCache(to);
 		for(String fieldName : fieldsSrc.keySet()) {
 			if(fieldsDest.containsKey(fieldName)) {
 				FieldHolder fieldHolderFrom = fieldsSrc.get(fieldName);
@@ -175,24 +173,6 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 		Setter<U, TMP2> setter = SetterFactory.setter(fieldName,destFieldHolder);
 		addElementMapper(ElementMapperFactory.create(getter,transformer,setter),true);
 	}
-
-	private Map<String,FieldHolder> getAllFields(Class<?> type) {
-    	Map<String,FieldHolder> result = new HashMap<>();
-    	for(Field field : MapperUtil.getAllFields(type)) {
-    		FieldHolder fieldHolder = new FieldHolder(field);
-    		for(String name : fieldHolder.getAllNames()) {
-    			FieldHolder prevValue = result.put(name,fieldHolder);
-	    		if(prevValue!=null) {
-	    			try {
-						throw new MappingException("Two Fields have the same name or alias "+fieldHolder.getFieldName());
-					} catch (MappingException e) {
-						e.printStackTrace();
-					}
-	    		}
-    		}
-    	}
-    	return result;
-    }
     
     private <T1,T2> void addElementMapper(ElementMapper<T,T1,T2,U> elementMapper, boolean isCalledDuringConstruction) {
     	if(isCalledDuringConstruction) {

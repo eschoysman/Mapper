@@ -446,5 +446,13 @@ public class MapperTest {
 		ImplTo to = mapper.map(from, ImplTo.class);
 		assertThat(to.complexValue).isNotNull();
 	}
-	
+
+	@Test
+	public void shouldReturnNamesForClass() throws MappingException {
+		Mapper mapper = new Mapper();
+		mapper.add(From.class, To.class);
+		mapper.build();
+		assertThat(mapper.getNames(From.class)).containsExactlyInAnyOrder("innerCollection2", "ignoredField1", "surname", "classFrom", "fromCollection2", "ignoredField2", "name", "fromArray", "innerCollection", "innerArray", "fromCollection", "ignoredField");
+	}
+
 }

@@ -1,10 +1,14 @@
 package es.utils.mapper;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -15,18 +19,22 @@ import es.utils.doublekeymap.TwoKeyMap;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
 import es.utils.mapper.factory.CollectionFactory;
+import es.utils.mapper.holder.FieldHolder;
 import es.utils.mapper.impl.MapperObject;
 import es.utils.mapper.impl.object.ClassMapper;
 import es.utils.mapper.impl.object.DirectMapper;
 import es.utils.mapper.impl.object.EnumMapper;
+import es.utils.mapper.utils.MapperUtil;
 
 public class Mapper {
 
 	private TwoKeyMap<Class<?>,Class<?>,MapperObject<?,?>> mappings;
+	private Map<Class<?>,Map<String,FieldHolder>> fieldHolderCache;
 	private boolean isDirty;
 	
 	public Mapper() {
-		mappings = new TwoKeyMap<>();
+		this.mappings = new TwoKeyMap<>();
+		this.fieldHolderCache = new HashMap<>();
 		isDirty = false;
 	}
 	
@@ -218,6 +226,26 @@ public class Mapper {
 	}
 
 	
+	public TwoKeyMap<Class<?>,Class<?>,MapperObject<?,?>> getAllMappings() {
+		return mappings;
+	}
+	@Override
+	public String toString() {
+		return "Mapper["+mappings.keySet().stream().map(PairKey::toString).collect(Collectors.joining(", "))+"]";
+	}
+
+	public <T> Map<String,FieldHolder> getFieldsHolderFromCache(Class<T> from) {
+		return this.fieldHolderCache.computeIfAbsent(from,this::getAllFields);
+	}
+	
+	public <T> List<String> getNames(Class<T> type) {
+		List<String> names = new ArrayList<>();
+		if(this.fieldHolderCache.containsKey(type)) {
+			names.addAll(this.fieldHolderCache.get(type).keySet());
+		}
+		return names;
+	}
+	
 	private <T,U> MapperObject<T,U> createEnumMapper(Class<T> from, Class<U> to) throws MappingException {
 		@SuppressWarnings("unchecked")
 		Class<? extends Enum<?>> enumFrom = (Class<? extends Enum<?>>)from;
@@ -271,13 +299,22 @@ public class Mapper {
 		Class<T> effectiveClass = (Class<T>)tmp;
 		return effectiveClass;
 	}
-	
-	public TwoKeyMap<Class<?>,Class<?>,MapperObject<?,?>> getAllMappings() {
-		return mappings;
-	}
-	@Override
-	public String toString() {
-		return "Mapper["+mappings.keySet().stream().map(PairKey::toString).collect(Collectors.joining(", "))+"]";
-	}
+	private Map<String,FieldHolder> getAllFields(Class<?> type) {
+    	Map<String,FieldHolder> result = new HashMap<>();
+    	for(Field field : MapperUtil.getAllFields(type)) {
+    		FieldHolder fieldHolder = new FieldHolder(field);
+    		for(String name : fieldHolder.getAllNames()) {
+    			FieldHolder prevValue = result.put(name,fieldHolder);
+	    		if(prevValue!=null) {
+	    			try {
+						throw new MappingException("Two Fields have the same name or alias "+fieldHolder.getFieldName());
+					} catch (MappingException e) {
+						e.printStackTrace();
+					}
+	    		}
+    		}
+    	}
+    	return result;
+    }
 	
 }
