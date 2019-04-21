@@ -307,7 +307,7 @@ public class Mapper {
     			FieldHolder prevValue = result.put(name,fieldHolder);
 	    		if(prevValue!=null) {
 	    			try {
-						throw new MappingException("Two Fields have the same name or alias "+fieldHolder.getFieldName());
+						throw new MappingException("Two Fields in "+type+" have the same name or alias "+name);
 					} catch (MappingException e) {
 						e.printStackTrace();
 					}

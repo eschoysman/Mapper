@@ -3,11 +3,11 @@ package es.utils.mapper.utils;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import es.utils.mapper.annotation.AliasNames;
@@ -23,10 +23,10 @@ public class MapperUtil {
 		return result;
 	}
 	
-	public static List<Field> getAllFields(Class<?> clazz) {
+	public static Set<Field> getAllFields(Class<?> clazz) {
 		Field[] fields1 = clazz.getFields();
 		Field[] fields2 = clazz.getDeclaredFields();
-		List<Field> fields = new ArrayList<>(fields1.length+fields2.length);
+		Set<Field> fields = new LinkedHashSet<>(fields1.length+fields2.length);
 		for(Field f : fields1) fields.add(f);
 		for(Field f : fields2) fields.add(f);
 		return fields;
