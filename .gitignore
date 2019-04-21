@@ -29,3 +29,4 @@ report/
 Mapper 2.0.iml
 .classpath
 .project
+/target/
