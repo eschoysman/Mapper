@@ -35,7 +35,10 @@
 			<plugin>
 	            <groupId>org.openclover</groupId>
 	            <artifactId>clover-maven-plugin</artifactId>
-	            <version>${clover.version}</version>     
+	            <version>${clover.version}</version>   
+	            <configuration>
+	            	<includesTestSourceRoots>false</includesTestSourceRoots>
+	            </configuration>  
 	        </plugin>
 		</plugins>
 	</build>
