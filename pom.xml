@@ -11,6 +11,10 @@
   <properties>
   	<java.version.source>1.8</java.version.source>
   	<java.version.target>1.8</java.version.target>
+  	<junit.version>5.5.0-M1</junit.version>
+  	<junit.platform.runner.version>1.5.0-M1</junit.platform.runner.version>
+  	<junit.engine.version>5.5.0-M1</junit.engine.version>
+  	<assertj.version>3.12.2</assertj.version>
   </properties>
   
   <build>
@@ -27,4 +31,31 @@
       </plugin>
     </plugins>
   </build>
+  
+  <dependencies>
+	<dependency>
+	    <groupId>org.junit.jupiter</groupId>
+	    <artifactId>junit-jupiter-api</artifactId>
+	    <version>${junit.version}</version>
+	    <scope>test</scope>
+	</dependency>
+	<dependency>
+	    <groupId>org.assertj</groupId>
+	    <artifactId>assertj-core</artifactId>
+	    <version>${assertj.version}</version>
+	    <scope>test</scope>
+	</dependency>
+	<dependency>
+	    <groupId>org.junit.platform</groupId>
+	    <artifactId>junit-platform-runner</artifactId>
+	    <version>${junit.platform.runner.version}</version>
+	    <scope>test</scope>
+	</dependency>
+	<dependency>
+	    <groupId>org.junit.jupiter</groupId>
+	    <artifactId>junit-jupiter-engine</artifactId>
+	    <version>${junit.engine.version}</version>
+	    <scope>test</scope>
+	</dependency>
+  </dependencies>
 </project>
