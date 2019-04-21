@@ -1,7 +1,7 @@
 language: java
 sudo: false
 
-script: "mvn clover:instrument clover:clover"
+script: "mvn clean clover:setup test clover:aggregate clover:clover"
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
