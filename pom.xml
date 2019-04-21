@@ -17,6 +17,7 @@
 		<junit.platform.runner.version>1.5.0-M1</junit.platform.runner.version>
 		<junit.engine.version>5.5.0-M1</junit.engine.version>
 		<assertj.version>3.12.2</assertj.version>
+		<clover.version>4.3.1</clover.version>
 	</properties>
 
 	<build>
@@ -31,6 +32,11 @@
 					<target>${java.version.target}</target>
 				</configuration>
 			</plugin>
+			<plugin>
+	            <groupId>org.openclover</groupId>
+	            <artifactId>clover-maven-plugin</artifactId>
+	            <version>${clover.version}</version>     
+	        </plugin>
 		</plugins>
 	</build>
 
