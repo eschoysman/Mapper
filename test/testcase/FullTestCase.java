@@ -6,9 +6,12 @@ import org.junit.runner.RunWith;
 
 @RunWith(JUnitPlatform.class)
 @SelectClasses({
-	MapperTest.class,
-	EnumMapperTest.class,
 	ClassMapperTest.class,
-	DirectMapperTest.class
+	CollectionFactoryTest.class,
+	DirectMapperTest.class,
+	EnumMapperTest.class,
+	GetterSetterFactoryTest.class,
+	MapperTest.class,
+	PairKeyTest.class
 })
 public class FullTestCase {}
