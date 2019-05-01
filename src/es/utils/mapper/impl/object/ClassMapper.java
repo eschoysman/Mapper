@@ -26,6 +26,13 @@ import es.utils.mapper.impl.element.ElementMapper;
 import es.utils.mapper.setter.Setter;
 import es.utils.mapper.utils.MapperUtil;
 
+/**
+ * 
+ * @author Emmanuel
+ *
+ * @param <T>
+ * @param <U>
+ */
 public class ClassMapper<T,U> extends MapperObject<T,U> {
 	
 	private Mapper mapper;
@@ -38,6 +45,11 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	private List<ElementMapper<T,?,?,U>> elementMappings;
 	private boolean isDirty;
 	
+	/**
+	 * 
+	 * @param fromClass
+	 * @param toClass
+	 */
 	public ClassMapper(Class<T> fromClass, Class<U> toClass) {
 		super(fromClass,toClass);
 		this.fieldMappings = new TwoKeyMap<>();
@@ -70,36 +82,86 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 
 
 	// add methods
+	/**
+	 * 
+	 * @param elementMapper
+	 */
     public <T1,T2> void addElementMapper(ElementMapper<T,T1,T2,U> elementMapper) {
     	addElementMapper(elementMapper,false);
     }
+    /**
+     * 
+     * @param getter
+     * @param setter
+     */
     public <TMP> void addElementMapper(Getter<T,TMP> getter, Setter<U,TMP> setter) {
     	addElementMapper(ElementMapperFactory.create(getter,setter),false);
     }
+    /**
+     * 
+     * @param getter
+     * @param transformer
+     * @param setter
+     */
     public <T1,T2> void addElementMapper(Getter<T,T1> getter, Function<T1,T2> transformer, Setter<U,T2> setter) {
     	addElementMapper(ElementMapperFactory.create(getter,transformer,setter),false);
     }
+    /**
+     * 
+     * @param fieldFrom
+     * @param getter
+     * @param fieldTo
+     * @param setter
+     */
 	public <TMP> void addCustomFieldMapper(String fieldFrom, Function<T,TMP> getter, String fieldTo, BiConsumer<U,TMP> setter) {
 		addElementMapper(ElementMapperFactory.create(fieldFrom,fieldTo,getter,setter),false);
 	}
+	/**
+	 * 
+	 * @param fieldFrom
+	 * @param getter
+	 * @param transfom
+	 * @param fieldTo
+	 * @param setter
+	 */
 	public <TMP1,TMP2> void addCustomFieldMapper(String fieldFrom, Function<T,TMP1> getter, Function<TMP1,TMP2> transfom, String fieldTo, BiConsumer<U,TMP2> setter) {
 		addElementMapper(ElementMapperFactory.create(fieldFrom,fieldTo,getter,transfom,setter),false);
 	}
+	/**
+	 * 
+	 * @param name
+	 * @param setter
+	 */
 	public <TMP1,TMP2> void addDefaultValue(String name, BiConsumer<U,TMP2> setter) {
 		addElementMapper(ElementMapperFactory.create(Getter.empty(),SetterFactory.setter(name,setter)),false);
 	}
 	
 	// ignore methods
+	/**
+	 * 
+	 * @param valuesToIgnore
+	 * @return
+	 */
 	public ClassMapper<T,U> ignore(String... valuesToIgnore) {
 		ignoreInputs(valuesToIgnore);
 		ignoreOutputs(valuesToIgnore);
 		return this;
 	}
+	/**
+	 * 
+	 * @param inputsToIgnore
+	 * @return
+	 */
 	public ClassMapper<T,U> ignoreInputs(String... inputsToIgnore) {
 		this.inputsToIgnore.addAll(Arrays.asList(inputsToIgnore));
 		isDirty = true;
 		return this;
 	}
+	/**
+	 * 
+	 * @param outputsToIgnore
+	 * @return
+	 */
 	public ClassMapper<T,U> ignoreOutputs(String... outputsToIgnore) {
 		this.outputsToIgnore.addAll(Arrays.asList(outputsToIgnore));
 		isDirty = true;

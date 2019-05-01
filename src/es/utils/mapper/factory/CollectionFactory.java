@@ -5,10 +5,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * 
+ * @author Emmanuel
+ *
+ */
 public class CollectionFactory {
 	
     private static final Class<?> ARRAY_AS_LIST_CLASS = Arrays.asList().getClass();
 
+    /**
+     * 
+     * @param inputCollectionType
+     * @param collectionType
+     * @return
+     */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static <IN,OUT> Collection<OUT> create(Class<? extends Collection> inputCollectionType, Class<? extends Collection> collectionType) {
 		inputCollectionType = getClassType(inputCollectionType,collectionType);
@@ -21,33 +32,13 @@ public class CollectionFactory {
 			return null;
 		}
 	}
-//	@SuppressWarnings({ "rawtypes", "unchecked" })
-//	public static <IN,OUT> Collection<OUT> create(Class<? extends Collection> inputCollectionType, Class<? extends Collection> collectionType, int size) {
-//		inputCollectionType = getClassType(inputCollectionType,collectionType);
-//		try {
-//			return (Collection<OUT>)inputCollectionType.getDeclaredConstructor(int.class).newInstance(size);
-//		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-//				| NoSuchMethodException | SecurityException e) {
-//			e.printStackTrace();
-//			System.err.println("Error during the creation of the destination collection. Returning null value.");
-//			return null;
-//		}
-//	}
-//	@SuppressWarnings({ "rawtypes", "unchecked" })
-//	public static <IN,OUT> Collection<OUT> createAndFill(Collection<IN> inputCollection, Class<? extends Collection> collectionType) {
-//		if(inputCollection==null)
-//			return null;
-//		Class<? extends Collection> inputCollectionType = getClassType(inputCollection.getClass(),collectionType);
-//		try {
-//			return (Collection<OUT>)inputCollectionType.getDeclaredConstructor(Collection.class).newInstance(inputCollection);
-//		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-//				| NoSuchMethodException | SecurityException e) {
-//			e.printStackTrace();
-//			System.err.println("Error during the creation of the destination collection. Returning null value.");
-//			return null;
-//		}
-//	}
-	
+
+	/**
+	 * 
+	 * @param inputCollectionType
+	 * @param collectionType
+	 * @return
+	 */
 	@SuppressWarnings("rawtypes")
 	private static Class<? extends Collection> getClassType(Class<? extends Collection> inputCollectionType, Class<? extends Collection> collectionType) {
 		if(collectionType!=null) {

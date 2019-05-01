@@ -12,8 +12,19 @@ import java.util.regex.Pattern;
 
 import es.utils.mapper.annotation.AliasNames;
 
+/**
+ * 
+ * @author Emmanuel
+ *
+ */
 public class MapperUtil {
 
+	/**
+	 * 
+	 * @param clazz
+	 * @param fieldName
+	 * @return
+	 */
 	public static <T> Field getField(Class<T> clazz, String fieldName) {
 		Objects.requireNonNull(clazz);
 		Objects.requireNonNull(fieldName);
@@ -23,6 +34,11 @@ public class MapperUtil {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @param clazz
+	 * @return
+	 */
 	public static Set<Field> getAllFields(Class<?> clazz) {
 		Field[] fields1 = clazz.getFields();
 		Field[] fields2 = clazz.getDeclaredFields();
@@ -32,6 +48,11 @@ public class MapperUtil {
 		return fields;
 	}
 	
+	/**
+	 * 
+	 * @param input
+	 * @return
+	 */
 	public static <TYPE> Class<TYPE> getGenericType(Type input) {
 		if(input!=null && input instanceof ParameterizedType) {
 		    ParameterizedType paramType = (ParameterizedType)input;

@@ -12,13 +12,17 @@ import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.annotation.CollectionType;
 import es.utils.mapper.annotation.IgnoreField;
 
+/**
+ * 
+ * @author Emmanuel
+ *
+ */
 public class FieldHolder {
 
 	private static final String FIELD_NAME_REGEX = "[a-zA-Z_$][a-zA-Z_$0-9]*";
 	
 	private Field field;
 	private String fieldName;
-//	private Class<?> fieldClass;
 	private Set<String> aliases;
 	private Class<?> type;
 	private Type genericType;
@@ -26,6 +30,10 @@ public class FieldHolder {
 	private Class<? extends Collection> collectionType;
 	private boolean ignoreField;
 	
+	/**
+	 * 
+	 * @param field
+	 */
 	public FieldHolder(Field field) {
 		this.field = Objects.requireNonNull(field);
 		this.fieldName = field.getName();
@@ -69,36 +77,67 @@ public class FieldHolder {
 		}
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public Field getField() {
 		return field;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getFieldName() {
 		return fieldName;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public Set<String> getAliases() {
 		return aliases;
 	}
+	/**
+	 * 
+	 * @return
+	 */
 	public Set<String> getAllNames() {
 		Set<String> allNames = new TreeSet<>(getAliases());
 		allNames.add(fieldName);
 		return allNames;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public Class<?> getType() {
 		return type;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public Type getGenericType() {
 		return genericType;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean ignoreField() {
 		return this.ignoreField;
 	}
 	
-
+	/**
+	 * 
+	 * @return
+	 */
 	@SuppressWarnings("rawtypes")
 	public Class<? extends Collection> getCollectionType() {
 		return collectionType;

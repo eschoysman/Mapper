@@ -26,18 +26,33 @@ import es.utils.mapper.impl.object.DirectMapper;
 import es.utils.mapper.impl.object.EnumMapper;
 import es.utils.mapper.utils.MapperUtil;
 
+/**
+ * 
+ * @author Emmanuel
+ *
+ */
 public class Mapper {
 
 	private TwoKeyMap<Class<?>,Class<?>,MapperObject<?,?>> mappings;
 	private Map<Class<?>,Map<String,FieldHolder>> fieldHolderCache;
 	private boolean isDirty;
 	
+	/**
+	 * 
+	 */
 	public Mapper() {
 		this.mappings = new TwoKeyMap<>();
 		this.fieldHolderCache = new HashMap<>();
 		isDirty = false;
 	}
 	
+	/**
+	 * 
+	 * @param from
+	 * @param to
+	 * @return
+	 * @throws MappingException
+	 */
 	public <T,U> Mapper add(Class<T> from, Class<U> to) throws MappingException {
 		try {
 			Objects.requireNonNull(from);
@@ -56,6 +71,13 @@ public class Mapper {
 		}
 		return this;
 	}
+	/**
+	 * 
+	 * @param from
+	 * @param to
+	 * @return
+	 * @throws MappingException
+	 */
 	public <T,U> ClassMapper<T,U> addForClass(Class<T> from, Class<U> to) throws MappingException {
 		try {
 			to.getConstructor();
@@ -67,6 +89,12 @@ public class Mapper {
 		isDirty = true;
 		return classMapper;
 	}
+	/**
+	 * 
+	 * @param from
+	 * @param to
+	 * @return
+	 */
 	public <T extends Enum<T>,U extends Enum<U>> EnumMapper<T,U> addForEnum(Class<T> from, Class<U> to) {
 		EnumMapper<T,U> enumMapper = new EnumMapper<T,U>(from,to);
 		mappings.put(from,to, enumMapper);
@@ -74,12 +102,27 @@ public class Mapper {
 		return enumMapper;
 	}
 
+	/**
+	 * 
+	 * @param from
+	 * @param to
+	 * @return
+	 * @throws MappingException
+	 */
 	public <T,U> Mapper addBidirectional(Class<T> from, Class<U> to) throws MappingException {
 		add(from,to);
 		add(to,from);
 		return this;
 	}
 
+	/**
+	 * 
+	 * @param from
+	 * @param to
+	 * @param transformer
+	 * @return
+	 * @throws MappingException
+	 */
 	public <T,U> Mapper add(Class<T> from, Class<U> to, Function<T,U> transformer) throws MappingException {
 		Objects.requireNonNull(from);
 		Objects.requireNonNull(to);
@@ -89,6 +132,9 @@ public class Mapper {
 		return this;
 	}
 	
+	/**
+	 * 
+	 */
 	public void build() {
 		if(isDirty) {
 			mappings.values().forEach(mapping->mapping.activate(this));
@@ -97,6 +143,12 @@ public class Mapper {
 	}
 
 	
+	/**
+	 * 
+	 * @param from
+	 * @param to
+	 * @return
+	 */
 	public <T,U> U mapOrNull(T from, Class<U> to) {
 		try {
 			return map(from,to);
@@ -104,6 +156,12 @@ public class Mapper {
 			return null;
 		}
 	}
+	/**
+	 * 
+	 * @param from
+	 * @param to
+	 * @return
+	 */
 	public <T,U> U mapOrNull(T from, U to) {
 		try {
 			return map(from,to);
@@ -112,6 +170,14 @@ public class Mapper {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param from
+	 * @param to
+	 * @return
+	 * @throws MappingNotFoundException
+	 * @throws MappingException
+	 */
 	public <T,U> U map(T from, Class<U> to) throws MappingNotFoundException, MappingException {
 		if(to == null) {
 			throw new MappingException("Destination class cannot be null");
@@ -130,6 +196,14 @@ public class Mapper {
 		}
 		return map;
 	}
+	/**
+	 * 
+	 * @param from
+	 * @param to
+	 * @return
+	 * @throws MappingNotFoundException
+	 * @throws MappingException
+	 */
 	public <T,U> U map(T from, U to) throws MappingNotFoundException, MappingException {
 		build();
 		if(from==null) {
@@ -150,6 +224,12 @@ public class Mapper {
 		return to;
 	}
 	
+	/**
+	 * 
+	 * @param origin
+	 * @param destination
+	 * @return
+	 */
 	public <T,U> U[] mapArray(T[] origin, U[] destination) {
 		if(origin==null) {
 			return destination;
@@ -170,6 +250,12 @@ public class Mapper {
 		}
 		return destination;
 	}
+	/**
+	 * 
+	 * @param origin
+	 * @param destinationType
+	 * @return
+	 */
 	public <T,U> U[] mapArray(T[] origin, Class<U> destinationType) {
 		if(origin==null) {
 			return null;
@@ -178,6 +264,13 @@ public class Mapper {
 		U[] destination = (U[])Array.newInstance(destinationType,origin.length);
 		return mapArray(origin,destination);
 	}
+	/**
+	 * 
+	 * @param origin
+	 * @param collectionType
+	 * @param resultElementType
+	 * @return
+	 */
 	public <T,U,CT extends Collection<T>, CU extends Collection<U>> CU mapCollection(CT origin, Class<CU> collectionType, Class<U> resultElementType) {
 		if(origin==null) {
 			return null;
@@ -189,6 +282,13 @@ public class Mapper {
 		return mapCollection(origin, destination, resultElementType);
 	}
 	
+	/**
+	 * 
+	 * @param origin
+	 * @param destination
+	 * @param resultElementType
+	 * @return
+	 */
 	public <T,U, CU extends Collection<U>> CU mapCollection(Collection<T> origin, CU destination, Class<U> resultElementType) {
 		if(origin==null) {
 			return null;
@@ -215,10 +315,22 @@ public class Mapper {
 		return destination;
 	}
 	
+	/**
+	 * 
+	 * @param src
+	 * @param dest
+	 * @return
+	 */
 	public <T,U> boolean hasMappingBetween(Class<T> src, Class<U> dest) {
 		return mappings.containsKey(src,dest);
 	}
 	
+	/**
+	 * 
+	 * @param from
+	 * @param to
+	 * @return
+	 */
 	public <T,U> MapperObject<T,U> getMappingBetween(Class<T> from, Class<U> to) {
 		@SuppressWarnings("unchecked")
 		MapperObject<T,U> result = (MapperObject<T,U>)mappings.get(from,to);
@@ -226,18 +338,35 @@ public class Mapper {
 	}
 
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public TwoKeyMap<Class<?>,Class<?>,MapperObject<?,?>> getAllMappings() {
 		return mappings;
 	}
+	/**
+	 * 
+	 */
 	@Override
 	public String toString() {
 		return "Mapper["+mappings.keySet().stream().map(PairKey::toString).collect(Collectors.joining(", "))+"]";
 	}
 
+	/**
+	 * 
+	 * @param from
+	 * @return
+	 */
 	public <T> Map<String,FieldHolder> getFieldsHolderFromCache(Class<T> from) {
 		return this.fieldHolderCache.computeIfAbsent(from,this::getAllFields);
 	}
 	
+	/**
+	 * 
+	 * @param type
+	 * @return
+	 */
 	public <T> List<String> getNames(Class<T> type) {
 		List<String> names = new ArrayList<>();
 		if(this.fieldHolderCache.containsKey(type)) {

@@ -4,8 +4,20 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.function.Function;
 
+/**
+ * 
+ * @author Emmanuel
+ *
+ * @param <T>
+ * @param <TMP>
+ */
 public class FieldGetter<T,TMP> extends FunctionGetter<T,TMP> {
 
+	/**
+	 * 
+	 * @param name
+	 * @param field
+	 */
 	public FieldGetter(String name, Field field) {
 		super(name,createGetter(field));
 	}

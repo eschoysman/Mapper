@@ -2,12 +2,23 @@ package es.utils.doublekeymap;
 
 import java.util.Objects;
 
-
+/**
+ * 
+ * @author Emmanuel
+ *
+ * @param <K1>
+ * @param <K2>
+ */
 public class PairKey<K1,K2> {
 	
 	private K1 key1;
 	private K2 key2;
 	
+	/**
+	 * 
+	 * @param key1
+	 * @param key2
+	 */
 	public PairKey(K1 key1, K2 key2) {
 		this.key1 = key1;
 		this.key2 = key2;
@@ -30,6 +41,9 @@ public class PairKey<K1,K2> {
 			&& Objects.equals(key2,other.key2);
 	}
 	
+	/**
+	 * 
+	 */
 	@Override
 	public String toString() {
 		return "<"+key1+","+key2+">";

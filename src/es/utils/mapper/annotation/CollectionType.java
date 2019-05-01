@@ -7,9 +7,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Collection;
 
+/**
+ * 
+ * @author Emmanuel
+ *
+ */
 @Retention(RUNTIME)
 @Target(FIELD)
 public @interface CollectionType {
+	/**
+	 * 
+	 */
 	@SuppressWarnings("rawtypes")
 	Class<? extends Collection> value();
 }

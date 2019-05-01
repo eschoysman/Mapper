@@ -8,15 +8,31 @@ import es.utils.mapper.Mapper;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.impl.MapperObject;
 
+/**
+ * 
+ * @author Emmanuel
+ *
+ * @param <T>
+ * @param <U>
+ */
 public class DirectMapper<T,U> extends MapperObject<T,U> {
 
 	private Function<T,U> transformer;
 
+	/**
+	 * 
+	 * @param from
+	 * @param to
+	 * @param transformer
+	 */
 	public DirectMapper(Class<T> from, Class<U> to, Function<T,U> transformer) {
 		super(from,to);
 		this.transformer = Objects.requireNonNull(transformer);
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public void activate(Mapper mapper) {
 	}
