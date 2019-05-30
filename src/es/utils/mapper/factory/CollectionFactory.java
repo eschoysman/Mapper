@@ -6,8 +6,11 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * 
- * @author Emmanuel
+ * This class lets you instantiate a collection based on destination class type.
+ * The destination class type should be a concrete class (e.g. subclasses of Collection), otherwise
+ * an exception is thrown.
+ * If the destinaton class type is an array, an ArrayList is created.
+ * @author eschyosman
  *
  */
 public class CollectionFactory {
@@ -15,10 +18,10 @@ public class CollectionFactory {
     private static final Class<?> ARRAY_AS_LIST_CLASS = Arrays.asList().getClass();
 
     /**
-     * 
-     * @param inputCollectionType
-     * @param collectionType
-     * @return
+     * This method instantiate a new collection based on collectionType.
+     * @param inputCollectionType the class of input. It must extend Collection.
+     * @param collectionType the class of input. It must extend Collection.
+     * @return a new instance of collectionType.
      */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static <IN,OUT> Collection<OUT> create(Class<? extends Collection> inputCollectionType, Class<? extends Collection> collectionType) {
@@ -34,7 +37,6 @@ public class CollectionFactory {
 	}
 
 	/**
-	 * 
 	 * @param inputCollectionType
 	 * @param collectionType
 	 * @return

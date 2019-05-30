@@ -13,8 +13,8 @@ import es.utils.mapper.annotation.CollectionType;
 import es.utils.mapper.annotation.IgnoreField;
 
 /**
- * 
- * @author Emmanuel
+ * A wrapper object to hold a Field and its information (name, aliases, type etc...).
+ * @author eschyosman
  *
  */
 public class FieldHolder {
@@ -37,7 +37,6 @@ public class FieldHolder {
 	public FieldHolder(Field field) {
 		this.field = Objects.requireNonNull(field);
 		this.fieldName = field.getName();
-//		this.fieldClass = field.getDeclaringClass();
 		this.type = field.getType();
 		this.genericType = field.getGenericType();
 		readAnnotations();
@@ -78,31 +77,29 @@ public class FieldHolder {
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return the field
 	 */
 	public Field getField() {
 		return field;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return the field name
 	 */
 	public String getFieldName() {
 		return fieldName;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return the aliases of the field
+	 * @see AliasNames
 	 */
 	public Set<String> getAliases() {
 		return aliases;
 	}
 	/**
-	 * 
-	 * @return
+	 * @return the name and all the aliases of the field
+	 * @see AliasNames
 	 */
 	public Set<String> getAllNames() {
 		Set<String> allNames = new TreeSet<>(getAliases());
@@ -111,32 +108,30 @@ public class FieldHolder {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * @return the type of the field
 	 */
 	public Class<?> getType() {
 		return type;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return the generic type of the field
 	 */
 	public Type getGenericType() {
 		return genericType;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return {@code true} if the field must be ignored
+	 * @see IgnoreField
 	 */
 	public boolean ignoreField() {
 		return this.ignoreField;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * @return the sub-collection type
+	 * @see CollectionType
 	 */
 	@SuppressWarnings("rawtypes")
 	public Class<? extends Collection> getCollectionType() {

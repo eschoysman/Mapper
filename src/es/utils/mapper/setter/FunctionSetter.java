@@ -4,7 +4,7 @@ import java.util.function.BiConsumer;
 
 /**
  * 
- * @author Emmanuel
+ * @author eschyosman
  *
  * @param <U>
  * @param <TMP>

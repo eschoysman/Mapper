@@ -1,8 +1,8 @@
 package es.utils.mapper.exception;
 
 /**
- * 
- * @author Emmanuel
+ * A exception class that is thrown when an error occurs when a mapping does not exist.
+ * @author eschyosman
  *
  */
 public class MappingNotFoundException extends Exception {

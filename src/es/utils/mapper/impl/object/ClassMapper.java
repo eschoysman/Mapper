@@ -28,7 +28,7 @@ import es.utils.mapper.utils.MapperUtil;
 
 /**
  * 
- * @author Emmanuel
+ * @author eschyosman
  *
  * @param <T>
  * @param <U>

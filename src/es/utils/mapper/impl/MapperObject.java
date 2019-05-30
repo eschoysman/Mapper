@@ -7,7 +7,7 @@ import es.utils.mapper.exception.MappingException;
 
 /**
  * 
- * @author Emmanuel
+ * @author eschyosman
  *
  * @param <T>
  * @param <U>

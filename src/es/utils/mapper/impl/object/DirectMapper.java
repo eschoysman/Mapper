@@ -10,7 +10,7 @@ import es.utils.mapper.impl.MapperObject;
 
 /**
  * 
- * @author Emmanuel
+ * @author eschyosman
  *
  * @param <T>
  * @param <U>

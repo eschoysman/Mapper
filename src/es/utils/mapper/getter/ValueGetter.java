@@ -2,7 +2,7 @@ package es.utils.mapper.getter;
 
 /**
  * 
- * @author Emmanuel
+ * @author eschyosman
  *
  * @param <T>
  * @param <TMP>

@@ -14,16 +14,18 @@ import es.utils.mapper.annotation.AliasNames;
 
 /**
  * 
- * @author Emmanuel
+ * @author eschyosman
  *
  */
 public class MapperUtil {
 
 	/**
-	 * 
-	 * @param clazz
-	 * @param fieldName
-	 * @return
+	 * This method returns the specific field of input class. If no field is found,
+	 * an attempt to get the field through the {@code AliasNames} annotation is done.
+	 * @param clazz The class you're searching the field into.
+	 * @param fieldName The field you're searching for.
+	 * @return The Field found. If no result is found, null is returned.
+	 * @see {@link AliasNames}
 	 */
 	public static <T> Field getField(Class<T> clazz, String fieldName) {
 		Objects.requireNonNull(clazz);
@@ -35,9 +37,9 @@ public class MapperUtil {
 	}
 	
 	/**
-	 * 
-	 * @param clazz
-	 * @return
+	 * This method returns all fields from given class, private and public ones.
+	 * @param clazz The class you should inspect.
+	 * @return A Set of Fields of the given class.
 	 */
 	public static Set<Field> getAllFields(Class<?> clazz) {
 		Field[] fields1 = clazz.getFields();
@@ -49,9 +51,10 @@ public class MapperUtil {
 	}
 	
 	/**
-	 * 
-	 * @param input
-	 * @return
+	 * This method returns the generic class of an input Type with generics. In case of extension,
+	 * the superclass Type is returned.
+	 * @param input The type you're trying to get the class of.
+	 * @return the Class of the given Type. If no generic type is defined, null is returned.
 	 */
 	public static <TYPE> Class<TYPE> getGenericType(Type input) {
 		if(input!=null && input instanceof ParameterizedType) {

@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 /**
  * 
- * @author Emmanuel
+ * @author eschyosman
  *
  * @param <T>
  * @param <TMP>

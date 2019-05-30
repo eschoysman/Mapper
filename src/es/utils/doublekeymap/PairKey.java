@@ -3,8 +3,8 @@ package es.utils.doublekeymap;
 import java.util.Objects;
 
 /**
- * 
- * @author Emmanuel
+ * This class is a wrapper for the {@link TwoKeyMap} key object.
+ * @author eschyosman
  *
  * @param <K1>
  * @param <K2>
@@ -16,8 +16,8 @@ public class PairKey<K1,K2> {
 	
 	/**
 	 * 
-	 * @param key1
-	 * @param key2
+	 * @param key1 first key
+	 * @param key2 second key
 	 */
 	public PairKey(K1 key1, K2 key2) {
 		this.key1 = key1;
@@ -42,7 +42,7 @@ public class PairKey<K1,K2> {
 	}
 	
 	/**
-	 * 
+	 * return a human readable string of the paired key
 	 */
 	@Override
 	public String toString() {

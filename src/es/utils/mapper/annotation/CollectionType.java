@@ -8,15 +8,16 @@ import java.lang.annotation.Target;
 import java.util.Collection;
 
 /**
- * 
- * @author Emmanuel
+ * Collection type annotation allows you to specify the concrete class the mapper should instantiate
+ * the mapping element to.
+ * @author eschyosman
  *
  */
 @Retention(RUNTIME)
 @Target(FIELD)
 public @interface CollectionType {
 	/**
-	 * 
+	 * The class type that will be used for creating the sub-collection type field.
 	 */
 	@SuppressWarnings("rawtypes")
 	Class<? extends Collection> value();

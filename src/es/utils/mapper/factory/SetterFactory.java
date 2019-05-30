@@ -12,7 +12,7 @@ import es.utils.mapper.utils.MapperUtil;
 
 /**
  * 
- * @author Emmanuel
+ * @author eschyosman
  *
  */
 public class SetterFactory {

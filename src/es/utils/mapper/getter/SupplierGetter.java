@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 
 /**
  * 
- * @author Emmanuel
+ * @author eschyosman
  *
  * @param <T>
  * @param <TMP>
