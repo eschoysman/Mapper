@@ -168,8 +168,8 @@ public class MapperTest {
 	public void shouldThrowMappingNotFoundExceptionFromInputOnly() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(From.class, To.class);
-		MappingNotFoundException exception = assertThrows(MappingNotFoundException.class, mapper.map("ciao"));
-		assertThat(exception.getMessage()).contains("Found 0 from class java.lang.String. Cannot uniquely map the input.");
+		MappingNotFoundException exception = assertThrows(MappingNotFoundException.class, ()->mapper.map("ciao"));
+		assertThat(exception.getMessage()).contains("Found 0 mapping(s) from class java.lang.String. Cannot uniquely map the input.");
 	}
 	@Test
 	public void shouldNotMapWithNullInput() throws MappingException, MappingNotFoundException {

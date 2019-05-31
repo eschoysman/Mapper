@@ -280,7 +280,7 @@ public class Mapper {
 											.filter(m->from.getClass().isAssignableFrom(m.fromClass()))
 											.collect(Collectors.toList());
 		if(list.size()!=1) {
-			throw new MappingNotFoundException("Found "+list.size()+" from "+from.getClass()+". Cannot uniquely map the input.");
+			throw new MappingNotFoundException("Found "+list.size()+" mapping(s) from "+from.getClass()+". Cannot uniquely map the input.");
 		}
 		@SuppressWarnings("unchecked")
 		MapperObject<T,U> mapper = (MapperObject<T,U>)list.get(0);
