@@ -4,7 +4,7 @@ import java.util.Objects;
 
 /**
  * This class is a wrapper for the {@link TwoKeyMap} key object.
- * @author eschyosman
+ * @author eschoysman
  *
  * @param <K1>
  * @param <K2>
@@ -23,7 +23,7 @@ public class PairKey<K1,K2> {
 		this.key1 = key1;
 		this.key2 = key2;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(key1,key2);

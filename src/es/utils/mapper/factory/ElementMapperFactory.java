@@ -12,52 +12,76 @@ import static es.utils.mapper.factory.SetterFactory.*;
 
 /**
  * This class creates an ElementMapper based on input and output values.
- * @author eschyosman
+ * @author eschoysman
  *
  */
 public class ElementMapperFactory {
 
 	/**
-	 * 
-	 * @param fromValue
-	 * @param destValue
-	 * @param getter
-	 * @param setter
-	 * @return
+	 * Create a {@code ElementMapper}
+	 * @param <IN> the type of the origin object
+	 * @param <TMP> the type of the result of the {@code getter} operation and of the input of the {@code setter} operation
+	 * @param <OUT> the type of the destination object
+	 * @param fromValue the name identifier of the getter operation
+	 * @param destValue the name identifier of the setter operation
+	 * @param getter the getter operation
+	 * @param setter the setter operation
+	 * @return A {@code ElementMapper}
+	 * @see ElementMapper
+	 * @see ElementMapperFactory#create(Getter, Setter)
 	 */
 	public static <IN,TMP,OUT> ElementMapper<IN,TMP,TMP,OUT> create(String fromValue, String destValue, Function<IN,TMP> getter, BiConsumer<OUT,TMP> setter) {
 		return create(getter(fromValue,getter),Function.identity(),setter(destValue,setter));
 	}
 
 	/**
-	 * 
-	 * @param fromValue
-	 * @param destValue
-	 * @param getter
-	 * @param transformer
-	 * @param setter
-	 * @return
+	 * Create a {@code ElementMapper}
+	 * @param <IN> the type of the origin object
+	 * @param <GETTER_OUT> the type of the result of the {@code getter} operation
+	 * @param <SETTER_IN> the type of the input of the {@code setter} operation
+	 * @param <OUT> the type of the destination object
+	 * @param fromValue the name identifier of the getter operation
+	 * @param destValue the name identifier of the setter operation
+	 * @param getter the getter operation
+	 * @param transformer a function that maps the result of the {@code getter} into the correct type for the {@code setter}
+	 * @param setter the setter operation
+	 * @return A {@code ElementMapper}
+	 * @see ElementMapper
+	 * @see ElementMapperFactory#create(Getter, Function, Setter)
 	 */
 	public static <IN,GETTER_OUT,SETTER_IN,OUT> ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> create(String fromValue, String destValue, Function<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, BiConsumer<OUT,SETTER_IN> setter) {
 		return create(getter(fromValue,getter),transformer,setter(destValue,setter));
 	}
 
 	/**
-	 * 
-	 * @param getter
-	 * @param transformer
-	 * @param setter
-	 * @return
+	 * Create a {@code ElementMapper}
+	 * @param <IN> the type of the origin object
+	 * @param <GETTER_OUT> the type of the result of the {@code getter} operation
+	 * @param <SETTER_IN> the type of the input of the {@code setter} operation
+	 * @param <OUT> the type of the destination object
+	 * @param getter a {@code Getter} instance that contains the information needed to execute the {@code getter} operation
+	 * @param transformer a function that maps the result of the {@code getter} into the correct type for the {@code setter}</li>
+	 * @param setter a {@code Setter} instance that contains the information needed to execute the {@code setter} operation
+	 * @return A {@code ElementMapper}
+	 * @see ElementMapper
+	 * @see Getter
+	 * @see Setter
 	 */
 	public static <IN,GETTER_OUT,SETTER_IN,OUT> ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> create(Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
 		return new ElementMapper<>(getter,transformer,setter);
 	}
 
 	/**
-	 * 
-	 * @param getter
-	 * @param setter
-	 * @return
+	 * Create a {@code ElementMapper}
+	 * @param <IN> the type of the origin object
+	 * @param <TMP> the type of the result of the {@code getter} operation and of the input of the {@code setter} operation
+	 * @param <OUT> the type of the destination object
+	 * @param getter a {@code Getter} instance that contains the information needed to execute the {@code getter} operation
+	 * @param setter a {@code Setter} instance that contains the information needed to execute the {@code setter} operation
+	 * @return A {@code ElementMapper}
+	 * @see ElementMapper
+	 * @see Getter
+	 * @see Setter
 	 */
 	public static <IN,TMP,OUT> ElementMapper<IN,TMP,TMP,OUT> create(Getter<IN,TMP> getter, Setter<OUT,TMP> setter) {
 		return create(getter,Function.identity(),setter);

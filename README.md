@@ -44,6 +44,10 @@ Destination dest = mapper.map(src, Destination.class);
 ```
 
 ---
+## In the future
+add the possibility to deep copy the values during the mapping
+
+---
 ## Download ![GitHub file size in bytes][code_size_badge_light]
 You can download the jar to include into you project [here][download_jar].
 

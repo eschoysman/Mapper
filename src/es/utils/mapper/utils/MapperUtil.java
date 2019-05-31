@@ -13,9 +13,8 @@ import java.util.regex.Pattern;
 import es.utils.mapper.annotation.AliasNames;
 
 /**
- * 
- * @author eschyosman
- *
+ * This class contains a set of method used in the mapping creation.
+ * @author eschoysman
  */
 public class MapperUtil {
 

@@ -3,7 +3,7 @@ package es.utils.mapper.exception;
 /**
  * A exception class that is thrown when an error occurs during the mapping operation.
  * The throwed exception will contains a message explaining the caus of the error. 
- * @author eschyosman
+ * @author eschoysman
  *
  */
 public class MappingException extends Exception {
@@ -11,14 +11,12 @@ public class MappingException extends Exception {
 	private static final long serialVersionUID = 2496138712434409853L;
 
 	/**
-     * 
      * @param message
      */
     public MappingException(String message) {
     	super(message);
     }
     /**
-     * 
      * @param message
      * @param cause
      */

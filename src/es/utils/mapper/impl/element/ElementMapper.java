@@ -13,7 +13,7 @@ import es.utils.mapper.setter.Setter;
  * <li>a <b>Setter</b>: a operation that assign the result of the {@code transformer} to the destination object</li>
  * </ul>
  * 
- * @author eschyosman
+ * @author eschoysman
  *
  * @param <IN> the type of the origin object
  * @param <GETTER_OUT> the type of the field (of the origin object) to be mapped into the destination object 

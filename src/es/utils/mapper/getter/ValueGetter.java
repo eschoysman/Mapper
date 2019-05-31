@@ -1,18 +1,21 @@
 package es.utils.mapper.getter;
 
+import es.utils.mapper.factory.GetterFactory;
+
 /**
+ * This class customize {@code SupplierGetter} creating a {@code Getter} instance from a constant value
+ * @author eschoysman
+ * @param <T> the type of the origin object
+ * @param <TMP> the type of the result of the {@code getter} operation
  * 
- * @author eschyosman
- *
- * @param <T>
- * @param <TMP>
+ * @see SupplierGetter
+ * @see GetterFactory
  */
 public class ValueGetter<T,TMP> extends SupplierGetter<T,TMP> {
 
 	/**
-	 * 
-	 * @param name
-	 * @param value
+	 * @param name the name identifier of the current {@code getter}
+	 * @param value the constant value
 	 */
 	public ValueGetter(String name, TMP value) {
 		super(name,()->value);

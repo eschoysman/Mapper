@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 import es.utils.doublekeymap.PairKey;
 import es.utils.doublekeymap.TwoKeyMap;
+import es.utils.mapper.annotation.CollectionType;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
 import es.utils.mapper.factory.CollectionFactory;
@@ -27,9 +28,14 @@ import es.utils.mapper.impl.object.EnumMapper;
 import es.utils.mapper.utils.MapperUtil;
 
 /**
+ * This class handle a set of mapping between two objects. It is the central part of
+ * the mapping logic and allow the user to create multiple mappings easily.
+ * @author eschoysman
  * 
- * @author eschyosman
- *
+ * @see MapperObject
+ * @see ClassMapper
+ * @see DirectMapper
+ * @see EnumMapper
  */
 public class Mapper {
 
@@ -38,7 +44,7 @@ public class Mapper {
 	private boolean isDirty;
 	
 	/**
-	 * 
+	 * Create an empty Mapper istance.
 	 */
 	public Mapper() {
 		this.mappings = new TwoKeyMap<>();
@@ -47,11 +53,22 @@ public class Mapper {
 	}
 	
 	/**
-	 * 
-	 * @param from
-	 * @param to
-	 * @return
-	 * @throws MappingException
+	 * Allow to add a default mapping between type {@code T} and {@code U}.
+	 * @param <T> type of the input object
+	 * @param <U> type of the destination object
+	 * @param from type of the input object
+	 * @param to type of the destination object
+	 * @return this istance
+	 * @throws MappingException in the following cases:
+	 * <ul>
+	 * 	<li>one between {@code from} and {@code to} is {@code null}</li>
+	 * 	<li>one between {@code from} and {@code to} is a interface type</li>
+	 * 	<li>{@code to} does not have an empty constructor</li>
+	 * </ul>
+	 * @see {@link #addForClass(Class, Class)}
+	 * @see {@link #addForEnum(Class, Class)}
+	 * @see {@link #addBidirectional(Class, Class)}
+	 * @see {@link #add(Class, Class, Function)}
 	 */
 	public <T,U> Mapper add(Class<T> from, Class<U> to) throws MappingException {
 		try {
@@ -72,11 +89,15 @@ public class Mapper {
 		return this;
 	}
 	/**
-	 * 
-	 * @param from
-	 * @param to
-	 * @return
-	 * @throws MappingException
+	 * Allow to add a default mapping between class type {@code T} and {@code U}.
+	 * @param from type of the input object
+	 * @param to type of the destination object
+	 * @return this istance
+	 * @throws MappingException if {@code to} does not have an empty constructor
+	 * @see {@link #add(Class, Class)}
+	 * @see {@link #addForEnum(Class, Class)}
+	 * @see {@link #addBidirectional(Class, Class)}
+	 * @see {@link #add(Class, Class, Function)}
 	 */
 	public <T,U> ClassMapper<T,U> addForClass(Class<T> from, Class<U> to) throws MappingException {
 		try {
@@ -90,10 +111,14 @@ public class Mapper {
 		return classMapper;
 	}
 	/**
-	 * 
-	 * @param from
-	 * @param to
-	 * @return
+	 * Allow to add a default mapping between enum type {@code T} and {@code U}.
+	 * @param from enum type of the input object
+	 * @param to enm type of the destination object
+	 * @return this istance
+	 * @see {@link #add(Class, Class)}
+	 * @see {@link #addForClass(Class, Class)}
+	 * @see {@link #addBidirectional(Class, Class)}
+	 * @see {@link #add(Class, Class, Function)}
 	 */
 	public <T extends Enum<T>,U extends Enum<U>> EnumMapper<T,U> addForEnum(Class<T> from, Class<U> to) {
 		EnumMapper<T,U> enumMapper = new EnumMapper<T,U>(from,to);
@@ -103,11 +128,15 @@ public class Mapper {
 	}
 
 	/**
-	 * 
-	 * @param from
-	 * @param to
-	 * @return
-	 * @throws MappingException
+	 * Allow to add a default mapping between type {@code T} and {@code U} and between {@code U} and {@code T}.
+	 * @param from type of the input and destination object
+	 * @param to type of the destination and input object
+	 * @return this istance
+	 * @throws MappingException if both {@code from} and {@code to} does not have an empty constructor
+	 * @see {@link #add(Class, Class)}
+	 * @see {@link #addForClass(Class, Class)}
+	 * @see {@link #addForEnum(Class, Class)}
+	 * @see {@link #add(Class, Class, Function)}
 	 */
 	public <T,U> Mapper addBidirectional(Class<T> from, Class<U> to) throws MappingException {
 		add(from,to);
@@ -116,12 +145,12 @@ public class Mapper {
 	}
 
 	/**
-	 * 
-	 * @param from
-	 * @param to
-	 * @param transformer
-	 * @return
-	 * @throws MappingException
+	 * Allow to add a custom mapping between types {@code T} and {@code U} applying a custom mapping operation
+	 * @param from type of the input object
+	 * @param to type of the destination object
+	 * @param transformer the function that execute the mapping from {@code T} to {@code U}
+	 * @return this istance
+	 * @throws MappingException if {@code from}, {@code to} or {@code transformer} is {@code null}
 	 */
 	public <T,U> Mapper add(Class<T> from, Class<U> to, Function<T,U> transformer) throws MappingException {
 		Objects.requireNonNull(from);
@@ -133,7 +162,9 @@ public class Mapper {
 	}
 	
 	/**
-	 * 
+	 * Operation that activate all the mappings present in this {@code Mapper} istance.
+	 * This operation is called automatically when the first mapping is required but
+	 * it is possible to call it when preferred. 
 	 */
 	public void build() {
 		if(isDirty) {
@@ -142,12 +173,13 @@ public class Mapper {
 		}
 	}
 
-	
 	/**
-	 * 
-	 * @param from
-	 * @param to
-	 * @return
+	 * @param from the input object to be mapped
+	 * @param to the destination type required for the mapping
+	 * @return an instance of type {@code U}. If the input is {@code null} or some eception occurs during the mapping, returns {@code null}.
+	 * @see {@link #mapOrNull(Object, Object)}
+	 * @see {@link #map(Object, Class)}
+	 * @see {@link #map(Object, Object)}
 	 */
 	public <T,U> U mapOrNull(T from, Class<U> to) {
 		try {
@@ -157,10 +189,12 @@ public class Mapper {
 		}
 	}
 	/**
-	 * 
-	 * @param from
-	 * @param to
-	 * @return
+	 * @param from the input object to be mapped
+	 * @param to the destination istance that wil be overridden during the mapping
+	 * @return an instance of type {@code U}. If the input is {@code null} or some eception occurs during the mapping, returns {@code null}.
+	 * @see {@link #mapOrNull(Object, Class)}
+	 * @see {@link #map(Object, Class)}
+	 * @see {@link #map(Object, Object)}
 	 */
 	public <T,U> U mapOrNull(T from, U to) {
 		try {
@@ -171,12 +205,15 @@ public class Mapper {
 	}
 	
 	/**
-	 * 
-	 * @param from
-	 * @param to
-	 * @return
-	 * @throws MappingNotFoundException
-	 * @throws MappingException
+	 * Convert the {@code from} object into a {@code U} type object
+	 * @param from the input object to be mapped
+	 * @param to the destination type required for the mapping
+	 * @return a istance of type {@code U} created following the mappings rules between types {@code T} and {@code U}.
+	 * @throws MappingNotFoundException if no mapping bwteween types {@code T} and {@code U} is found
+	 * @throws MappingException if {@code to}is {@code null} or an error occurs during the mapping
+	 * @see {@link #mapOrNull(Object, Class)}
+	 * @see {@link #mapOrNull(Object, Object)}
+	 * @see {@link #map(Object, Object)}
 	 */
 	public <T,U> U map(T from, Class<U> to) throws MappingNotFoundException, MappingException {
 		if(to == null) {
@@ -197,12 +234,14 @@ public class Mapper {
 		return map;
 	}
 	/**
-	 * 
-	 * @param from
-	 * @param to
-	 * @return
-	 * @throws MappingNotFoundException
-	 * @throws MappingException
+	 * @param from the input object to be mapped
+	 * @param to the destination istance that wil be overridden during the mapping
+	 * @return the object {@code to} updated during the mapping
+	 * @throws MappingNotFoundException if no mapping beteween types {@code T} and {@code U} is found
+	 * @throws MappingException if {@code to}is {@code null} or an error occurs during the mapping
+	 * @see {@link #mapOrNull(Object, Class)}
+	 * @see {@link #mapOrNull(Object, Object)}
+	 * @see {@link #map(Object, Class)}
 	 */
 	public <T,U> U map(T from, U to) throws MappingNotFoundException, MappingException {
 		build();
@@ -225,10 +264,34 @@ public class Mapper {
 	}
 	
 	/**
-	 * 
-	 * @param origin
-	 * @param destination
-	 * @return
+	 * @param from the input object to be mapped
+	 * @return if there is only one mapping from {@code from.getClass()}, execute that mapping and return the result
+	 * @throws MappingNotFoundException if no mapping or more than one from {@code from.getClass()} is found
+	 * @throws MappingException if {@code to}is {@code null} or an error occurs during the mapping
+	 */
+	public <T,U> U map(T from) throws MappingNotFoundException, MappingException {
+		build();
+		U map = null;
+		if(from==null) {
+			return map;
+		}
+		List<MapperObject<?,?>> list = getAllMappings().values().stream()
+											.filter(m->from.getClass().equals(m.fromClass()))
+											.filter(m->from.getClass().isAssignableFrom(m.fromClass()))
+											.collect(Collectors.toList());
+		if(list.size()!=1) {
+			throw new MappingNotFoundException("Found "+list.size()+" from "+from.getClass()+". Cannot uniquely map the input.");
+		}
+		@SuppressWarnings("unchecked")
+		MapperObject<T,U> mapper = (MapperObject<T,U>)list.get(0);
+		map = mapper.map(from);
+		return map;
+	}
+	
+	/**
+	 * @param origin array of type {@code T} object 
+	 * @param destination array of type {@code U} object
+	 * @return the {@code destination} array filled with {@code origin} elements mapped
 	 */
 	public <T,U> U[] mapArray(T[] origin, U[] destination) {
 		if(origin==null) {
@@ -251,10 +314,9 @@ public class Mapper {
 		return destination;
 	}
 	/**
-	 * 
-	 * @param origin
-	 * @param destinationType
-	 * @return
+	 * @param origin array of type {@code T} object 
+	 * @param destinationType destination type of the mapping
+	 * @return a {@code U[]} filled with {@code origin} elements mapped
 	 */
 	public <T,U> U[] mapArray(T[] origin, Class<U> destinationType) {
 		if(origin==null) {
@@ -266,10 +328,12 @@ public class Mapper {
 	}
 	/**
 	 * 
-	 * @param origin
-	 * @param collectionType
-	 * @param resultElementType
-	 * @return
+	 * @param origin original collection to map
+	 * @param collectionType type of the destination collection
+	 * @param resultElementType destination type of the mapping 
+	 * @return the mapped collection
+	 * @see CollectionType
+	 * @see CollectionFactory
 	 */
 	public <T,U,CT extends Collection<T>, CU extends Collection<U>> CU mapCollection(CT origin, Class<CU> collectionType, Class<U> resultElementType) {
 		if(origin==null) {
@@ -283,11 +347,10 @@ public class Mapper {
 	}
 	
 	/**
-	 * 
-	 * @param origin
-	 * @param destination
-	 * @param resultElementType
-	 * @return
+	 * @param origin original collection to map
+	 * @param destination destination collection
+	 * @param resultElementType destination type of the mapping 
+	 * @return the mapped collection
 	 */
 	public <T,U, CU extends Collection<U>> CU mapCollection(Collection<T> origin, CU destination, Class<U> resultElementType) {
 		if(origin==null) {
@@ -316,20 +379,18 @@ public class Mapper {
 	}
 	
 	/**
-	 * 
-	 * @param src
-	 * @param dest
-	 * @return
+	 * @param src origin type
+	 * @param dest destination type
+	 * @return {@code true} the mapping between types {@code T} and {@code U} is present, {@code false} otherwise
 	 */
 	public <T,U> boolean hasMappingBetween(Class<T> src, Class<U> dest) {
 		return mappings.containsKey(src,dest);
 	}
 	
 	/**
-	 * 
-	 * @param from
-	 * @param to
-	 * @return
+	 * @param from origin type
+	 * @param to destination type
+	 * @return the mapping between types {@code T} and {@code U} if present, {@code null} otherwise 
 	 */
 	public <T,U> MapperObject<T,U> getMappingBetween(Class<T> from, Class<U> to) {
 		@SuppressWarnings("unchecked")
@@ -339,14 +400,14 @@ public class Mapper {
 
 	
 	/**
-	 * 
-	 * @return
+	 * @return the {@code TwoKeyMap} containing all the mappings presente in this {@code Mapper} istance
+	 * @see TwoKeyMap
 	 */
 	public TwoKeyMap<Class<?>,Class<?>,MapperObject<?,?>> getAllMappings() {
 		return mappings;
 	}
 	/**
-	 * 
+	 * Returns a human readable rappersentation of the mappings presente in this {@code Mapper} istance
 	 */
 	@Override
 	public String toString() {
@@ -354,18 +415,17 @@ public class Mapper {
 	}
 
 	/**
-	 * 
-	 * @param from
-	 * @return
+	 * @param type class type
+	 * @return the Map having key the name or alias and the associate FieldHolder
+	 * @see FieldHolder
 	 */
 	public <T> Map<String,FieldHolder> getFieldsHolderFromCache(Class<T> from) {
 		return this.fieldHolderCache.computeIfAbsent(from,this::getAllFields);
 	}
 	
 	/**
-	 * 
-	 * @param type
-	 * @return
+	 * @param type class type
+	 * @return the list of the names and alias allowed for the given type {@code T}
 	 */
 	public <T> List<String> getNames(Class<T> type) {
 		List<String> names = new ArrayList<>();
@@ -375,7 +435,7 @@ public class Mapper {
 		return names;
 	}
 	
-	private <T,U> MapperObject<T,U> createEnumMapper(Class<T> from, Class<U> to) throws MappingException {
+	private <T,U> MapperObject<T,U> createEnumMapper(Class<T> from, Class<U> to) {
 		@SuppressWarnings("unchecked")
 		Class<? extends Enum<?>> enumFrom = (Class<? extends Enum<?>>)from;
 		@SuppressWarnings("unchecked")

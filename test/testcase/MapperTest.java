@@ -157,6 +157,21 @@ public class MapperTest {
 		assertThat(mapper.map(from, To.class)).isNotNull().isInstanceOf(To.class);
 	}
 	@Test
+	public void shouldMapExistingMappingFromInputOnly() throws MappingException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		mapper.add(From.class, To.class);
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		To result = mapper.map(from);
+		assertThat(result).isNotNull().isInstanceOf(To.class);
+	}
+	@Test
+	public void shouldThrowMappingNotFoundExceptionFromInputOnly() throws MappingException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		mapper.add(From.class, To.class);
+		MappingNotFoundException exception = assertThrows(MappingNotFoundException.class, mapper.map("ciao"));
+		assertThat(exception.getMessage()).contains("Found 0 from class java.lang.String. Cannot uniquely map the input.");
+	}
+	@Test
 	public void shouldNotMapWithNullInput() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(From.class, To.class);

@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 
 /**
  * This class rappresent a Map that has two keys. The keys are incapsulate inside a {@link PairKey} istance that is used as the key inside the Map. 
- * @author eschyosman
+ * @author eschoysman
  *
  * @param <K1> type of the first key
  * @param <K2> type of the second key

@@ -4,11 +4,16 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * 
- * @author eschyosman
+ * This abstract class handle the logic of a generic {@code getter} operation.<br>
+ * @author eschoysman
  *
- * @param <T>
- * @param <TMP>
+ * @param <T> the type of the origin object
+ * @param <TMP> the type of the result of the {@code getter} operation
+ * 
+ * @see FunctionGetter
+ * @see FieldGetter
+ * @see SupplierGetter
+ * @see ValueGetter
  */
 public abstract class Getter<T,TMP> {
 
@@ -18,9 +23,8 @@ public abstract class Getter<T,TMP> {
 	private Function<T,TMP> getter;
 	
 	/**
-	 * 
-	 * @param name
-	 * @param getter
+	 * @param name the name identifier of the current {@code getter}
+	 * @param getter the {@code getter} operation
 	 */
 	protected Getter(String name, Function<T,TMP> getter) {
 		this.name = Objects.requireNonNull(name);
@@ -28,8 +32,9 @@ public abstract class Getter<T,TMP> {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * @return an empty {@code getter} with no name and identity operation
+     * @param <T> the type of the origin object
+     * @param <TMP> the type of the result of the {@code getter} operation
 	 */
 	public static <T,TMP> Getter<T,TMP> empty() {
 		@SuppressWarnings("unchecked")
@@ -38,17 +43,15 @@ public abstract class Getter<T,TMP> {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * @return the name identifier of the current {@code getter}
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * 
-	 * @param input
-	 * @return
+	 * @param input the object on which the current {@code getter} is to be applied 
+	 * @return the value associated to the current {@code getter} during its creation
 	 */
 	public TMP apply(T input) {
 		return getter.apply(input);

@@ -11,9 +11,14 @@ import es.utils.mapper.setter.Setter;
 import es.utils.mapper.utils.MapperUtil;
 
 /**
- * 
- * @author eschyosman
- *
+ * This class creates an Setter based on output values.
+ * @author eschoysman
+ * @see Setter
+ * @see ValueSetter
+ * @see SupplierSetter
+ * @see FunctionSetter
+ * @see FieldSetter
+ * @see FieldHolder
  */
 public class SetterFactory {
 
@@ -29,19 +34,29 @@ public class SetterFactory {
 	}
 
 	/**
-	 * 
-	 * @param field
-	 * @return
+	 * Create a {@code Setter} istance using the {@code field} name and the {@code value} of the field
+	 * @param <U> the type of the destination object
+	 * @param <TMP> the type of the value inside of {@code field}
+	 * @param field a file istance used to get the {@code name} and the value needed for creating the {@code Setter} 
+	 * @return the {@code Setter} created
+	 * @throws NullPointerException if {@code field} is null
+	 * @see Setter
+	 * @see FieldSetter
 	 */
 	public static <U,TMP> Setter<U,TMP> setter(Field field) {
 		Objects.requireNonNull(field);
 		return new FieldSetter<>(field);
 	}
 	/**
-	 * 
-	 * @param name
-	 * @param field
-	 * @return
+	 * Create a {@code Setter} istance using the given {@code name} and the {@code value}
+	 * @param <U> the type of the destination object
+	 * @param <TMP> the type of the value inside of {@code field}
+	 * @param name the name identifier of the {@code setter}
+	 * @param field a file istance used to get the value needed for creating the {@code Setter} 
+	 * @return the {@code Setter} created
+	 * @throws NullPointerException if {@code name} or {@code field} is null
+	 * @see Setter
+	 * @see FieldSetter
 	 */
 	public static <U,TMP> Setter<U,TMP> setter(String name, Field field) {
 		Objects.requireNonNull(name);
@@ -49,10 +64,15 @@ public class SetterFactory {
 		return new FieldSetter<>(name,field);
 	}
 	/**
-	 * 
-	 * @param clazz
-	 * @param fieldName
-	 * @return
+	 * Create a {@code Setter} istance using the field named {@code fieldName} inside the {@code clazz} type
+	 * @param <U> the type of the origin object
+	 * @param <TMP> the type of the value inside of {@code field}
+	 * @param clazz the class containing the field to use as setter
+	 * @param fieldName the name of the field to retrieve from the {@code clazz} type
+	 * @return the {@code Setter} created
+	 * @throws NullPointerException if {@code clazz} or {@code fieldName} is null or if there is no filed named {@code filedName} in the {@code clazz} type
+	 * @see Setter
+	 * @see MapperUtil
 	 */
 	public static <U,TMP> Setter<U,TMP> setter(Class<U> clazz, String fieldName) {
 		Field field = MapperUtil.getField(clazz,fieldName);
@@ -60,11 +80,16 @@ public class SetterFactory {
 		return new FieldSetter<>(field);
 	}
 	/**
-	 * 
-	 * @param name
-	 * @param clazz
-	 * @param fieldName
-	 * @return
+	 * Create a {@code Setter} istance using the field named {@code fieldName} of the {@code clazz} type
+	 * @param <T> the type of the origin object
+	 * @param <TMP> the type of the value inside of {@code field}
+	 * @param name the name identifier of the {@code setter}
+	 * @param clazz the class containing the field to use as setter
+	 * @param fieldName the name of the field to retrieve from the {@code clazz} type
+	 * @return the {@code Setter} created
+	 * @throws NullPointerException if {@code name}, {@code clazz} or {@code fieldName} is null or if there is no filed named {@code filedName} in the {@code clazz} type
+	 * @see Setter
+	 * @see MapperUtil
 	 */
 	public static <U,TMP> Setter<U,TMP> setter(String name, Class<U> clazz, String fieldName) {
 		Field field = MapperUtil.getField(clazz,fieldName);
@@ -74,19 +99,29 @@ public class SetterFactory {
 	}
 
 	/**
-	 * 
-	 * @param fieldHolder
-	 * @return
+	 * Create a {@code Setter} istance using the informations present in the {@code fieldHolder}
+	 * @param <T> the type of the origin object
+	 * @param <TMP> the type of the value inside of {@code field}
+	 * @param fieldHolder a instance having all the information of a {@code field}
+	 * @return the {@code Setter} created
+	 * @throws NullPointerException if {@code fieldHolder} is null
+	 * @see Setter
+	 * @see FieldHolder
 	 */
 	public static <U,TMP> Setter<U,TMP> setter(FieldHolder fieldHolder) {
 		Objects.requireNonNull(fieldHolder);
 		return new FieldSetter<>(fieldHolder.getField());
 	}
 	/**
-	 * 
-	 * @param name
-	 * @param fieldHolder
-	 * @return
+	 * Create a {@code Setter} istance using the informations present in the {@code fieldHolder}
+	 * @param <T> the type of the origin object
+	 * @param <TMP> the type of the value inside of {@code field}
+	 * @param name the name identifier of the {@code setter}
+	 * @param fieldHolder a instance having all the information of a {@code field}
+	 * @return the {@code Setter} created
+	 * @throws NullPointerException if {@code name} or {@code fieldHolder} is null
+	 * @see Setter
+	 * @see FieldHolder
 	 */
 	public static <U,TMP> Setter<U,TMP> setter(String name, FieldHolder fieldHolder) {
 		Objects.requireNonNull(fieldHolder);

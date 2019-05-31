@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * Ignore field annotation lets you specify the fields that should be ignored during the mapping.
  * This annotation can be used on single field or on class, where you should specify the field you'd like
  * to ignore. An empty value on class indicates that NONE of the fields should be ignored.
- * @author eschyosman
+ * @author eschoysman
  *
  */
 @Retention(RUNTIME)

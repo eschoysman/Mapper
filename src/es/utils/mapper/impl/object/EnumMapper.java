@@ -7,11 +7,15 @@ import es.utils.mapper.Mapper;
 import es.utils.mapper.impl.MapperObject;
 
 /**
- * 
- * @author eschyosman
+ * This class customize the abstract class {@code MapperObject} creating a {@code MapperObject} that convert on enum type {@code T} into a enum {@code U}.
+ * @author eschoysman
  *
- * @param <T>
- * @param <U>
+ * @param <T> the enum type of the origin object
+ * @param <U> the enum type of the destination object
+ * 
+ * @see MapperObject
+ * @see ClassMapper
+ * @see DirectMapper
  */
 public class EnumMapper<T extends Enum<T>,U extends Enum<U>> extends MapperObject<T, U> {
 
@@ -20,9 +24,9 @@ public class EnumMapper<T extends Enum<T>,U extends Enum<U>> extends MapperObjec
 	private U defaultDestinationEnumValue;
 	
 	/**
-	 * 
-	 * @param fromEnum
-	 * @param toEnum
+	 * Create a {@code MapperObject} between the enum types {@code T} and {@code U}.
+	 * @param fromEnum the enum type of the origin object
+	 * @param toEnum the enum type of the destination object
 	 */
 	public EnumMapper(Class<T> fromEnum, Class<U> toEnum) {
 		super(fromEnum,toEnum);
@@ -31,9 +35,6 @@ public class EnumMapper<T extends Enum<T>,U extends Enum<U>> extends MapperObjec
 		this.defaultDestinationEnumValue = null;
 	}
 
-	/**
-	 * 
-	 */
 	public void activate(Mapper mapper) {
 		for(T from : from.getEnumConstants()) {
 			try {
@@ -44,20 +45,20 @@ public class EnumMapper<T extends Enum<T>,U extends Enum<U>> extends MapperObjec
 	}
 	
 	/**
-	 * 
-	 * @param from
-	 * @param to
-	 * @return
+	 * Add a custom mapping between the enum values {@code T} and {@code U}.
+	 * @param from origin enum value
+	 * @param to destinatio enum value
+     * @return this istance
 	 */
     public EnumMapper<T,U> add(T from, U to) {
         mapping.put(from,to);
         return this;
     }
     /**
-     * 
+     * Allow to avoid some input enum values to be mapped
      * @param inputValueToIgnore
      * @param otherInputValuesToIgnore
-     * @return
+     * @return this istance
      */
 	@SuppressWarnings("unchecked")
 	public EnumMapper<T,U> ignore(T inputValueToIgnore, T... otherInputValuesToIgnore) {
@@ -65,9 +66,9 @@ public class EnumMapper<T extends Enum<T>,U extends Enum<U>> extends MapperObjec
     	return this;
     }
 	/**
-	 * 
+	 * Allow to specify a default enum value for mapping without a counterparty in the destinatio enum or if some excception is thrown.
 	 * @param defaultDestinationEnumValue
-	 * @return
+     * @return this istance
 	 */
     public EnumMapper<T,U> setDefaultDestinationEnumValue(U defaultDestinationEnumValue) {
     	this.defaultDestinationEnumValue = defaultDestinationEnumValue;

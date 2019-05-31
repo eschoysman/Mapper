@@ -10,7 +10,7 @@ import java.util.Collection;
 /**
  * Collection type annotation allows you to specify the concrete class the mapper should instantiate
  * the mapping element to.
- * @author eschyosman
+ * @author eschoysman
  *
  */
 @Retention(RUNTIME)

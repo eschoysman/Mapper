@@ -4,12 +4,17 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
+import es.utils.mapper.factory.SetterFactory;
+
 /**
- * 
- * @author eschyosman
+ * This class customize {@code FunctionGetter} creating a {@code Getter} instance from a {@code Field}
+ * @author eschoysman
  *
- * @param <U>
- * @param <TMP>
+ * @param <U> the type of the destination object
+ * @param <TMP> the type of the input of the {@code setter} operation
+ * 
+ * @see FunctionSetter
+ * @see SetterFactory
  */
 public class FieldSetter<U,TMP> extends FunctionSetter<U,TMP> {
 

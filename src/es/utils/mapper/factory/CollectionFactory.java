@@ -10,7 +10,7 @@ import java.util.Collection;
  * The destination class type should be a concrete class (e.g. subclasses of Collection), otherwise
  * an exception is thrown.
  * If the destinaton class type is an array, an ArrayList is created.
- * @author eschyosman
+ * @author eschoysman
  *
  */
 public class CollectionFactory {

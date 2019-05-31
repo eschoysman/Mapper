@@ -4,19 +4,23 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.function.Function;
 
+import es.utils.mapper.factory.GetterFactory;
+
 /**
- * 
- * @author eschyosman
+ * This class customize {@code FunctionGetter} creating a {@code Getter} instance from a {@code Field}
+ * @author eschoysman
  *
- * @param <T>
- * @param <TMP>
+ * @param <T> the type of the origin object
+ * @param <TMP> the type of the result of the {@code getter} operation
+ * 
+ * @see FunctionGetter
+ * @see GetterFactory
  */
 public class FieldGetter<T,TMP> extends FunctionGetter<T,TMP> {
 
 	/**
-	 * 
-	 * @param name
-	 * @param field
+	 * @param name the name identifier of the current {@code getter}
+	 * @param field the field from which we want to get the value
 	 */
 	public FieldGetter(String name, Field field) {
 		super(name,createGetter(field));

@@ -14,7 +14,7 @@ import es.utils.mapper.annotation.IgnoreField;
 
 /**
  * A wrapper object to hold a Field and its information (name, aliases, type etc...).
- * @author eschyosman
+ * @author eschoysman
  *
  */
 public class FieldHolder {
