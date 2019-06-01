@@ -172,6 +172,15 @@ public class MapperTest {
 		assertThat(exception.getMessage()).contains("Found 0 mapping(s) from class java.lang.String. Cannot uniquely map the input.");
 	}
 	@Test
+	public void shouldThrowMappingNotFoundExceptionFromInputOnlyAndMultipleMappingPresent() throws MappingException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		mapper.add(From.class, To.class);
+		mapper.add(From.class, String.class);
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		MappingNotFoundException exception = assertThrows(MappingNotFoundException.class, ()->mapper.map(from));
+		assertThat(exception.getMessage()).contains("Found 2 mapping(s) from class from.From. Cannot uniquely map the input.");
+	}
+	@Test
 	public void shouldNotMapWithNullInput() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(From.class, To.class);
