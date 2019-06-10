@@ -8,5 +8,6 @@ es.utils.mapper.holder
 es.utils.mapper.impl
 es.utils.mapper.impl.element
 es.utils.mapper.impl.object
+es.utils.mapper.options
 es.utils.mapper.setter
 es.utils.mapper.utils

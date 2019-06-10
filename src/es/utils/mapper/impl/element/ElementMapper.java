@@ -2,6 +2,8 @@ package es.utils.mapper.impl.element;
 
 import java.util.function.Function;
 
+import es.utils.mapper.factory.GetterFactory;
+import es.utils.mapper.factory.SetterFactory;
 import es.utils.mapper.getter.Getter;
 import es.utils.mapper.setter.Setter;
 
@@ -60,12 +62,15 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @param out the destination object
 	 */
 	public void apply(IN in, OUT out) {
-//		System.out.println("Mapping from "+fromValue+" to "+destValue+":");
+		// System.out.println("Calling getter \""+getFromValue()+"\"...");
 		GETTER_OUT getterResult = getter.apply(in);
-//		System.out.println("getter result: "+getterResult);
+		// System.out.println("getter \""+getFromValue()+"\" output: "+getterResult);
+		// System.out.println("Copying value to map...");
+//		getterResult = clone(getterResult);
+		// System.out.println("Applying transformation...");
 		SETTER_IN transformed = transformer.apply(getterResult);
-//		System.out.println("setter input: "+transformed);
+		// System.out.println("Appliying setter \""+getDestValue()+"\" with input: "+transformed);
 		setter.apply(out,transformed);
 	}
-	
+
 }

@@ -21,6 +21,7 @@ import es.utils.mapper.impl.object.EnumMapper;
  */
 public abstract class MapperObject<T,U> {
 
+	protected Mapper mapper;
 	protected Class<T> from;
 	protected Class<U> to;
 	
@@ -52,7 +53,9 @@ public abstract class MapperObject<T,U> {
 	 * The activation of a {@code MapperObject} takes into account all the present mappings to create the default mappings of the current mapping 
 	 * @param mapper
 	 */
-	public abstract void activate(Mapper mapper);
+	public void activate(Mapper mapper) {
+		this.mapper = mapper;
+	}
 	protected abstract U mapValue(T from) throws MappingException;
 	protected abstract U mapValue(T from, U to);
 	

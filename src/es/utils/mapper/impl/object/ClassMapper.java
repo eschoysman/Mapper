@@ -41,8 +41,6 @@ import es.utils.mapper.utils.MapperUtil;
  */
 public class ClassMapper<T,U> extends MapperObject<T,U> {
 	
-	private Mapper mapper;
-	
 	private TwoKeyMap<String,String,ElementMapper<T,?,?,U>> fieldMappings;
 	private TwoKeyMap<String,String,ElementMapper<T,?,?,U>> customMappings;
 	private Set<String> inputsToIgnore;
@@ -102,7 +100,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * @param <TMP> the type of the result of the {@code getter} and of the input of the {@code setter}.
      * @param getter {@code Getter} instance to retrieve the value to map
      * @param setter {@code Setter} instance to set the mapped value
-     * @return this istance
+     * @return the current istance
      * @see ElementMapperFactory
      * @see ElementMapperFactory#create(Getter, Setter)
      */
@@ -116,7 +114,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * @param getter {@code Getter} instance to retrieve the value to map
      * @param transformer the function to map the result of the {@code getter} into the type required by the {@code setter}
      * @param setter {@code Setter} instance to set the mapped value
-     * @return this istance
+     * @return the current istance
      * @see ElementMapperFactory
      * @see ElementMapperFactory#create(Getter, Function, Setter)
      */
@@ -130,12 +128,46 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * @param getter the getter operation
 	 * @param fieldTo the name identifier of the setter operation
 	 * @param setter the setter operation
-     * @return this istance
+     * @return the current istance
      * @see ElementMapperFactory
      * @see ElementMapperFactory#create(String, String, Function, BiConsumer)
      */
 	public <TMP> ClassMapper<T,U> addCustomFieldMapper(String fieldFrom, Function<T,TMP> getter, String fieldTo, BiConsumer<U,TMP> setter) {
 		return addElementMapper(ElementMapperFactory.create(fieldFrom,fieldTo,getter,setter),false);
+	}
+	/**
+	 * TODO test
+	 * Allow to add a custom {@code ElementMapper} between type {@code T} and {@code U}.
+	 * @param <TMP1> the type of the origin object
+	 * @param <TMP2> the type of the destination object
+	 * @param name the name identifier for booth getter and setter operations used to create a default {@code FieldGetter} and {@code FieldSetter}
+	 * @param transfom a function that maps the result of the {@code getter} into the correct type for the {@code setter}
+	 * @param fieldTo the name identifier of the setter operation used to create a default {@code FieldSetter}
+     * @return the current istance
+     * @see ElementMapperFactory
+     * @see ElementMapperFactory#create(String, String, Function, Function, BiConsumer)
+     * @see GetterFactory
+     * @see SetterFactory
+	 */
+	public <TMP1,TMP2> ClassMapper<T,U> addCustomFieldMapper(String name, Function<TMP1,TMP2> transfom) {
+		return addElementMapper(ElementMapperFactory.create(GetterFactory.getter(name,from,name),transfom,SetterFactory.setter(name,to,name)),false);
+	}
+	/**
+	 * TODO test
+	 * Allow to add a custom {@code ElementMapper} between type {@code T} and {@code U}.
+	 * @param <TMP1> the type of the origin object
+	 * @param <TMP2> the type of the destination object
+	 * @param fieldFrom the name identifier of the getter operation used to create a default {@code FieldGetter}
+	 * @param transfom a function that maps the result of the {@code getter} into the correct type for the {@code setter}
+	 * @param fieldTo the name identifier of the setter operation used to create a default {@code FieldSetter}
+     * @return the current istance
+     * @see ElementMapperFactory
+     * @see ElementMapperFactory#create(Strng, String, Function, Function, BiConsumer)
+     * @see GetterFactory
+     * @see SetterFactory
+	 */
+	public <TMP1,TMP2> ClassMapper<T,U> addCustomFieldMapper(String fieldFrom, Function<TMP1,TMP2> transfom, String fieldTo) {
+		return addElementMapper(ElementMapperFactory.create(GetterFactory.getter(fieldFrom,from,fieldFrom),transfom,SetterFactory.setter(fieldTo,to,fieldTo)),false);
 	}
 	/**
 	 * Allow to add a custom {@code ElementMapper} between type {@code T} and {@code U}.
@@ -146,7 +178,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * @param transfom a function that maps the result of the {@code getter} into the correct type for the {@code setter}
 	 * @param fieldTo the name identifier of the setter operation
 	 * @param setter the setter operation
-     * @return this istance
+     * @return the current istance
      * @see ElementMapperFactory
      * @see ElementMapperFactory#create(String, String, Function, Function, BiConsumer)
 	 */
@@ -159,7 +191,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * @param <TMP2> the type of the destination object
 	 * @param name  the name identifier of the setter operation
 	 * @param setter the setter operation
-     * @return this istance
+     * @return the current istance
      * @see ElementMapperFactory
      * @see ElementMapperFactory#create(Getter, Setter)
 	 */
@@ -171,7 +203,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	/**
 	 * Allow to ignore field (both origin and destination object) during the mapping
 	 * @param valuesToIgnore set of the field name or alias names to ignore 
-	 * @return this istance
+	 * @return the current istance
 	 */
 	public ClassMapper<T,U> ignore(String... valuesToIgnore) {
 		ignoreInputs(valuesToIgnore);
@@ -181,7 +213,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	/**
 	 * Allow to ignore field from input object during the mapping
 	 * @param valuesToIgnore set of the field name or alias names to ignore 
-	 * @return this istance
+	 * @return the current istance
 	 */
 	public ClassMapper<T,U> ignoreInputs(String... inputsToIgnore) {
 		this.inputsToIgnore.addAll(Arrays.asList(inputsToIgnore));
@@ -191,7 +223,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	/**
 	 * Allow to ignore field from destination object during the mapping
 	 * @param valuesToIgnore set of the field name or alias names to ignore 
-	 * @return this istance
+	 * @return the current istance
 	 */
 	public ClassMapper<T,U> ignoreOutputs(String... outputsToIgnore) {
 		this.outputsToIgnore.addAll(Arrays.asList(outputsToIgnore));

@@ -51,14 +51,24 @@ public class Mapper {
 		this.fieldHolderCache = new HashMap<>();
 		isDirty = false;
 	}
-	
+
+	/**
+	 * Allow to add a previoously created mapping between type {@code T} and {@code U}.
+	 * @param <T> the origin type of the mapping
+	 * @param <U> the destination type of the mapping
+	 * @param objectMapper the mapping to add to this {@code Mapper} istance
+	 * @return this {@code Mapper} istance
+	 */
+	public <T,U> Mapper add(MapperObject<T,U> objectMapper) {
+		return add(objectMapper.fromClass(),objectMapper.toClass(),objectMapper);
+	}
 	/**
 	 * Allow to add a default mapping between type {@code T} and {@code U}.
 	 * @param <T> type of the input object
 	 * @param <U> type of the destination object
 	 * @param from type of the input object
 	 * @param to type of the destination object
-	 * @return this istance
+	 * @return this {@code Mapper} istance
 	 * @throws MappingException in the following cases:
 	 * <ul>
 	 * 	<li>one between {@code from} and {@code to} is {@code null}</li>
@@ -92,7 +102,7 @@ public class Mapper {
 	 * Allow to add a default mapping between class type {@code T} and {@code U}.
 	 * @param from type of the input object
 	 * @param to type of the destination object
-	 * @return this istance
+	 * @return this {@code Mapper} istance
 	 * @throws MappingException if {@code to} does not have an empty constructor
 	 * @see {@link #add(Class, Class)}
 	 * @see {@link #addForEnum(Class, Class)}
@@ -106,15 +116,14 @@ public class Mapper {
 			throw new MappingException("Destination class does not have a empty constructor. Please provide a empty contructor such that the mapping can be done.");
 		}
 		ClassMapper<T,U> classMapper = new ClassMapper<T,U>(from,to);
-		mappings.put(from,to, classMapper);
-		isDirty = true;
+		add(from,to,classMapper);
 		return classMapper;
 	}
 	/**
 	 * Allow to add a default mapping between enum type {@code T} and {@code U}.
 	 * @param from enum type of the input object
 	 * @param to enm type of the destination object
-	 * @return this istance
+	 * @return this {@code Mapper} istance
 	 * @see {@link #add(Class, Class)}
 	 * @see {@link #addForClass(Class, Class)}
 	 * @see {@link #addBidirectional(Class, Class)}
@@ -122,8 +131,7 @@ public class Mapper {
 	 */
 	public <T extends Enum<T>,U extends Enum<U>> EnumMapper<T,U> addForEnum(Class<T> from, Class<U> to) {
 		EnumMapper<T,U> enumMapper = new EnumMapper<T,U>(from,to);
-		mappings.put(from,to, enumMapper);
-		isDirty = true;
+		add(from,to,enumMapper);
 		return enumMapper;
 	}
 
@@ -131,7 +139,7 @@ public class Mapper {
 	 * Allow to add a default mapping between type {@code T} and {@code U} and between {@code U} and {@code T}.
 	 * @param from type of the input and destination object
 	 * @param to type of the destination and input object
-	 * @return this istance
+	 * @return this {@code Mapper} istance
 	 * @throws MappingException if both {@code from} and {@code to} does not have an empty constructor
 	 * @see {@link #add(Class, Class)}
 	 * @see {@link #addForClass(Class, Class)}
@@ -149,15 +157,15 @@ public class Mapper {
 	 * @param from type of the input object
 	 * @param to type of the destination object
 	 * @param transformer the function that execute the mapping from {@code T} to {@code U}
-	 * @return this istance
+	 * @return this {@code Mapper} istance
 	 * @throws MappingException if {@code from}, {@code to} or {@code transformer} is {@code null}
 	 */
 	public <T,U> Mapper add(Class<T> from, Class<U> to, Function<T,U> transformer) throws MappingException {
 		Objects.requireNonNull(from);
 		Objects.requireNonNull(to);
 		Objects.requireNonNull(transformer);
-		mappings.put(from,to, new DirectMapper<>(from,to,transformer));
-		this.isDirty = true;
+		DirectMapper<T, U> directMapper = new DirectMapper<>(from,to,transformer);
+		add(from,to,directMapper);
 		return this;
 	}
 	
@@ -435,6 +443,11 @@ public class Mapper {
 		return names;
 	}
 	
+	private <T,U> Mapper add(Class<T> from, Class<U> to, MapperObject<T,U> objectMapper) {
+		mappings.put(from,to, objectMapper);
+		isDirty = true;
+		return this;
+	}
 	private <T,U> MapperObject<T,U> createEnumMapper(Class<T> from, Class<U> to) {
 		@SuppressWarnings("unchecked")
 		Class<? extends Enum<?>> enumFrom = (Class<? extends Enum<?>>)from;
@@ -505,5 +518,5 @@ public class Mapper {
     	}
     	return result;
     }
-	
+
 }

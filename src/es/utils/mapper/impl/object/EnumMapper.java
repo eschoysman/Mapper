@@ -36,6 +36,7 @@ public class EnumMapper<T extends Enum<T>,U extends Enum<U>> extends MapperObjec
 	}
 
 	public void activate(Mapper mapper) {
+		super.activate(mapper);
 		for(T from : from.getEnumConstants()) {
 			try {
 				add(from,Enum.valueOf(to,from.name()));
@@ -48,7 +49,7 @@ public class EnumMapper<T extends Enum<T>,U extends Enum<U>> extends MapperObjec
 	 * Add a custom mapping between the enum values {@code T} and {@code U}.
 	 * @param from origin enum value
 	 * @param to destinatio enum value
-     * @return this istance
+     * @return the current istance
 	 */
     public EnumMapper<T,U> add(T from, U to) {
         mapping.put(from,to);
@@ -58,7 +59,7 @@ public class EnumMapper<T extends Enum<T>,U extends Enum<U>> extends MapperObjec
      * Allow to avoid some input enum values to be mapped
      * @param inputValueToIgnore
      * @param otherInputValuesToIgnore
-     * @return this istance
+     * @return the current istance
      */
 	@SuppressWarnings("unchecked")
 	public EnumMapper<T,U> ignore(T inputValueToIgnore, T... otherInputValuesToIgnore) {
@@ -68,7 +69,7 @@ public class EnumMapper<T extends Enum<T>,U extends Enum<U>> extends MapperObjec
 	/**
 	 * Allow to specify a default enum value for mapping without a counterparty in the destinatio enum or if some excception is thrown.
 	 * @param defaultDestinationEnumValue
-     * @return this istance
+     * @return the current istance
 	 */
     public EnumMapper<T,U> setDefaultDestinationEnumValue(U defaultDestinationEnumValue) {
     	this.defaultDestinationEnumValue = defaultDestinationEnumValue;

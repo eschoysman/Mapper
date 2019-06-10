@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import es.utils.mapper.Mapper;
-import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.impl.MapperObject;
 
 /**
@@ -36,16 +35,18 @@ public class DirectMapper<T,U> extends MapperObject<T,U> {
 
 	@Override
 	public void activate(Mapper mapper) {
+		super.activate(mapper);
 	}
 
 	@Override
-	protected U mapValue(T from) throws MappingException {
+	protected U mapValue(T from) {
 		return transformer.apply(from);
 	}
 
 	@Override
 	protected U mapValue(T from, U to) {
-		return Optional.ofNullable(transformer.apply(from)).orElse(to);
+		// TODO c'è stata una modifica qui
+		return Optional.ofNullable(mapValue(from)).orElse(to);
 	}
 	
 }
