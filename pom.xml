@@ -10,6 +10,13 @@
 	<description>Library for mapping a java object to another</description>
 	<url>https://github.com/eschoysman/Mapper</url>
 
+	<licenses>
+	  <license>
+	    <name>MIT License</name>
+	    <url>http://www.opensource.org/licenses/mit-license.php</url>
+	  </license>
+	</licenses>
+
 	<properties>
 		<java.version.source>1.8</java.version.source>
 		<java.version.target>1.8</java.version.target>
