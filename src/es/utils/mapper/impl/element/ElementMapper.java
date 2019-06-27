@@ -33,9 +33,9 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 	private Setter<OUT,SETTER_IN> setter;
 	
 	/**
-	 * @param getter
-	 * @param transformer
-	 * @param setter
+	 * @param getter an implementation of the getter logic
+	 * @param transformer a function to map the result of the getter into the correct type for the setter
+	 * @param setter an implementation of the getter logic
 	 */
 	public ElementMapper(Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
 		this.transformer = transformer;

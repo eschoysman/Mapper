@@ -57,8 +57,8 @@ public class EnumMapper<T extends Enum<T>,U extends Enum<U>> extends MapperObjec
     }
     /**
      * Allow to avoid some input enum values to be mapped
-     * @param inputValueToIgnore
-     * @param otherInputValuesToIgnore
+     * @param inputValueToIgnore enum value to be ignore 
+     * @param otherInputValuesToIgnore other enum value to be ignore
      * @return the current istance
      */
 	@SuppressWarnings("unchecked")
@@ -67,8 +67,8 @@ public class EnumMapper<T extends Enum<T>,U extends Enum<U>> extends MapperObjec
     	return this;
     }
 	/**
-	 * Allow to specify a default enum value for mapping without a counterparty in the destinatio enum or if some excception is thrown.
-	 * @param defaultDestinationEnumValue
+	 * Allow to specify a default enum value for mapping without a counterpart in the destination enum or if some exception is thrown.
+	 * @param defaultDestinationEnumValue the enum instance the be return
      * @return the current istance
 	 */
     public EnumMapper<T,U> setDefaultDestinationEnumValue(U defaultDestinationEnumValue) {

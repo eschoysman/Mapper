@@ -19,6 +19,8 @@ public class CollectionFactory {
 
     /**
      * This method instantiate a new collection based on collectionType.
+     * @param <IN> the type of the objects in the origin collection
+     * @param <OUT> the type of the objects in the destination collection
      * @param inputCollectionType the class of input. It must extend Collection.
      * @param collectionType the class of input. It must extend Collection.
      * @return a new instance of collectionType.

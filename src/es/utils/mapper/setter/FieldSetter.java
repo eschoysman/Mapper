@@ -20,15 +20,15 @@ public class FieldSetter<U,TMP> extends FunctionSetter<U,TMP> {
 
 	/**
 	 * 
-	 * @param field
+	 * @param field the field used to set the value
 	 */
 	public FieldSetter(Field field) {
 		this(field.getName(),field);
 	}
 	/**
 	 * 
-	 * @param name
-	 * @param field
+	 * @param name the name identifier of this {@code setter}
+	 * @param field the field used to set the value
 	 */
 	public FieldSetter(String name, Field field) {
 		super(name,createSetter(field));

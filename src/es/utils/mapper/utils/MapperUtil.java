@@ -21,10 +21,11 @@ public class MapperUtil {
 	/**
 	 * This method returns the specific field of input class. If no field is found,
 	 * an attempt to get the field through the {@code AliasNames} annotation is done.
+	 * @param <T> type of the class
 	 * @param clazz The class you're searching the field into.
 	 * @param fieldName The field you're searching for.
 	 * @return The Field found. If no result is found, null is returned.
-	 * @see {@link AliasNames}
+	 * @see AliasNames
 	 */
 	public static <T> Field getField(Class<T> clazz, String fieldName) {
 		Objects.requireNonNull(clazz);
@@ -52,6 +53,7 @@ public class MapperUtil {
 	/**
 	 * This method returns the generic class of an input Type with generics. In case of extension,
 	 * the superclass Type is returned.
+	 * @param <TYPE> generic type returned 
 	 * @param input The type you're trying to get the class of.
 	 * @return the Class of the given Type. If no generic type is defined, null is returned.
 	 */

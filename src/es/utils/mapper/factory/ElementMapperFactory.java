@@ -60,7 +60,7 @@ public class ElementMapperFactory {
 	 * @param <SETTER_IN> the type of the input of the {@code setter} operation
 	 * @param <OUT> the type of the destination object
 	 * @param getter a {@code Getter} instance that contains the information needed to execute the {@code getter} operation
-	 * @param transformer a function that maps the result of the {@code getter} into the correct type for the {@code setter}</li>
+	 * @param transformer a function that maps the result of the {@code getter} into the correct type for the {@code setter}
 	 * @param setter a {@code Setter} instance that contains the information needed to execute the {@code setter} operation
 	 * @return A {@code ElementMapper}
 	 * @see ElementMapper

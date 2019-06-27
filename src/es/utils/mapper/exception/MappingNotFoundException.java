@@ -10,7 +10,7 @@ public class MappingNotFoundException extends Exception {
 	private static final long serialVersionUID = -6937492491136199843L;
 
 	/**
-     * @param message
+     * @param message the message of the exception
      */
     public MappingNotFoundException(String message) {
         super(message);

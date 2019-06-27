@@ -6,8 +6,8 @@ import java.util.Objects;
  * This class is a wrapper for the {@link TwoKeyMap} key object.
  * @author eschoysman
  *
- * @param <K1>
- * @param <K2>
+ * @param <K1> type of the first part of the key
+ * @param <K2> type of the second part of the key
  */
 public class PairKey<K1,K2> {
 	

@@ -17,7 +17,7 @@ import java.util.Collection;
 @Target(FIELD)
 public @interface CollectionType {
 	/**
-	 * The class type that will be used for creating the sub-collection type field.
+	 * @return the class type that will be used for creating the sub-collection type field.
 	 */
 	@SuppressWarnings("rawtypes")
 	Class<? extends Collection> value();

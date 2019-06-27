@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 @Target(FIELD)
 public @interface AliasNames {
 	/**
-	 * The list of the aliases allowed for this field
+	 * @return the list of the aliases names allowed for this field
 	 */
 	String[] value();
 }

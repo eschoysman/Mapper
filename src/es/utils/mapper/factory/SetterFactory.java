@@ -5,17 +5,13 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import es.utils.mapper.holder.FieldHolder;
-import es.utils.mapper.setter.FieldSetter;
-import es.utils.mapper.setter.FunctionSetter;
-import es.utils.mapper.setter.Setter;
+import es.utils.mapper.setter.*;
 import es.utils.mapper.utils.MapperUtil;
 
 /**
  * This class creates an Setter based on output values.
  * @author eschoysman
  * @see Setter
- * @see ValueSetter
- * @see SupplierSetter
  * @see FunctionSetter
  * @see FieldSetter
  * @see FieldHolder
@@ -23,10 +19,15 @@ import es.utils.mapper.utils.MapperUtil;
 public class SetterFactory {
 
 	/**
-	 * 
-	 * @param name
-	 * @param setter
-	 * @return
+	 * @param <U> the type of the destination object
+	 * @param <TMP> the type of the value to be setted
+	 * Create a {@code Setter} instance using with the {@code name} and the {@code setter} operation
+	 * @param name the name identifier of the {@code setter}
+	 * @param setter the setting operation of the setter 
+	 * @return the {@code Setter} created
+	 * @throws NullPointerException if {@code name} or {@code setter} is null
+	 * @see Setter
+	 * @see FunctionSetter
 	 */
 	public static <U,TMP> Setter<U,TMP> setter(String name, BiConsumer<U,TMP> setter) {
 		Objects.requireNonNull(setter);
@@ -34,10 +35,10 @@ public class SetterFactory {
 	}
 
 	/**
-	 * Create a {@code Setter} istance using the {@code field} name and the {@code value} of the field
+	 * Create a {@code Setter} instance using the {@code field} name and the {@code value} of the field
 	 * @param <U> the type of the destination object
 	 * @param <TMP> the type of the value inside of {@code field}
-	 * @param field a file istance used to get the {@code name} and the value needed for creating the {@code Setter} 
+	 * @param field a file instance used to get the {@code name} and the value needed for creating the {@code Setter} 
 	 * @return the {@code Setter} created
 	 * @throws NullPointerException if {@code field} is null
 	 * @see Setter
@@ -48,11 +49,11 @@ public class SetterFactory {
 		return new FieldSetter<>(field);
 	}
 	/**
-	 * Create a {@code Setter} istance using the given {@code name} and the {@code value}
+	 * Create a {@code Setter} instance using the given {@code name} and the {@code value}
 	 * @param <U> the type of the destination object
 	 * @param <TMP> the type of the value inside of {@code field}
 	 * @param name the name identifier of the {@code setter}
-	 * @param field a file istance used to get the value needed for creating the {@code Setter} 
+	 * @param field a file instance used to get the value needed for creating the {@code Setter} 
 	 * @return the {@code Setter} created
 	 * @throws NullPointerException if {@code name} or {@code field} is null
 	 * @see Setter
@@ -64,8 +65,8 @@ public class SetterFactory {
 		return new FieldSetter<>(name,field);
 	}
 	/**
-	 * Create a {@code Setter} istance using the field named {@code fieldName} inside the {@code clazz} type
-	 * @param <U> the type of the origin object
+	 * Create a {@code Setter} instance using the field named {@code fieldName} inside the {@code clazz} type
+	 * @param <U> the type of the destination object
 	 * @param <TMP> the type of the value inside of {@code field}
 	 * @param clazz the class containing the field to use as setter
 	 * @param fieldName the name of the field to retrieve from the {@code clazz} type
@@ -80,8 +81,8 @@ public class SetterFactory {
 		return new FieldSetter<>(field);
 	}
 	/**
-	 * Create a {@code Setter} istance using the field named {@code fieldName} of the {@code clazz} type
-	 * @param <T> the type of the origin object
+	 * Create a {@code Setter} instance using the field named {@code fieldName} of the {@code clazz} type
+	 * @param <U> the type of the destination object
 	 * @param <TMP> the type of the value inside of {@code field}
 	 * @param name the name identifier of the {@code setter}
 	 * @param clazz the class containing the field to use as setter
@@ -99,8 +100,8 @@ public class SetterFactory {
 	}
 
 	/**
-	 * Create a {@code Setter} istance using the informations present in the {@code fieldHolder}
-	 * @param <T> the type of the origin object
+	 * Create a {@code Setter} instance using the informations present in the {@code fieldHolder}
+	 * @param <U> the type of the destination object
 	 * @param <TMP> the type of the value inside of {@code field}
 	 * @param fieldHolder a instance having all the information of a {@code field}
 	 * @return the {@code Setter} created
@@ -113,8 +114,8 @@ public class SetterFactory {
 		return new FieldSetter<>(fieldHolder.getField());
 	}
 	/**
-	 * Create a {@code Setter} istance using the informations present in the {@code fieldHolder}
-	 * @param <T> the type of the origin object
+	 * Create a {@code Setter} instance using the informations present in the {@code fieldHolder}
+	 * @param <U> the type of the destination object
 	 * @param <TMP> the type of the value inside of {@code field}
 	 * @param name the name identifier of the {@code setter}
 	 * @param fieldHolder a instance having all the information of a {@code field}

@@ -87,8 +87,10 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 
 	// add methods
 	/**
+	 * @param <T1> inner type of the {@code elementMapper}, is the type returned by the getter logic
+	 * @param <T2> inner type of the {@code elementMapper}, is the type required by the setter logic
 	 * Allow to add a custom {@code ElementMapper} into the mapping between type {@code T} and {@code U}.
-	 * @param elementMapper
+	 * @param elementMapper the mapper for a single element of this {@code ClassMapper}
      * @return this istance
 	 * @see ElementMapper
 	 */
@@ -142,7 +144,6 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * @param <TMP2> the type of the destination object
 	 * @param name the name identifier for booth getter and setter operations used to create a default {@code FieldGetter} and {@code FieldSetter}
 	 * @param transfom a function that maps the result of the {@code getter} into the correct type for the {@code setter}
-	 * @param fieldTo the name identifier of the setter operation used to create a default {@code FieldSetter}
      * @return the current istance
      * @see ElementMapperFactory
      * @see ElementMapperFactory#create(String, String, Function, Function, BiConsumer)
@@ -162,7 +163,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * @param fieldTo the name identifier of the setter operation used to create a default {@code FieldSetter}
      * @return the current istance
      * @see ElementMapperFactory
-     * @see ElementMapperFactory#create(Strng, String, Function, Function, BiConsumer)
+     * @see ElementMapperFactory#create(String, String, Function, Function, BiConsumer)
      * @see GetterFactory
      * @see SetterFactory
 	 */
@@ -212,7 +213,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	}
 	/**
 	 * Allow to ignore field from input object during the mapping
-	 * @param valuesToIgnore set of the field name or alias names to ignore 
+	 * @param inputsToIgnore set of the field name or alias names to ignore 
 	 * @return the current istance
 	 */
 	public ClassMapper<T,U> ignoreInputs(String... inputsToIgnore) {
@@ -222,7 +223,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	}
 	/**
 	 * Allow to ignore field from destination object during the mapping
-	 * @param valuesToIgnore set of the field name or alias names to ignore 
+	 * @param outputsToIgnore set of the field name or alias names to ignore 
 	 * @return the current istance
 	 */
 	public ClassMapper<T,U> ignoreOutputs(String... outputsToIgnore) {
