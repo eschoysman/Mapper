@@ -9,11 +9,10 @@ import java.util.Collection;
  * This class lets you instantiate a collection based on destination class type.
  * The destination class type should be a concrete class (e.g. subclasses of Collection), otherwise
  * an exception is thrown.
- * If the destinaton class type is an array, an ArrayList is created.
+ * If the destination class type is an array, an ArrayList is created.
  * @author eschoysman
- *
  */
-public class CollectionFactory {
+class CollectionFactory {
 	
     private static final Class<?> ARRAY_AS_LIST_CLASS = Arrays.asList().getClass();
 

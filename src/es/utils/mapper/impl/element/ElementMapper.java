@@ -2,8 +2,7 @@ package es.utils.mapper.impl.element;
 
 import java.util.function.Function;
 
-import es.utils.mapper.factory.GetterFactory;
-import es.utils.mapper.factory.SetterFactory;
+import es.utils.mapper.factory.Factory;
 import es.utils.mapper.getter.Getter;
 import es.utils.mapper.setter.Setter;
 
@@ -22,9 +21,8 @@ import es.utils.mapper.setter.Setter;
  * @param <SETTER_IN> the type of the field (of the destination object) mapped
  * @param <OUT> the type of the destination object
  * @see Getter
- * @see GetterFactory
  * @see Setter
- * @see SetterFactory
+ * @see Factory
  */
 public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 

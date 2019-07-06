@@ -16,7 +16,7 @@ import es.utils.mapper.utils.MapperUtil;
  * @see FieldSetter
  * @see FieldHolder
  */
-public class SetterFactory {
+class SetterFactory {
 
 	/**
 	 * @param <U> the type of the destination object

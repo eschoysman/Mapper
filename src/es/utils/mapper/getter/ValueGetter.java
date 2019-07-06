@@ -1,6 +1,6 @@
 package es.utils.mapper.getter;
 
-import es.utils.mapper.factory.GetterFactory;
+import es.utils.mapper.factory.Factory;
 
 /**
  * This class customize {@code SupplierGetter} creating a {@code Getter} instance from a constant value
@@ -9,7 +9,7 @@ import es.utils.mapper.factory.GetterFactory;
  * @param <TMP> the type of the result of the {@code getter} operation
  * 
  * @see SupplierGetter
- * @see GetterFactory
+ * @see Factory
  */
 public class ValueGetter<T,TMP> extends SupplierGetter<T,TMP> {
 

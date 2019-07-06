@@ -2,7 +2,7 @@ package es.utils.mapper.setter;
 
 import java.util.function.BiConsumer;
 
-import es.utils.mapper.factory.SetterFactory;
+import es.utils.mapper.factory.Factory;
 
 /**
  * This class customize the abstract class {@code Setter} creating a {@code Setter} instance from a {@code BiConsumer} 
@@ -12,7 +12,7 @@ import es.utils.mapper.factory.SetterFactory;
  * @param <TMP> the type of the input of the {@code setter} operation
  * 
  * @see Setter
- * @see SetterFactory
+ * @see Factory
  */
 public class FunctionSetter<U,TMP> extends Setter<U,TMP> {
 

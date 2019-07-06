@@ -19,7 +19,7 @@
 
 	<developers>
 		<developer>
-			<name>Emmanuel Schoysman</name>
+			<name>echoysman</name>
 			<organizationUrl>https://github.com/eschoysman</organizationUrl>
 		</developer>
 	</developers>
@@ -41,6 +41,7 @@
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>test</testSourceDirectory>
+		<finalName>mapper</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>

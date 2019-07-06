@@ -2,7 +2,7 @@ package es.utils.mapper.getter;
 
 import java.util.function.Function;
 
-import es.utils.mapper.factory.GetterFactory;
+import es.utils.mapper.factory.Factory;
 
 /**
  * This class customize the abstract class {@code Getter} creating a {@code Getter} instance from a {@code Function} 
@@ -11,7 +11,7 @@ import es.utils.mapper.factory.GetterFactory;
  * @param <T> the type of the origin object
  * @param <TMP> the type of the result of the {@code getter} operation
  * @see Getter
- * @see GetterFactory
+ * @see Factory
  */
 public class FunctionGetter<T,TMP> extends Getter<T,TMP> {
 

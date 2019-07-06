@@ -19,7 +19,7 @@ import es.utils.doublekeymap.TwoKeyMap;
 import es.utils.mapper.annotation.CollectionType;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
-import es.utils.mapper.factory.CollectionFactory;
+import es.utils.mapper.factory.Factory;
 import es.utils.mapper.holder.FieldHolder;
 import es.utils.mapper.impl.MapperObject;
 import es.utils.mapper.impl.object.ClassMapper;
@@ -370,7 +370,7 @@ public class Mapper {
 	 * @param resultElementType destination type of the mapping 
 	 * @return the mapped collection
 	 * @see CollectionType
-	 * @see CollectionFactory
+	 * @see Factory#collection(Class, Class)
 	 */
 	public <T,U,CT extends Collection<T>, CU extends Collection<U>> CU mapCollection(CT origin, Class<CU> collectionType, Class<U> resultElementType) {
 		if(origin==null) {
@@ -378,7 +378,7 @@ public class Mapper {
 		}
 		Objects.requireNonNull(collectionType);
 		@SuppressWarnings("unchecked")
-		CU destination = (CU)CollectionFactory.create(null,collectionType);
+		CU destination = (CU)Factory.collection(null,collectionType);
 		
 		return mapCollection(origin, destination, resultElementType);
 	}

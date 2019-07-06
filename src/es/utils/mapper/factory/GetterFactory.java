@@ -23,7 +23,7 @@ import es.utils.mapper.utils.MapperUtil;
  * @see ValueGetter
  * @see FieldHolder
  */
-public class GetterFactory {
+class GetterFactory {
 
 	/**
 	 * Create a {@code Getter} istance with the given {@code name} that return always the same value

@@ -13,28 +13,28 @@ import org.junit.jupiter.api.Test;
 
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
-import es.utils.mapper.factory.CollectionFactory;
+import es.utils.mapper.factory.Factory;
 
 public class CollectionFactoryTest {
 
     @Test
 	public void shouldCreateCollectionOfInputType() throws MappingNotFoundException, MappingException {
-    	Collection<Object> newCollection = CollectionFactory.create(TreeSet.class,null);
+    	Collection<Object> newCollection = Factory.collection(TreeSet.class,null);
     	assertThat(newCollection).isInstanceOf(TreeSet.class);
 	}
     @Test
 	public void shouldCreateArrayList() throws MappingNotFoundException, MappingException {
-    	Collection<Object> newCollection = CollectionFactory.create(Arrays.asList().getClass(),null);
+    	Collection<Object> newCollection = Factory.collection(Arrays.asList().getClass(),null);
     	assertThat(newCollection).isInstanceOf(ArrayList.class);
 	}
     @Test
 	public void shouldCreateCollectionOfGivenType() throws MappingNotFoundException, MappingException {
-    	Collection<Object> newCollection = CollectionFactory.create(Arrays.asList().getClass(),LinkedList.class);
+    	Collection<Object> newCollection = Factory.collection(Arrays.asList().getClass(),LinkedList.class);
     	assertThat(newCollection).isInstanceOf(LinkedList.class);
 	}
     @Test
 	public void shouldReturnNullAndPrintErrorInCreation() throws MappingNotFoundException, MappingException {
-    	Collection<Object> newCollection = CollectionFactory.create(Arrays.asList().getClass(),List.class);
+    	Collection<Object> newCollection = Factory.collection(Arrays.asList().getClass(),List.class);
     	assertThat(newCollection).isNull();
 	}
 

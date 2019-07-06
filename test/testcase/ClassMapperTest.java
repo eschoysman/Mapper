@@ -7,9 +7,7 @@ import org.junit.jupiter.api.Test;
 import es.utils.mapper.Mapper;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
-import es.utils.mapper.factory.ElementMapperFactory;
-import es.utils.mapper.factory.GetterFactory;
-import es.utils.mapper.factory.SetterFactory;
+import es.utils.mapper.factory.Factory;
 import es.utils.mapper.getter.Getter;
 import es.utils.mapper.impl.object.ClassMapper;
 import es.utils.mapper.setter.Setter;
@@ -47,10 +45,10 @@ public class ClassMapperTest {
 		assertThat(to.getSurnameTo()).isEqualTo(from.getSurnameFrom());
 		assertThat(to.getFullName()).isNull();
 		
-		Getter<ClassMapperFromTest, String> getter = GetterFactory.getter("fullNameFrom", f->f.getNameFrom()+" "+f.getSurnameFrom());
-		Setter<ClassMapperToTest, String> setter = SetterFactory.setter("fullNameTo", (t, value)->t.setFullName(value));
+		Getter<ClassMapperFromTest, String> getter = Factory.getter("fullNameFrom", f->f.getNameFrom()+" "+f.getSurnameFrom());
+		Setter<ClassMapperToTest, String> setter = Factory.setter("fullNameTo", (t, value)->t.setFullName(value));
 		
-		mapping.addElementMapper(ElementMapperFactory.create(getter,s->s+"!",setter));
+		mapping.addElementMapper(Factory.element(getter,s->s+"!",setter));
 		
 		to = mapper.map(from, ClassMapperToTest.class);
 		assertThat(to.getNameTo()).isEqualTo(from.getNameFrom());
@@ -69,8 +67,8 @@ public class ClassMapperTest {
 		assertThat(to.getSurnameTo()).isEqualTo(from.getSurnameFrom());
 		assertThat(to.getFullName()).isNull();
 		
-		Getter<ClassMapperFromTest, String> getter = GetterFactory.getter("fullNameFrom", "Name not Found");
-		Setter<ClassMapperToTest, String> setter = SetterFactory.setter("fullNameTo", (t, value)->t.setFullName(value));
+		Getter<ClassMapperFromTest, String> getter = Factory.getter("fullNameFrom", "Name not Found");
+		Setter<ClassMapperToTest, String> setter = Factory.setter("fullNameTo", (t, value)->t.setFullName(value));
 		
 		mapping.addElementMapper(getter,setter);
 		
@@ -91,8 +89,8 @@ public class ClassMapperTest {
 		assertThat(to.getSurnameTo()).isEqualTo(from.getSurnameFrom());
 		assertThat(to.getFullName()).isNull();
 		
-		Getter<ClassMapperFromTest, String> getter = GetterFactory.getter("fullNameFrom", f->f.getNameFrom()+" "+f.getSurnameFrom());
-		Setter<ClassMapperToTest, String> setter = SetterFactory.setter("fullNameTo", (t, value)->t.setFullName(value));
+		Getter<ClassMapperFromTest, String> getter = Factory.getter("fullNameFrom", f->f.getNameFrom()+" "+f.getSurnameFrom());
+		Setter<ClassMapperToTest, String> setter = Factory.setter("fullNameTo", (t, value)->t.setFullName(value));
 		
 		mapping.addElementMapper(getter,s->s+"!",setter);
 		

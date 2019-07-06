@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
-import es.utils.mapper.factory.SetterFactory;
+import es.utils.mapper.factory.Factory;
 
 /**
  * This class customize {@code FunctionGetter} creating a {@code Getter} instance from a {@code Field}
@@ -14,7 +14,7 @@ import es.utils.mapper.factory.SetterFactory;
  * @param <TMP> the type of the input of the {@code setter} operation
  * 
  * @see FunctionSetter
- * @see SetterFactory
+ * @see Factory
  */
 public class FieldSetter<U,TMP> extends FunctionSetter<U,TMP> {
 

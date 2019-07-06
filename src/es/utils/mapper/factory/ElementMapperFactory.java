@@ -13,9 +13,8 @@ import static es.utils.mapper.factory.SetterFactory.*;
 /**
  * This class creates an ElementMapper based on input and output values.
  * @author eschoysman
- *
  */
-public class ElementMapperFactory {
+class ElementMapperFactory {
 
 	/**
 	 * Create a {@code ElementMapper}
