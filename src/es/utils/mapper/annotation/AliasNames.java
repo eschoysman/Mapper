@@ -6,6 +6,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import es.utils.mapper.converter.Converter;
+
 /**
  * Alias names allow the mapper to map a field to another that doesn't have the same name.
  * You can use this annotation to list the aliases allowed for this field. 
@@ -20,4 +22,8 @@ public @interface AliasNames {
 	 * @return the list of the aliases names allowed for this field
 	 */
 	String[] value();
+	/**
+	 * @return the list of the converter that could be used to map the annotated field
+	 */
+	Class<? extends Converter<?,?>>[] converter() default {};
 }

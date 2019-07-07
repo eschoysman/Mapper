@@ -419,7 +419,7 @@ public class MapperTest {
 		assertThat(mapping.map(null)).isNull();
 		mapper.build();
 		To to = mapping.map(from);
-		assertThat(to).hasNoNullFieldsOrPropertiesExcept("ignoredField","ignoredField1","ignoredField2");
+		assertThat(to).hasNoNullFieldsOrPropertiesExcept("ignoredField","ignoredField1","ignoredField2","timestamp1");
 	}
 	
 	/* toString method */

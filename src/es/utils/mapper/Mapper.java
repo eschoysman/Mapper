@@ -184,13 +184,15 @@ public class Mapper {
 	/**
 	 * Operation that activate all the mappings present in this {@code Mapper} istance.
 	 * This operation is called automatically when the first mapping is required but
-	 * it is possible to call it when preferred. 
+	 * it is possible to call it when preferred.
+	 * @return the current {@code Mapper} instance
 	 */
-	public void build() {
+	public Mapper build() {
 		if(isDirty) {
 			mappings.values().forEach(mapping->mapping.activate(this));
 			isDirty = false;
 		}
+		return this;
 	}
 
 	/**
@@ -245,7 +247,6 @@ public class Mapper {
 		if(to == null) {
 			throw new MappingException("Destination class cannot be null");
 		}
-		build();
 		U map = null;
 		if(from==null) {
 			return map;
@@ -272,21 +273,18 @@ public class Mapper {
 	 * @see #map(Object, Class)
 	 */
 	public <T,U> U map(T from, U to) throws MappingNotFoundException, MappingException {
-		build();
 		if(from==null) {
 			return to;
 		}
 		if(to == null) {
 			throw new MappingException("Destination object cannot be null");
 		}
+		MapperObject<T,U> mapperBetween = getMappingBetween(getEffectiveClass(from),getEffectiveClass(to));
+		if(mapperBetween==null) {
+			mappingNotFound(from.getClass(),to.getClass());
+		}
 		else {
-			MapperObject<T,U> mapperBetween = getMappingBetween(getEffectiveClass(from),getEffectiveClass(to));
-			if(mapperBetween==null) {
-				mappingNotFound(from.getClass(),to.getClass());
-			}
-			else {
-				to = mapperBetween.map(from,to);
-			}
+			to = mapperBetween.map(from,to);
 		}
 		return to;
 	}
@@ -300,11 +298,11 @@ public class Mapper {
 	 * @throws MappingException if {@code to}is {@code null} or an error occurs during the mapping
 	 */
 	public <T,U> U map(T from) throws MappingNotFoundException, MappingException {
-		build();
 		U map = null;
 		if(from==null) {
 			return map;
 		}
+		build();
 		List<MapperObject<?,?>> list = getAllMappings().values().stream()
 											.filter(m->from.getClass().equals(m.fromClass()))
 											.filter(m->from.getClass().isAssignableFrom(m.fromClass()))
@@ -330,7 +328,6 @@ public class Mapper {
 			return destination;
 		}
 		Objects.requireNonNull(destination);
-		build();
 		destination = Arrays.copyOf(destination,Math.max(destination.length,origin.length));
 		@SuppressWarnings("unchecked")
 		Class<T> originType = (Class<T>)origin.getClass().getComponentType();
@@ -398,7 +395,6 @@ public class Mapper {
 		}
 		Objects.requireNonNull(destination);
 		Objects.requireNonNull(resultElementType);
-		build();
 
 		Class<?> srcGenericType = null;
 		Iterator<T>	iter = origin.iterator();
@@ -437,6 +433,7 @@ public class Mapper {
 	 * @return the mapping between types {@code T} and {@code U} if present, {@code null} otherwise 
 	 */
 	public <T,U> MapperObject<T,U> getMappingBetween(Class<T> from, Class<U> to) {
+		build();
 		@SuppressWarnings("unchecked")
 		MapperObject<T,U> result = (MapperObject<T,U>)mappings.get(from,to);
 		return result;

@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -11,6 +12,8 @@ import java.util.TreeSet;
 import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.annotation.CollectionType;
 import es.utils.mapper.annotation.IgnoreField;
+import es.utils.mapper.converter.Converter;
+import es.utils.mapper.impl.object.DirectMapper;
 
 /**
  * A wrapper object to hold a Field and its information (name, aliases, type etc...).
@@ -24,6 +27,7 @@ public class FieldHolder {
 	private Field field;
 	private String fieldName;
 	private Set<String> aliases;
+	private Set<DirectMapper<?,?>> converters;
 	private Class<?> type;
 	private Type genericType;
 	@SuppressWarnings("rawtypes")
@@ -67,7 +71,19 @@ public class FieldHolder {
 					aliases.add(aliasName);
 				}
 		}
+		Set<DirectMapper<?,?>> converters = new LinkedHashSet<>();
+		AliasNames converter = this.field.getAnnotation(AliasNames.class);
+		if(converter!=null) {
+			for(Class<? extends Converter<?,?>> conv : converter.converter()) {
+				try {
+					converters.add(conv.newInstance());
+				} catch (InstantiationException | IllegalAccessException e) {
+					System.out.println("WARNING - The converter for "+conv+" does not have a empty contructer. Converter ignored");
+				}
+			}
+		}
 		this.aliases = aliases;
+		this.converters = converters;
 	}
 	private void processCollectionType() {
 		CollectionType annotationCollectionType = this.field.getAnnotation(CollectionType.class);
@@ -96,6 +112,13 @@ public class FieldHolder {
 	 */
 	public Set<String> getAliases() {
 		return aliases;
+	}
+	/**
+	 * @return the aliases of the field
+	 * @see AliasNames
+	 */
+	public Set<DirectMapper<?,?>> getConverters() {
+		return converters;
 	}
 	/**
 	 * @return the name and all the aliases of the field

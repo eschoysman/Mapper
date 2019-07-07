@@ -34,17 +34,17 @@ public class DirectMapper<T,U> extends MapperObject<T,U> {
 	}
 
 	@Override
-	public void activate(Mapper mapper) {
+	public final void activate(Mapper mapper) {
 		super.activate(mapper);
 	}
 
 	@Override
-	protected U mapValue(T from) {
+	protected final U mapValue(T from) {
 		return transformer.apply(from);
 	}
 
 	@Override
-	protected U mapValue(T from, U to) {
+	protected final U mapValue(T from, U to) {
 		// TODO c'è stata una modifica qui
 		return Optional.ofNullable(mapValue(from)).orElse(to);
 	}

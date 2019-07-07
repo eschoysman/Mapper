@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -136,7 +137,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * Allow to add a custom {@code ElementMapper} between type {@code T} and {@code U}.
 	 * @param <TMP1> the type of the origin object
 	 * @param <TMP2> the type of the destination object
-	 * @param name the name identifier for booth getter and setter operations used to create a default {@code FieldGetter} and {@code FieldSetter}
+	 * @param name the name identifier for both getter and setter operations used to create a default {@code FieldGetter} and {@code FieldSetter}
 	 * @param transfom a function that maps the result of the {@code getter} into the correct type for the {@code setter}
      * @return the current istance
      * @see Factory#element(String, String, Function, Function, BiConsumer)
@@ -246,6 +247,19 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 				Class<Object> effectiveGenericTypDest = MapperUtil.getGenericType(fieldHolderTo.getGenericType());
 				if(Collection.class.isAssignableFrom(srcFieldType) && Collection.class.isAssignableFrom(destFieldType)) {
 					collectionCase(fieldHolderFrom, fieldHolderFrom.getType(), effectiveGenericTypFrom, fieldHolderTo, fieldHolderTo.getType(), effectiveGenericTypDest);
+					continue;
+				}
+				
+				Set<DirectMapper<?,?>> converters = new LinkedHashSet<>();
+				converters.addAll(fieldHolderFrom.getConverters());
+				converters.addAll(fieldHolderTo.getConverters());
+				DirectMapper<?,?> converter = converters
+							   .stream()
+							   .filter(dm->dm.fromClass().isAssignableFrom(fieldHolderFrom.getType()))
+							   .filter(dm->dm.toClass().isAssignableFrom(fieldHolderTo.getType()))
+							   .findFirst().orElse(null);
+				if(converter!=null) {
+					mapFieldWithConverter(fieldName, fieldHolderFrom, fieldHolderTo, converter);
 				}
 				else if(mapper.hasMappingBetween(srcFieldType,destFieldType)) {
 					mapFieldWithTranformation(fieldName, fieldHolderFrom, fieldHolderTo);
@@ -284,6 +298,12 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 		Getter<T, TMP1> getter = Factory.getter(fieldName,srcFieldHolder);
 		@SuppressWarnings("unchecked")
 		Function<TMP1,TMP2> transformer = in->mapper.mapOrNull(in,(Class<TMP2>)destFieldHolder.getType());
+		Setter<U, TMP2> setter = Factory.setter(fieldName,destFieldHolder);
+		addElementMapper(Factory.element(getter,transformer,setter),true);
+	}
+	private <TMP1,TMP2> void mapFieldWithConverter(String fieldName, FieldHolder srcFieldHolder, FieldHolder destFieldHolder, DirectMapper<TMP1,TMP2> converter) {
+		Getter<T, TMP1> getter = Factory.getter(fieldName,srcFieldHolder);
+		Function<TMP1,TMP2> transformer = in->converter.mapOrNull(in);
 		Setter<U, TMP2> setter = Factory.setter(fieldName,destFieldHolder);
 		addElementMapper(Factory.element(getter,transformer,setter),true);
 	}
