@@ -9,6 +9,7 @@ import java.util.Objects;
 import converter.ConverterDateTimestamp;
 import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.annotation.CollectionType;
+import es.utils.mapper.annotation.Converter;
 import es.utils.mapper.annotation.IgnoreField;
 
 public class To {
@@ -36,7 +37,8 @@ public class To {
 	private Timestamp timestamp1;
 	@AliasNames("data2")
 	private Timestamp timestamp2;
-	@AliasNames(value="data3", converter=ConverterDateTimestamp.class)
+	@AliasNames("data3")
+	@Converter(ConverterDateTimestamp.class)
 	private Timestamp timestamp3;
 	
 	public To() {

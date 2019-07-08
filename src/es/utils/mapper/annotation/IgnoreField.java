@@ -20,5 +20,5 @@ public @interface IgnoreField {
 	/**
 	 * @return if the target is a {@code TYPE} the list of the field to be ignored, otherwise (target is a {@code FIELD}) an empty array
 	 */
-	String[] value() default ""; 
+	String[] value() default "";
 }

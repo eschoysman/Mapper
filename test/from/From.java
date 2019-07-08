@@ -8,6 +8,7 @@ import java.util.List;
 
 import converter.ConverterDateTimestamp;
 import es.utils.mapper.annotation.AliasNames;
+import es.utils.mapper.annotation.Converter;
 import es.utils.mapper.annotation.IgnoreField;
 
 @IgnoreField({"ignoredField","ignoredField1"})
@@ -27,7 +28,8 @@ public class From {
 
 	@AliasNames("data1")
 	private Date date1;	// 2019-07-07 08:45:36
-	@AliasNames(value="data2", converter=ConverterDateTimestamp.class)
+	@AliasNames("data2")
+	@Converter(ConverterDateTimestamp.class)
 	private Date date2;	// 2019-07-07 08:45:36
 	@AliasNames("data3")
 	private Date date3;	// 2019-07-07 08:45:36

@@ -70,20 +70,4 @@ class ElementMapperFactory {
 		return new ElementMapper<>(getter,transformer,setter);
 	}
 
-	/**
-	 * Create a {@code ElementMapper}
-	 * @param <IN> the type of the origin object
-	 * @param <TMP> the type of the result of the {@code getter} operation and of the input of the {@code setter} operation
-	 * @param <OUT> the type of the destination object
-	 * @param getter a {@code Getter} instance that contains the information needed to execute the {@code getter} operation
-	 * @param setter a {@code Setter} instance that contains the information needed to execute the {@code setter} operation
-	 * @return A {@code ElementMapper}
-	 * @see ElementMapper
-	 * @see Getter
-	 * @see Setter
-	 */
-	public static <IN,TMP,OUT> ElementMapper<IN,TMP,TMP,OUT> create(Getter<IN,TMP> getter, Setter<OUT,TMP> setter) {
-		return create(getter,Function.identity(),setter);
-	}
-
 }

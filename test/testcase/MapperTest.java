@@ -51,6 +51,19 @@ public class MapperTest {
 		assertThat(mappingBetweenToFrom).isNull();
 	}
 	@Test
+	public void shouldAddClassMapper() throws MappingException {
+		Mapper mapper = new Mapper();
+		ClassMapper<From,To> classMapper = new ClassMapper<>(From.class,To.class);
+		mapper.add(classMapper);
+		assertThat(mapper.getAllMappings()).isNotEmpty();
+		assertThat(mapper.getAllMappings().size()).isEqualTo(1);
+		
+		MapperObject<From, To> mappingBetweenFromTo = mapper.getMappingBetween(From.class, To.class);
+		assertThat(mappingBetweenFromTo).isNotNull().isInstanceOf(ClassMapper.class);
+		MapperObject<To, From> mappingBetweenToFrom = mapper.getMappingBetween(To.class, From.class);
+		assertThat(mappingBetweenToFrom).isNull();
+	}
+	@Test
 	public void shouldCreateMapperForEnum() throws MappingException {
 		Mapper mapper = new Mapper();
 		mapper.add(TimeUnit.class, ChronoUnit.class);

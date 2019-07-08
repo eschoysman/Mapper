@@ -133,7 +133,6 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 		return addElementMapper(Factory.element(fieldFrom,fieldTo,getter,setter),false);
 	}
 	/**
-	 * TODO test
 	 * Allow to add a custom {@code ElementMapper} between type {@code T} and {@code U}.
 	 * @param <TMP1> the type of the origin object
 	 * @param <TMP2> the type of the destination object
@@ -147,7 +146,6 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 		return addElementMapper(Factory.element(Factory.getter(name,from,name),transfom,Factory.setter(name,to,name)),false);
 	}
 	/**
-	 * TODO test
 	 * Allow to add a custom {@code ElementMapper} between type {@code T} and {@code U}.
 	 * @param <TMP1> the type of the origin object
 	 * @param <TMP2> the type of the destination object
@@ -187,6 +185,19 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 */
 	public <TMP1,TMP2> ClassMapper<T,U> addDefaultValue(String name, BiConsumer<U,TMP2> setter) {
 		return addElementMapper(Factory.element(Getter.empty(),Factory.setter(name,setter)),false);
+	}
+	/**
+	 * Allow to add a default value in the destination object.
+	 * @param <TMP1> the type of the origin object
+	 * @param <TMP2> the type of the destination object
+	 * @param name  the name identifier of the setter operation
+	 * @param value the default value to set
+	 * @param setter the setter operation
+     * @return the current istance
+     * @see Factory#element(Getter, Function, Setter)
+	 */
+	public <TMP1,TMP2> ClassMapper<T,U> addDefaultValue(String name, TMP2 value, BiConsumer<U,TMP2> setter) {
+		return addElementMapper(Factory.element(Getter.empty(),$->value,Factory.setter(name,setter)),false);
 	}
 	
 	// ignore methods

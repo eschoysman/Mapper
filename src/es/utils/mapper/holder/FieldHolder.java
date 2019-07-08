@@ -11,8 +11,9 @@ import java.util.TreeSet;
 
 import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.annotation.CollectionType;
+import es.utils.mapper.annotation.Converter;
 import es.utils.mapper.annotation.IgnoreField;
-import es.utils.mapper.converter.Converter;
+import es.utils.mapper.converter.AbstractConverter;
 import es.utils.mapper.impl.object.DirectMapper;
 
 /**
@@ -49,6 +50,7 @@ public class FieldHolder {
 	private void readAnnotations() {
 		processIgnoreField();
 		processAliasNames();
+		processConverters();
 		processCollectionType();
 	}
 	
@@ -71,18 +73,20 @@ public class FieldHolder {
 					aliases.add(aliasName);
 				}
 		}
+		this.aliases = aliases;
+	}
+	private void processConverters() {
 		Set<DirectMapper<?,?>> converters = new LinkedHashSet<>();
-		AliasNames converter = this.field.getAnnotation(AliasNames.class);
+		Converter converter = this.field.getAnnotation(Converter.class);
 		if(converter!=null) {
-			for(Class<? extends Converter<?,?>> conv : converter.converter()) {
+			for(Class<? extends AbstractConverter<?,?>> conv : converter.value()) {
 				try {
 					converters.add(conv.newInstance());
 				} catch (InstantiationException | IllegalAccessException e) {
-					System.out.println("WARNING - The converter for "+conv+" does not have a empty contructer. Converter ignored");
+					System.out.println("WARNING - The converter for "+conv+" does not have a empty contructor. AbstractConverter ignored");
 				}
 			}
 		}
-		this.aliases = aliases;
 		this.converters = converters;
 	}
 	private void processCollectionType() {

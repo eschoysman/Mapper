@@ -51,7 +51,6 @@ public class Factory {
 	public static <IN,TMP,OUT> ElementMapper<IN,TMP,TMP,OUT> element(String fromValue, String destValue, Function<IN,TMP> getter, BiConsumer<OUT,TMP> setter) {
 		return ElementMapperFactory.create(fromValue,destValue,getter,setter);
 	}
-
 	/**
 	 * Create a {@code ElementMapper}
 	 * @param <IN> the type of the origin object
@@ -70,7 +69,6 @@ public class Factory {
 	public static <IN,GETTER_OUT,SETTER_IN,OUT> ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> element(String fromValue, String destValue, Function<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, BiConsumer<OUT,SETTER_IN> setter) {
 		return ElementMapperFactory.create(fromValue,destValue,getter,transformer,setter);
 	}
-
 	/**
 	 * Create a {@code ElementMapper}
 	 * @param <IN> the type of the origin object
@@ -88,7 +86,6 @@ public class Factory {
 	public static <IN,GETTER_OUT,SETTER_IN,OUT> ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> element(Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
 		return ElementMapperFactory.create(getter,transformer,setter);
 	}
-
 	/**
 	 * Create a {@code ElementMapper}
 	 * @param <IN> the type of the origin object
@@ -119,7 +116,6 @@ public class Factory {
 	public static <T,TMP> Getter<T,TMP> getter(String name, TMP value) {
 		return GetterFactory.getter(name,value);
 	}
-
 	/**
 	 * Create a {@code Getter} istance with the given {@code name} that return the supplied value
 	 * @param <T> the type of the origin object
@@ -133,7 +129,6 @@ public class Factory {
 	public static <T,TMP> Getter<T,TMP> getter(String name, Supplier<TMP> supplier) {
 		return GetterFactory.getter(name,supplier);
 	}
-
 	/**
 	 * Create a {@code Getter} istance with the given {@code name} and how to retrive the value
 	 * @param <T> the type of the origin object
@@ -147,7 +142,6 @@ public class Factory {
 	public static <T,TMP> Getter<T,TMP> getter(String name, Function<T,TMP> getter) {
 		return GetterFactory.getter(name,getter);
 	}
-
 	/**
 	 * Create a {@code Getter} istance using the {@code field} name and the {@code value} of the field
 	 * @param <T> the type of the origin object
@@ -200,7 +194,6 @@ public class Factory {
 	public static <T,TMP> Getter<T,TMP> getter(String name, Class<T> clazz, String fieldName) {
 		return GetterFactory.getter(clazz,fieldName);
 	}
-
 	/**
 	 * Create a {@code Getter} istance using the informations present in the {@code fieldHolder}
 	 * @param <T> the type of the origin object
@@ -243,7 +236,6 @@ public class Factory {
 	public static <U,TMP> Setter<U,TMP> setter(String name, BiConsumer<U,TMP> setter) {
 		return SetterFactory.setter(name,setter);
 	}
-
 	/**
 	 * Create a {@code Setter} instance using the {@code field} name and the {@code value} of the field
 	 * @param <U> the type of the destination object
@@ -294,9 +286,8 @@ public class Factory {
 	 * @see Setter
 	 */
 	public static <U,TMP> Setter<U,TMP> setter(String name, Class<U> clazz, String fieldName) {
-		return SetterFactory.setter(clazz,fieldName);
+		return SetterFactory.setter(name,clazz,fieldName);
 	}
-
 	/**
 	 * Create a {@code Setter} instance using the informations present in the {@code fieldHolder}
 	 * @param <U> the type of the destination object
@@ -308,7 +299,7 @@ public class Factory {
 	 * @see FieldHolder
 	 */
 	public static <U,TMP> Setter<U,TMP> setter(FieldHolder fieldHolder) {
-		return SetterFactory.setter(fieldHolder.getField());
+		return SetterFactory.setter(fieldHolder.getField().getName(),fieldHolder.getField());
 	}
 	/**
 	 * Create a {@code Setter} instance using the informations present in the {@code fieldHolder}

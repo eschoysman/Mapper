@@ -77,20 +77,6 @@ class GetterFactory {
 	}
 
 	/**
-	 * Create a {@code Getter} istance using the {@code field} name and the {@code value} of the field
-	 * @param <T> the type of the origin object
-	 * @param <TMP> the type of the value inside of {@code field}
-	 * @param field a file istance used to get the {@code name} and the value needed for creating the {@code Getter} 
-	 * @return the {@code Getter} created
-	 * @throws NullPointerException if {@code field} is null
-	 * @see Getter
-	 * @see FieldGetter
-	 */
-	public static <T,TMP> Getter<T,TMP> getter(Field field) {
-		Objects.requireNonNull(field);
-		return getter(field.getName(),field);
-	}
-	/**
 	 * Create a {@code Getter} istance using the given {@code name} and the {@code value}
 	 * @param <T> the type of the origin object
 	 * @param <TMP> the type of the value inside of {@code field}

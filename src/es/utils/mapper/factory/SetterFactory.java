@@ -99,34 +99,4 @@ class SetterFactory {
 		return new FieldSetter<>(name,field);
 	}
 
-	/**
-	 * Create a {@code Setter} instance using the informations present in the {@code fieldHolder}
-	 * @param <U> the type of the destination object
-	 * @param <TMP> the type of the value inside of {@code field}
-	 * @param fieldHolder a instance having all the information of a {@code field}
-	 * @return the {@code Setter} created
-	 * @throws NullPointerException if {@code fieldHolder} is null
-	 * @see Setter
-	 * @see FieldHolder
-	 */
-	public static <U,TMP> Setter<U,TMP> setter(FieldHolder fieldHolder) {
-		Objects.requireNonNull(fieldHolder);
-		return new FieldSetter<>(fieldHolder.getField());
-	}
-	/**
-	 * Create a {@code Setter} instance using the informations present in the {@code fieldHolder}
-	 * @param <U> the type of the destination object
-	 * @param <TMP> the type of the value inside of {@code field}
-	 * @param name the name identifier of the {@code setter}
-	 * @param fieldHolder a instance having all the information of a {@code field}
-	 * @return the {@code Setter} created
-	 * @throws NullPointerException if {@code name} or {@code fieldHolder} is null
-	 * @see Setter
-	 * @see FieldHolder
-	 */
-	public static <U,TMP> Setter<U,TMP> setter(String name, FieldHolder fieldHolder) {
-		Objects.requireNonNull(fieldHolder);
-		return new FieldSetter<>(name,fieldHolder.getField());
-	}
-
 }

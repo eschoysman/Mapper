@@ -17,7 +17,7 @@ import java.util.function.Function;
  */
 public abstract class Getter<T,TMP> {
 
-	private static final Getter<?,?> EMPTY = new FunctionGetter<>("",Function.identity());
+	private static final Getter<?,?> EMPTY = new FunctionGetter<>("",obj->null);
 	
 	private String name;
 	private Function<T,TMP> getter;

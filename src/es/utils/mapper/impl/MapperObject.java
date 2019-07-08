@@ -87,7 +87,7 @@ public abstract class MapperObject<T,U> {
 		try {
 			return map(from);
 		} catch (MappingException e) {
-			System.err.println("Error, returning null value.");
+			System.err.println("Error during the mapping of "+from+", returning null value.");
 			return null;
 		}
 	}
