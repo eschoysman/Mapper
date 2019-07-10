@@ -13,39 +13,114 @@ The library is written in [Java 8][Java_8_link] with no external dependencies!
 
 ---
 ## Let's code!
+Just before looking for the first example, there is a little prerequisite that we must follow: all destination class of a mapping must have an empty contructor, otherwise the `Mapper` will not be able to create a new instance to return. Maybe in the future this won't be absolutely required (see "In the future" section, point 2)!
 
+Now let's do some mappings!
 
 **Step 1**
-create a `Mapper` object:
+the first step is to create a `Mapper` instance that will contains all our wanted mappings:
 ```java
 Mapper mapper = new Mapper();
 ```
 **Step 2**
-add to the `mapper` a `Source` class anda a `Destination` class:
+once we have a `mapper`, we can define the mapping we want. Todo that specify a `Source` class and a `Destination` class:
 ```java
-mapper.add(Source.class, Destination.class);
+mapper.add(Source.class, Destination.class);    // create a mapping between Source and Destination types
 ```
+
 **Step 3**
-create a object of type `Source`:
+Once we have created a `mapper` and defined some mappings inside it (here from `Source` to `Destination`), we can map our objects:
 ```java
 Source src = /*creation of a Source istance*/;
+Destination dest = mapper.map(src);   // mapping src object into Destination type
 ```
-**Step 4**
-map the ```src``` object into the ```Destination``` type:
-```java
-Destination dest = mapper.map(src,Destination.class);
-```
+
 **Full code**
 ```java
 Mapper mapper = new Mapper();
 mapper.add(Source.class, Destination.class);
 Source src = /*creation of a Source istance*/;
-Destination dest = mapper.map(src, Destination.class);
+Destination dest = mapper.map(src);
+```
+And that's all!
+
+---
+## Mappings of multiple classes and complex objects
+The example above show the basic case of a `Mapper` with only one effective mapping inside. IT's not rare to want to convert different object or complex object that have not only simple field such that `String`, `int` or similar, but also complex variables like `ComplexSourceObject`.
+
+The solution is simply: add more mappings to the `mapper`.
+
+For example the `Source` class contains a `ComplexSourceObject` field and `Destination` a `ComplexDestinationObject` one.
+
+```java
+Mapper mapper = new Mapper();
+mapper.add(Source.class, Destination.class);
+mapper.add(ComplexSourceObject.class, ComplexDestinationObject.class);
+Source src = /*creation of a Source istance*/;
+Destination dest = mapper.map(src);
 ```
 
 ---
+## How the mapper works?
+When the `Mapper` is build, it search automatically the field in the source type and in the destination type that are called with the same name and of the same type (or il the source field can be assigned to the destination field).
+
+But what happens if the needed mapping is between two variables with differents names, for example `String name` in the `Source` class and `String user_name` in the `Destination` class? There are different ways to do it, but the simplest is the folowing:
+use the `@AliasNames` annotation to the `name` field passing the destination field name. For example:<br>
+```java
+public class Source {
+    // ...
+    @AliasNames("user_name")
+    private String name
+    // ...
+}
+```
+We also can put the annotation to the destination field `@AliasNames("name")`, the result will be the same, or to both field (the same name inside the annotation): `@AliasNames("friend_name")`
+
+For more customize mappings, see the dedicated section below ("Customize the mapping").
+
+---
+## Multiple mappings from/to the same type
+In the `Mapper`, the identifier of a given mapping is the pair Source-Destination classes, so we can easily add all the mapping we want.
+### From the same type
+First we add two different mapping from the `Source` class.
+```java
+Mapper mapper = new Mapper();
+mapper.add(Source.class, Destination1.class);
+mapper.add(Source.class, Destination2.class);
+```
+
+To map a `source` instance, we can do as following:
+```java
+Source src = /*creation of a Source istance*/;
+Destination1 dest = mapper.map(src,Destination1.class);
+```
+In this case we have to specify the destination class otherwise the `mapper` is not able to determine the destination type of the required mapping! If the `Source` class has only one mapping, the destination class in not mandatory (`mapper.map(src);`)
+### To the same type
+First we add two different mapping to the `Destination` class.
+```java
+Mapper mapper = new Mapper();
+mapper.add(Source1.class, Destination.class);
+mapper.add(Source2.class, Destination.class);
+```
+Now we have a known situation (one source class for one destination class) and we already know how manage it!
+```java
+Source1 src1 = /*creation of a Source1 istance*/;
+Source2 src2 = /*creation of a Source2 istance*/;
+Destination dest1 = mapper.map(src1);
+Destination dest2 = mapper.map(src2);
+```
+
+---
+## Customize the mapping
+So far we only saw how to create default mapping, but rarely is the mapping we want at the end!
+
+// TODO
+
+---
 ## In the future
-add the possibility to deep copy the values during the mapping
+1) add to possibility to specify a `Supplier` how to create a destination class.
+2) add options to the `Mapper` for adding annotation to use for the variable name (default @AliasNames). This can allow the user to use, for example, the JPA annotation @Column or any other annotation!
+3) add the possibility to deep copy the values during the mapping.
 
 ---
 ## Download ![GitHub file size in bytes][code_size_badge_light]

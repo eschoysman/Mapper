@@ -36,6 +36,8 @@
 		<junit.engine.version>5.5.0-M1</junit.engine.version>
 		<assertj.version>3.12.2</assertj.version>
 		<clover.version>4.3.1</clover.version>
+		<maven.compiler.plugin>3.7.0</maven.compiler.plugin>
+		<maven.jar.plugin>3.1.2</maven.jar.plugin>
 	</properties>
 
 	<build>
@@ -45,7 +47,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
+				<version>${maven.compiler.plugin}</version>
 				<configuration>
 					<source>${java.version.source}</source>
 					<target>${java.version.target}</target>
@@ -62,7 +64,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.2</version>
+				<version>${maven.jar.plugin}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
