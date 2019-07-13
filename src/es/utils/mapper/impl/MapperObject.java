@@ -50,7 +50,7 @@ public abstract class MapperObject<T,U> {
 
 	/**
 	 * The activation of a {@code MapperObject} takes into account all the present mappings to create the default mappings of the current mapping 
-	 * @param mapper the {@code Mapper} istance used to create all the default mappings
+	 * @param mapper the {@code Mapper} instance used to create all the default mappings
 	 */
 	public void activate(Mapper mapper) {
 		this.mapper = mapper;
@@ -81,7 +81,7 @@ public abstract class MapperObject<T,U> {
 
 	/**
 	 * @param from the input object to be mapped
-	 * @return an instance of the destination type of this mapping. If the input is {@code null} or some eception occurs during the mapping, returns {@code null}.
+	 * @return an instance of the destination type of this mapping. If the input is {@code null} or some exception occurs during the mapping, returns {@code null}.
 	 */
 	public U mapOrNull(T from) {
 		try {

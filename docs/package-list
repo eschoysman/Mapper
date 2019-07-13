@@ -1,6 +1,7 @@
 es.utils.doublekeymap
 es.utils.mapper
 es.utils.mapper.annotation
+es.utils.mapper.configuration
 es.utils.mapper.converter
 es.utils.mapper.exception
 es.utils.mapper.factory

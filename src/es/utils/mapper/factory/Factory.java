@@ -104,7 +104,7 @@ public class Factory {
 
 	// GETTER
 	/**
-	 * Create a {@code Getter} istance with the given {@code name} that return always the same value
+	 * Create a {@code Getter} instance with the given {@code name} that return always the same value
 	 * @param <T> the type of the origin object
 	 * @param <TMP> the type of the value to be mapped
 	 * @param name the name identifier of the {@code getter}
@@ -117,7 +117,7 @@ public class Factory {
 		return GetterFactory.getter(name,value);
 	}
 	/**
-	 * Create a {@code Getter} istance with the given {@code name} that return the supplied value
+	 * Create a {@code Getter} instance with the given {@code name} that return the supplied value
 	 * @param <T> the type of the origin object
 	 * @param <TMP> the type of the value to be mapped
 	 * @param name the name identifier of the {@code getter}
@@ -130,7 +130,7 @@ public class Factory {
 		return GetterFactory.getter(name,supplier);
 	}
 	/**
-	 * Create a {@code Getter} istance with the given {@code name} and how to retrive the value
+	 * Create a {@code Getter} instance with the given {@code name} and how to retrive the value
 	 * @param <T> the type of the origin object
 	 * @param <TMP> the type of the value to be mapped
 	 * @param name the name identifier of the {@code getter}
@@ -143,10 +143,10 @@ public class Factory {
 		return GetterFactory.getter(name,getter);
 	}
 	/**
-	 * Create a {@code Getter} istance using the {@code field} name and the {@code value} of the field
+	 * Create a {@code Getter} instance using the {@code field} name and the {@code value} of the field
 	 * @param <T> the type of the origin object
 	 * @param <TMP> the type of the value inside of {@code field}
-	 * @param field a file istance used to get the {@code name} and the value needed for creating the {@code Getter} 
+	 * @param field a file instance used to get the {@code name} and the value needed for creating the {@code Getter} 
 	 * @return the {@code Getter} created
 	 * @throws NullPointerException if {@code field} is null
 	 * @see Getter
@@ -155,20 +155,7 @@ public class Factory {
 		return GetterFactory.getter(field.getName(),field);
 	}
 	/**
-	 * Create a {@code Getter} istance using the given {@code name} and the {@code value}
-	 * @param <T> the type of the origin object
-	 * @param <TMP> the type of the value inside of {@code field}
-	 * @param name the name identifier of the {@code getter}
-	 * @param field a file istance used to get the value needed for creating the {@code Getter} 
-	 * @return the {@code Getter} created
-	 * @throws NullPointerException if {@code name} or {@code field} is null
-	 * @see Getter
-	 */
-	public static <T,TMP> Getter<T,TMP> getter(String name, Field field) {
-		return GetterFactory.getter(name,field);
-	}
-	/**
-	 * Create a {@code Getter} istance using the field named {@code fieldName} inside the {@code clazz} type
+	 * Create a {@code Getter} instance using the field named {@code fieldName} inside the {@code clazz} type
 	 * @param <T> the type of the origin object
 	 * @param <TMP> the type of the value inside of {@code field}
 	 * @param clazz the class containing the field to use as getter
@@ -181,7 +168,7 @@ public class Factory {
 		return GetterFactory.getter(fieldName,clazz,fieldName);
 	}
 	/**
-	 * Create a {@code Getter} istance using the field named {@code fieldName} of the {@code clazz} type
+	 * Create a {@code Getter} instance using the field named {@code fieldName} of the {@code clazz} type
 	 * @param <T> the type of the origin object
 	 * @param <TMP> the type of the value inside of {@code field}
 	 * @param name the name identifier of the {@code getter}
@@ -195,7 +182,7 @@ public class Factory {
 		return GetterFactory.getter(clazz,fieldName);
 	}
 	/**
-	 * Create a {@code Getter} istance using the informations present in the {@code fieldHolder}
+	 * Create a {@code Getter} instance using the informations present in the {@code fieldHolder}
 	 * @param <T> the type of the origin object
 	 * @param <TMP> the type of the value inside of {@code field}
 	 * @param fieldHolder a instance having all the information of a {@code field}
@@ -208,7 +195,7 @@ public class Factory {
 		return GetterFactory.getter(fieldHolder.getFieldName(),fieldHolder);
 	}
 	/**
-	 * Create a {@code Getter} istance using the informations present in the {@code fieldHolder}
+	 * Create a {@code Getter} instance using the informations present in the {@code fieldHolder}
 	 * @param <T> the type of the origin object
 	 * @param <TMP> the type of the value inside of {@code field}
 	 * @param name the name identifier of the {@code getter}

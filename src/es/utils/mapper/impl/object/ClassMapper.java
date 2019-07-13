@@ -1,6 +1,5 @@
 package es.utils.mapper.impl.object;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -63,13 +62,13 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	}
 
 	protected U mapValue(T from) throws MappingException {
-        try {
-			U dest = to.getDeclaredConstructor().newInstance();
-			return mapValue(from,dest);
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			throw new MappingException("Error during the creation of the destination object.", e);
+		U dest = null;
+		try {
+			dest = mapper.createNewInstance(to);
+		} catch(NullPointerException e) {
+			throw new MappingException("The build method on the belonging Mapper has not been invoked yet.", e);
 		}
+		return mapValue(from,dest);
 	}
 	protected U mapValue(T from, U to) {
 		Objects.requireNonNull(to);
@@ -78,7 +77,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
     }
 	
 	public void activate(Mapper mapper) {
-		this.mapper = mapper;
+		super.activate(mapper);
 		createDefaultMappings();
 	}
 
@@ -89,7 +88,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * @param <T2> inner type of the {@code elementMapper}, is the type required by the setter logic
 	 * Allow to add a custom {@code ElementMapper} into the mapping between type {@code T} and {@code U}.
 	 * @param elementMapper the mapper for a single element of this {@code ClassMapper}
-     * @return this istance
+     * @return this instance
 	 * @see ElementMapper
 	 */
     public <T1,T2> ClassMapper<T,U> addElementMapper(ElementMapper<T,T1,T2,U> elementMapper) {
@@ -100,7 +99,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * @param <TMP> the type of the result of the {@code getter} and of the input of the {@code setter}.
      * @param getter {@code Getter} instance to retrieve the value to map
      * @param setter {@code Setter} instance to set the mapped value
-     * @return the current istance
+     * @return the current instance
      * @see Factory#element(Getter, Setter)
      */
     public <TMP> ClassMapper<T,U> addElementMapper(Getter<T,TMP> getter, Setter<U,TMP> setter) {
@@ -113,7 +112,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * @param getter {@code Getter} instance to retrieve the value to map
      * @param transformer the function to map the result of the {@code getter} into the type required by the {@code setter}
      * @param setter {@code Setter} instance to set the mapped value
-     * @return the current istance
+     * @return the current instance
      * @see Factory#element(Getter, Function, Setter)
      */
     public <TMP1,TMP2> ClassMapper<T,U> addElementMapper(Getter<T,TMP1> getter, Function<TMP1,TMP2> transformer, Setter<U,TMP2> setter) {
@@ -126,7 +125,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * @param getter the getter operation
 	 * @param fieldTo the name identifier of the setter operation
 	 * @param setter the setter operation
-     * @return the current istance
+     * @return the current instance
      * @see Factory#element(String, String, Function, BiConsumer)
      */
 	public <TMP> ClassMapper<T,U> addCustomFieldMapper(String fieldFrom, Function<T,TMP> getter, String fieldTo, BiConsumer<U,TMP> setter) {
@@ -138,7 +137,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * @param <TMP2> the type of the destination object
 	 * @param name the name identifier for both getter and setter operations used to create a default {@code FieldGetter} and {@code FieldSetter}
 	 * @param transfom a function that maps the result of the {@code getter} into the correct type for the {@code setter}
-     * @return the current istance
+     * @return the current instance
      * @see Factory#element(String, String, Function, Function, BiConsumer)
      * @see Factory
 	 */
@@ -152,7 +151,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * @param fieldFrom the name identifier of the getter operation used to create a default {@code FieldGetter}
 	 * @param transfom a function that maps the result of the {@code getter} into the correct type for the {@code setter}
 	 * @param fieldTo the name identifier of the setter operation used to create a default {@code FieldSetter}
-     * @return the current istance
+     * @return the current instance
      * @see Factory#element(String, String, Function, Function, BiConsumer)
      * @see Factory
 	 */
@@ -168,7 +167,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * @param transfom a function that maps the result of the {@code getter} into the correct type for the {@code setter}
 	 * @param fieldTo the name identifier of the setter operation
 	 * @param setter the setter operation
-     * @return the current istance
+     * @return the current instance
      * @see Factory#element(String, String, Function, Function, BiConsumer)
 	 */
 	public <TMP1,TMP2> ClassMapper<T,U> addCustomFieldMapper(String fieldFrom, Function<T,TMP1> getter, Function<TMP1,TMP2> transfom, String fieldTo, BiConsumer<U,TMP2> setter) {
@@ -180,7 +179,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * @param <TMP2> the type of the destination object
 	 * @param name  the name identifier of the setter operation
 	 * @param setter the setter operation
-     * @return the current istance
+     * @return the current instance
      * @see Factory#element(Getter, Setter)
 	 */
 	public <TMP1,TMP2> ClassMapper<T,U> addDefaultValue(String name, BiConsumer<U,TMP2> setter) {
@@ -193,7 +192,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 * @param name  the name identifier of the setter operation
 	 * @param value the default value to set
 	 * @param setter the setter operation
-     * @return the current istance
+     * @return the current instance
      * @see Factory#element(Getter, Function, Setter)
 	 */
 	public <TMP1,TMP2> ClassMapper<T,U> addDefaultValue(String name, TMP2 value, BiConsumer<U,TMP2> setter) {
@@ -204,7 +203,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	/**
 	 * Allow to ignore field (both origin and destination object) during the mapping
 	 * @param valuesToIgnore set of the field name or alias names to ignore 
-	 * @return the current istance
+	 * @return the current instance
 	 */
 	public ClassMapper<T,U> ignore(String... valuesToIgnore) {
 		ignoreInputs(valuesToIgnore);
@@ -214,7 +213,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	/**
 	 * Allow to ignore field from input object during the mapping
 	 * @param inputsToIgnore set of the field name or alias names to ignore 
-	 * @return the current istance
+	 * @return the current instance
 	 */
 	public ClassMapper<T,U> ignoreInputs(String... inputsToIgnore) {
 		this.inputsToIgnore.addAll(Arrays.asList(inputsToIgnore));
@@ -224,7 +223,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	/**
 	 * Allow to ignore field from destination object during the mapping
 	 * @param outputsToIgnore set of the field name or alias names to ignore 
-	 * @return the current istance
+	 * @return the current instance
 	 */
 	public ClassMapper<T,U> ignoreOutputs(String... outputsToIgnore) {
 		this.outputsToIgnore.addAll(Arrays.asList(outputsToIgnore));
