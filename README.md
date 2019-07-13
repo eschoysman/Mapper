@@ -10,17 +10,16 @@
 ---
 
 **Table of Contents**
-
 - [Prerequisites](#prerequisites)
-- [Let's code!](#intro)
-- [How does it work?](#how_does_it_work)
-- [Multiple mappings from/to the same type](#multiple_mapping)
-  - [From the same type](#multiple_mapping_from)
-  - [To the same type](#multiple_mapping_to)
-- [Mappings of multiple classes and complex objects](#complex_mapping)
-- [Mapping collections and arrays](#collections_and_arrays)
-- [Customize the mapping](#custom_mapping)
-- [In the future](#future)
+- [Let's code!](#lets-code)
+- [How does it work?](#how-does-it-work)
+- [Multiple mappings from/to the same type](#multiple-mappings-fromto-the-same-type)
+- [From the same type](#from-the-same-type)
+- [To the same type](#to-the-same-type)
+- [Mappings of multiple classes and complex objects](#mappings-of-multiple-classes-and-complex-objects)
+- [Mapping collections and arrays](#mapping-collections-and-arrays)
+- [Customize the mapping](#customize-the-mapping)
+- [In the future](#in-the-future)
 - [Download](#download)
 - [Javadoc](#javadoc)
 - [License](#license)
@@ -33,11 +32,11 @@
 The library is written in [Java 8][Java_8_link] with no external dependencies!
 
 ---
-<a href="intro"></a>
+<a href="lets-code"></a>
 
 ## Let's code!
 
-Just before looking to the first example, there is a little consideration to do: all destination classes of a mapping should have at least the empty public constructor, otherwise the `Mapper` will not be able to create a new instance to return. If the class cannot have such a constructor, see section "[Customize the mapping](#custom_mapping)" to find an alternative!
+Just before looking to the first example, there is a little consideration to do: all destination classes of a mapping should have at least the empty public constructor, otherwise the `Mapper` will not be able to create a new instance to return. If the class cannot have such a constructor, see section "[Customize the mapping](#customize-the-mapping)" to find an alternative!
 
 Now let's do some mappings!
 
@@ -75,7 +74,7 @@ Destination dest = mapper.map(src);
 And that's all!
 
 ---
-<a href="how_does_it_work"></a>
+<a href="how-does-it-work"></a>
 
 ## How does it work?
 
@@ -95,16 +94,16 @@ public class Source {
 
 We can also put the annotation to the destination field `@AliasNames("name")`, the result will be the same, or to both field (the same name inside the annotation): `@AliasNames("friend_name")`
 
-For more customize mappings, see the "[Customize the mapping](#custom_mapping)" section.
+For more customize mappings, see the "[Customize the mapping](#customize-the-mapping)" section.
 
 ---
-<a href="multiple_mapping"></a>
+<a href="multiple-mappings-fromto-the-same-type"></a>
 
 ## Multiple mappings from/to the same type
 
 In the `Mapper`, the identifier of a given mapping is the pair Source-Destination classes, so we can easily add all the mapping we want.
 
-<a href="multiple_mapping_from"></a>
+<a href="from-the-same-type"></a>
 
 ### From the same type
 
@@ -123,8 +122,9 @@ Source src = /*creation of a Source istance*/;
 Destination1 dest = mapper.map(src,Destination1.class);
 ```
 
-In this case we have to specify the destination class otherwise the `mapper` will not able to determine the destination type of the required mapping! If the `Source` class has only one mapping, the destination class is not mandatory (`mapper.map(src);`).
-<a href="multiple_mapping_to"></a>
+In this case we have to specify the destination class otherwise the `mapper` will not able to determine the destination type of the required mapping! If the `Source` class has only one mapping, the destination class is not mandatory (`mapper.map(src)`).
+
+<a href="to-the-same-type"></a>
 
 ### To the same type
 
@@ -146,7 +146,7 @@ Destination dest2 = mapper.map(src2);
 ```
 
 ---
-<a href="complex_mapping"></a>
+<a href="mappings-of-multiple-classes-and-complex-objects"></a>
 
 ## Mappings of multiple classes and complex objects
 
@@ -165,7 +165,7 @@ Destination dest = mapper.map(src);
 ```
 
 ---
-<a href="collections_and_arrays"></a>
+<a href="mapping-collections-and-arrays"></a>
 
 ## Mapping collections and arrays
 
@@ -184,10 +184,10 @@ public class Source {
 }
 ```
 
-For more customize mappings, see the "[Customize the mapping](#custom_mapping)" section.
+For more customize mappings, see the "[Customize the mapping](#customize-the-mapping)" section.
 
 ---
-<a href="custom_mapping"></a>
+<a href="customize-the-mapping"></a>
 
 ## Customize the mapping
 
@@ -196,7 +196,7 @@ So far we only saw how to create default mapping, but rarely is the mapping we w
 // TODO
 
 ---
-<a name="future"></a>
+<a href="in-the-future"></a>
 
 ## In the future
 
