@@ -18,6 +18,7 @@
   - [To the same type](#to-the-same-type)
 - [Mappings of multiple classes and complex objects](#mappings-of-multiple-classes-and-complex-objects)
 - [Mapping collections and arrays](#mapping-collections-and-arrays)
+- [Configuration](#configuration)
 - [Customize the mapping](#customize-the-mapping)
 - [In the future](#in-the-future)
 - [Download](#download)
@@ -185,6 +186,13 @@ public class Source {
 ```
 
 For more customize mappings, see the "[Customize the mapping](#customize-the-mapping)" section.
+
+---
+<a href="configuration"></a>
+
+## Configuration
+
+// TODO add description of the available configurations
 
 ---
 <a href="customize-the-mapping"></a>
