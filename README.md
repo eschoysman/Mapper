@@ -200,7 +200,7 @@ So far we only saw how to create default mapping, but rarely is the mapping we w
 
 ## In the future
 
-1) add the possibility to deep copy the values during the mapping.
+More to come!
 
 ---
 <a href="download"></a>
