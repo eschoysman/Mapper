@@ -11,12 +11,12 @@ import es.utils.mapper.factory.Factory;
  * @author eschoysman
  *
  * @param <U> the type of the destination object
- * @param <TMP> the type of the input of the {@code setter} operation
+ * @param <SETTER_IN> the type of the input of the {@code setter} operation
  * 
  * @see FunctionSetter
  * @see Factory
  */
-public class FieldSetter<U,TMP> extends FunctionSetter<U,TMP> {
+public class FieldSetter<U,SETTER_IN> extends FunctionSetter<U,SETTER_IN> {
 
 	/**
 	 * 

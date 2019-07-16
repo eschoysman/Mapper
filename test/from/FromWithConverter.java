@@ -1,17 +1,18 @@
 package from;
 
-import es.utils.mapper.annotation.IgnoreField;
+import converter.ConverterDateTimestamp2;
+import es.utils.mapper.annotation.Converter;
 
-@IgnoreField({"ignoredField","ignoredField1"})
-public class FromWithAnnotation {
+public class FromWithConverter {
 
+	@Converter(ConverterDateTimestamp2.class)
 	private String name;
 	
-	public FromWithAnnotation() {
+	public FromWithConverter() {
 		this("Pippo");
 	}
 	
-	public FromWithAnnotation(String name) {
+	public FromWithConverter(String name) {
 		this.name = name;
 	}
 	

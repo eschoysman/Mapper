@@ -21,7 +21,7 @@ public class From {
 	@AliasNames("innerCollection")
 	private List<From> fromCollection;
 	@AliasNames({"innerCollection2","prova di nome sbagliato"})
-	private List<From> fromCollection2;
+	private List<? extends From> fromCollection2;
 	private String ignoredField;
 	private String ignoredField1;
 	private String ignoredField2;

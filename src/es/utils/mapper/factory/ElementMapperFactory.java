@@ -19,7 +19,7 @@ class ElementMapperFactory {
 	/**
 	 * Create a {@code ElementMapper}
 	 * @param <IN> the type of the origin object
-	 * @param <TMP> the type of the result of the {@code getter} operation and of the input of the {@code setter} operation
+	 * @param <TYPE> the type of the result of the {@code getter} operation and of the input of the {@code setter} operation
 	 * @param <OUT> the type of the destination object
 	 * @param fromValue the name identifier of the getter operation
 	 * @param destValue the name identifier of the setter operation
@@ -29,7 +29,7 @@ class ElementMapperFactory {
 	 * @see ElementMapper
 	 * @see ElementMapperFactory#create(Getter, Setter)
 	 */
-	public static <IN,TMP,OUT> ElementMapper<IN,TMP,TMP,OUT> create(String fromValue, String destValue, Function<IN,TMP> getter, BiConsumer<OUT,TMP> setter) {
+	public static <IN,TYPE,OUT> ElementMapper<IN,TYPE,TYPE,OUT> create(String fromValue, String destValue, Function<IN,TYPE> getter, BiConsumer<OUT,TYPE> setter) {
 		return create(getter(fromValue,getter),Function.identity(),setter(destValue,setter));
 	}
 

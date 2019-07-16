@@ -172,6 +172,13 @@ public class MapperTest {
 		assertThat(result).isNotNull().isInstanceOf(To.class);
 	}
 	@Test
+	public void shouldReturnNullFromNullInputOnly() throws MappingException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		mapper.add(From.class, To.class);
+		To result = mapper.map(null);
+		assertThat(result).isNull();
+	}
+	@Test
 	public void shouldThrowMappingNotFoundExceptionFromInputOnly() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(From.class, To.class);

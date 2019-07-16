@@ -8,7 +8,7 @@ import es.utils.mapper.Mapper;
 import es.utils.mapper.impl.MapperObject;
 
 /**
- * This class customize the abstract class {@code MapperObject} creating a {@code MapperObject} that convert on object of type {@code T} into a {@code U} with a custom convertion function.
+ * This class customize the abstract class {@code MapperObject} creating a {@code MapperObject} that convert on object of type {@code T} into a {@code U} with a custom conversion function.
  * @author eschoysman
  *
  * @param <T> the type of the origin object
@@ -26,7 +26,7 @@ public class DirectMapper<T,U> extends MapperObject<T,U> {
 	 * Create a {@code MapperObject} from type {@code T} to type {@code U} applying the given function as mapping.
 	 * @param from the type of the origin object
 	 * @param to the type of the destination object
-	 * @param transformer the function that execute all the convertion from {@code T} to {@code U}
+	 * @param transformer the function that execute all the conversion from {@code T} to {@code U}
 	 */
 	public DirectMapper(Class<T> from, Class<U> to, Function<T,U> transformer) {
 		super(from,to);
@@ -45,7 +45,6 @@ public class DirectMapper<T,U> extends MapperObject<T,U> {
 
 	@Override
 	protected final U mapValue(T from, U to) {
-		// TODO c'è stata una modifica qui
 		return Optional.ofNullable(mapValue(from)).orElse(to);
 	}
 	

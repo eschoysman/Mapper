@@ -2,7 +2,7 @@ package es.utils.mapper.exception;
 
 /**
  * A exception class that is thrown when an error occurs during the mapping operation.
- * The throwed exception will contains a message explaining the caus of the error. 
+ * The thrown exception will contains a message explaining the cause of the error. 
  * @author eschoysman
  *
  */

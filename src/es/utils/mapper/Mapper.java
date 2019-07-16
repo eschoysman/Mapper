@@ -130,7 +130,7 @@ public class Mapper {
 	 * @param <U> the type of the destination enum
 	 * Allow to add a default mapping between enum type {@code T} and {@code U}.
 	 * @param from enum type of the input object
-	 * @param to enm type of the destination object
+	 * @param to enum type of the destination object
 	 * @return this {@code Mapper} instance
 	 * @see #add(Class, Class)
 	 * @see #addForClass(Class, Class)
@@ -561,7 +561,7 @@ public class Mapper {
 	private Map<String,FieldHolder> getAllFields(Class<?> type) {
     	Map<String,FieldHolder> result = new HashMap<>();
     	for(Field field : MapperUtil.getAllFields(type)) {
-    		FieldHolder fieldHolder = new FieldHolder(field,config);
+    		FieldHolder fieldHolder = new FieldHolder(field,getConfig());
     		for(String name : fieldHolder.getAllNames()) {
     			FieldHolder prevValue = result.put(name,fieldHolder);
 	    		if(prevValue!=null) {

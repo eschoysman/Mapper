@@ -8,21 +8,21 @@ import java.util.function.BiConsumer;
  * @author eschoysman
  *
  * @param <U> the type of the destination object
- * @param <TMP> the type of the input of the {@code setter} operation
+ * @param <SETTER_IN> the type of the input of the {@code setter} operation
  * 
  * @see FunctionSetter
  * @see FieldSetter
  */
-public abstract class Setter<U,TMP> {
+public abstract class Setter<U,SETTER_IN> {
 
 	private String name;
-	private BiConsumer<U,TMP> setter;
+	private BiConsumer<U,SETTER_IN> setter;
 
 	/**
 	 * @param name the name identifier of the current {@code setter}
 	 * @param setter the {@code setter} operation
 	 */
-	protected Setter(String name, BiConsumer<U,TMP> setter) {
+	protected Setter(String name, BiConsumer<U,SETTER_IN> setter) {
 		this.name = Objects.requireNonNull(name);
 		this.setter = Objects.requireNonNull(setter);
 	}
@@ -39,7 +39,7 @@ public abstract class Setter<U,TMP> {
 	 * @param dest the destination object
 	 * @param data the value to set in the destination object
 	 */
-	public void apply(U dest, TMP data) {
+	public void apply(U dest, SETTER_IN data) {
 		setter.accept(dest,data);
 	}
 	

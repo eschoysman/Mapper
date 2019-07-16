@@ -140,7 +140,25 @@ public class ClassMapperTest {
 		assertThat(to.getSurnameTo()).isEqualTo(from.getNameFrom()+"!");
 		assertThat(to.getFullName()).isNull();
 	}
-
+//	@Test
+//	public void shouldAddCustomTransformer() throws MappingNotFoundException, MappingException {
+//		Mapper mapper = new Mapper();
+//		ClassMapper<ClassMapperFromTest, ClassMapperToTest> mapping = mapper
+//				.addForClass(ClassMapperFromTest.class, ClassMapperToTest.class);
+//		mapper.build();
+//		ClassMapperFromTest from = new ClassMapperFromTest();
+//		ClassMapperToTest to = mapper.map(from, ClassMapperToTest.class);
+//		assertThat(to.getNameTo()).isEqualTo(from.getNameFrom());
+//		assertThat(to.getSurnameTo()).isEqualTo(from.getSurnameFrom());
+//		assertThat(to.getFullName()).isNull();
+//
+//		mapping.addCustomFieldMapper("name", s->s+"!");
+//		
+//		to = mapper.map(from, ClassMapperToTest.class);
+//		assertThat(to.getNameTo()).isEqualTo(from.getNameFrom());
+//		assertThat(to.getSurnameTo()).isEqualTo(from.getNameFrom()+"!");
+//		assertThat(to.getFullName()).isNull();
+//	}
 	@Test
 	public void shouldMapDefautlValue() throws MappingNotFoundException, MappingException {
 		Mapper mapper = new Mapper();

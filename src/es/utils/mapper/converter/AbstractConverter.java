@@ -6,15 +6,15 @@ import es.utils.mapper.annotation.Converter;
 import es.utils.mapper.impl.object.DirectMapper;
 
 /**
- * This class is used to specify a converter over a single field in a mapping inside the {@code AliasNames} annotation.<br>
+ * This class is used to specify a converter over a single field in a mapping inside the {@code Converter} annotation.<br>
  * Your custom converter must have a empty constructor that will be used to instantiate your converter.<br>
- * The converter is apply if specified in the {@code AliasNames} annotation of the origin field or (if not found) on the destination field
+ * The converter is apply if specified in the {@code Converter} annotation of the origin field or (if not found) on the destination field
  * <br><br>
  * Example of {@code AbstractConverter} that convert a Timestamp into a Date:
  * <pre>
 public class ConverterDateTimestamp extends AbstractConverter&lt;Date,Timestamp&gt; {
     public ConverterDateTimestamp() {
-        super(Date.class, Timestamp.class, d-&gt;new Timestamp(d.getTime()));
+        super(Date.class, Timestamp.class, date-&gt;new Timestamp(date.getTime()));
     }
 }
  * </pre>

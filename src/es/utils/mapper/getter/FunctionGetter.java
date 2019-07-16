@@ -9,17 +9,17 @@ import es.utils.mapper.factory.Factory;
  * @author eschoysman
  *
  * @param <T> the type of the origin object
- * @param <TMP> the type of the result of the {@code getter} operation
+ * @param <GETTER_OUT> the type of the result of the {@code getter} operation
  * @see Getter
  * @see Factory
  */
-public class FunctionGetter<T,TMP> extends Getter<T,TMP> {
+public class FunctionGetter<T,GETTER_OUT> extends Getter<T,GETTER_OUT> {
 
 	/**
 	 * @param name the name identifier of the current {@code getter}
 	 * @param getter the {@code getter} operation
 	 */
-	public FunctionGetter(String name, Function<T,TMP> getter) {
+	public FunctionGetter(String name, Function<T,GETTER_OUT> getter) {
 		super(name,getter);
 	}
 

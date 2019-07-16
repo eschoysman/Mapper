@@ -11,12 +11,12 @@ import es.utils.mapper.factory.Factory;
  * @author eschoysman
  *
  * @param <T> the type of the origin object
- * @param <TMP> the type of the result of the {@code getter} operation
+ * @param <GETTER_OUT> the type of the result of the {@code getter} operation
  * 
  * @see FunctionGetter
  * @see Factory
  */
-public class FieldGetter<T,TMP> extends FunctionGetter<T,TMP> {
+public class FieldGetter<T,GETTER_OUT> extends FunctionGetter<T,GETTER_OUT> {
 
 	/**
 	 * @param name the name identifier of the current {@code getter}

@@ -3,7 +3,7 @@
  * The package contains the following classes (sub-classes of {@code MapperObject}):
  * <ul>
  * <li>{@code ClassMapper} : creating a {@code MapperObject} that convert on object into another field by field</li>
- * <li>{@code DirectMapper} : creating a {@code MapperObject} that convert on object into another with a custom convertion function</li>
+ * <li>{@code DirectMapper} : creating a {@code MapperObject} that convert on object into another with a custom conversion function</li>
  * <li>{@code EnumMapper} : creating a {@code MapperObject} that convert on enum type into another</li>
  * </ul>
  * @author eschoysman

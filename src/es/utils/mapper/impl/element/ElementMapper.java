@@ -2,6 +2,7 @@ package es.utils.mapper.impl.element;
 
 import java.util.function.Function;
 
+import es.utils.mapper.configuration.Configuration;
 import es.utils.mapper.factory.Factory;
 import es.utils.mapper.getter.Getter;
 import es.utils.mapper.setter.Setter;
@@ -9,7 +10,7 @@ import es.utils.mapper.setter.Setter;
 /**
  * This class contains the informations and the logic needed the execute the mapping of an single element:
  * <ul>
- * <li>a <b>Getter</b>: a function tha take a {@code IN} type object</li>
+ * <li>a <b>Getter</b>: a function that take a {@code IN} type object</li>
  * <li>a <b>Transformer</b>: a function that maps the result of the {@code getter} into the correct type for the {@code setter}</li>
  * <li>a <b>Setter</b>: a operation that assign the result of the {@code transformer} to the destination object</li>
  * </ul>
@@ -59,15 +60,17 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @param in the original object
 	 * @param out the destination object
 	 */
-	public void apply(IN in, OUT out) {
+	public void apply(IN in, OUT out, Configuration config) {
 		// System.out.println("Calling getter \""+getFromValue()+"\"...");
 		GETTER_OUT getterResult = getter.apply(in);
 		// System.out.println("getter \""+getFromValue()+"\" output: "+getterResult);
 		// System.out.println("Copying value to map...");
-//		getterResult = clone(getterResult);
+		if(config.isDeepCopyEnable() && config.getCloner()!=null) {
+			this.transformer = this.transformer.compose(config.<GETTER_OUT>getCloner()::apply);
+		}
 		// System.out.println("Applying transformation...");
 		SETTER_IN transformed = transformer.apply(getterResult);
-		// System.out.println("Appliying setter \""+getDestValue()+"\" with input: "+transformed);
+		// System.out.println("Applying setter \""+getDestValue()+"\" with input: "+transformed);
 		setter.apply(out,transformed);
 	}
 

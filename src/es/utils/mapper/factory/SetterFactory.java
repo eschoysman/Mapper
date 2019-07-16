@@ -20,7 +20,7 @@ class SetterFactory {
 
 	/**
 	 * @param <U> the type of the destination object
-	 * @param <TMP> the type of the value to be setted
+	 * @param <SETTER_IN> the type of the value to be setted
 	 * Create a {@code Setter} instance using with the {@code name} and the {@code setter} operation
 	 * @param name the name identifier of the {@code setter}
 	 * @param setter the setting operation of the setter 
@@ -29,7 +29,7 @@ class SetterFactory {
 	 * @see Setter
 	 * @see FunctionSetter
 	 */
-	public static <U,TMP> Setter<U,TMP> setter(String name, BiConsumer<U,TMP> setter) {
+	public static <U,SETTER_IN> Setter<U,SETTER_IN> setter(String name, BiConsumer<U,SETTER_IN> setter) {
 		Objects.requireNonNull(setter);
 		return new FunctionSetter<>(name,setter);
 	}
@@ -37,21 +37,21 @@ class SetterFactory {
 	/**
 	 * Create a {@code Setter} instance using the {@code field} name and the {@code value} of the field
 	 * @param <U> the type of the destination object
-	 * @param <TMP> the type of the value inside of {@code field}
+	 * @param <SETTER_IN> the type of the value inside of {@code field}
 	 * @param field a file instance used to get the {@code name} and the value needed for creating the {@code Setter} 
 	 * @return the {@code Setter} created
 	 * @throws NullPointerException if {@code field} is null
 	 * @see Setter
 	 * @see FieldSetter
 	 */
-	public static <U,TMP> Setter<U,TMP> setter(Field field) {
+	public static <U,SETTER_IN> Setter<U,SETTER_IN> setter(Field field) {
 		Objects.requireNonNull(field);
 		return new FieldSetter<>(field);
 	}
 	/**
 	 * Create a {@code Setter} instance using the given {@code name} and the {@code value}
 	 * @param <U> the type of the destination object
-	 * @param <TMP> the type of the value inside of {@code field}
+	 * @param <SETTER_IN> the type of the value inside of {@code field}
 	 * @param name the name identifier of the {@code setter}
 	 * @param field a file instance used to get the value needed for creating the {@code Setter} 
 	 * @return the {@code Setter} created
@@ -59,41 +59,41 @@ class SetterFactory {
 	 * @see Setter
 	 * @see FieldSetter
 	 */
-	public static <U,TMP> Setter<U,TMP> setter(String name, Field field) {
+	public static <U,SETTER_IN> Setter<U,SETTER_IN> setter(String name, Field field) {
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(field);
 		return new FieldSetter<>(name,field);
 	}
 	/**
-	 * Create a {@code Setter} instance using the field named {@code fieldName} inside the {@code clazz} type
+	 * Create a {@code Setter} instance using the field named {@code fieldName} inside the {@code type} type
 	 * @param <U> the type of the destination object
-	 * @param <TMP> the type of the value inside of {@code field}
-	 * @param clazz the class containing the field to use as setter
-	 * @param fieldName the name of the field to retrieve from the {@code clazz} type
+	 * @param <SETTER_IN> the type of the value inside of {@code field}
+	 * @param type the class containing the field to use as setter
+	 * @param fieldName the name of the field to retrieve from the {@code type} type
 	 * @return the {@code Setter} created
-	 * @throws NullPointerException if {@code clazz} or {@code fieldName} is null or if there is no filed named {@code filedName} in the {@code clazz} type
+	 * @throws NullPointerException if {@code type} or {@code fieldName} is null or if there is no filed named {@code filedName} in the {@code type} type
 	 * @see Setter
 	 * @see MapperUtil
 	 */
-	public static <U,TMP> Setter<U,TMP> setter(Class<U> clazz, String fieldName) {
-		Field field = MapperUtil.getField(clazz,fieldName);
+	public static <U,SETTER_IN> Setter<U,SETTER_IN> setter(Class<U> type, String fieldName) {
+		Field field = MapperUtil.getField(type,fieldName);
 		Objects.requireNonNull(field);
 		return new FieldSetter<>(field);
 	}
 	/**
-	 * Create a {@code Setter} instance using the field named {@code fieldName} of the {@code clazz} type
+	 * Create a {@code Setter} instance using the field named {@code fieldName} of the {@code type} type
 	 * @param <U> the type of the destination object
-	 * @param <TMP> the type of the value inside of {@code field}
+	 * @param <SETTER_IN> the type of the value inside of {@code field}
 	 * @param name the name identifier of the {@code setter}
-	 * @param clazz the class containing the field to use as setter
-	 * @param fieldName the name of the field to retrieve from the {@code clazz} type
+	 * @param type the class containing the field to use as setter
+	 * @param fieldName the name of the field to retrieve from the {@code type} type
 	 * @return the {@code Setter} created
-	 * @throws NullPointerException if {@code name}, {@code clazz} or {@code fieldName} is null or if there is no filed named {@code filedName} in the {@code clazz} type
+	 * @throws NullPointerException if {@code name}, {@code type} or {@code fieldName} is null or if there is no filed named {@code filedName} in the {@code type} type
 	 * @see Setter
 	 * @see MapperUtil
 	 */
-	public static <U,TMP> Setter<U,TMP> setter(String name, Class<U> clazz, String fieldName) {
-		Field field = MapperUtil.getField(clazz,fieldName);
+	public static <U,SETTER_IN> Setter<U,SETTER_IN> setter(String name, Class<U> type, String fieldName) {
+		Field field = MapperUtil.getField(type,fieldName);
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(field);
 		return new FieldSetter<>(name,field);

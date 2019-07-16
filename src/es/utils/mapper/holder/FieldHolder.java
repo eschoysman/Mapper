@@ -51,13 +51,13 @@ public class FieldHolder {
 		this.genericType = field.getGenericType();
 		this.aliases = new TreeSet<>();
 		this.converters = new LinkedHashSet<>();
-		readAnnotations(config);
+		processAnnotations(config);
 	}
 	
-	private void readAnnotations(Configuration config) {
+	private void processAnnotations(Configuration config) {
 		processIgnoreField();
 		if(!this.ignoreField) {
-			processAnnotations(config);
+			processAliases(config);
 			processConverters();
 			processCollectionType();
 		}
@@ -73,10 +73,10 @@ public class FieldHolder {
 			this.ignoreField = Arrays.asList(classLevelAnnotation.value()).contains(this.fieldName);
 		}
 	}
-	private void processAnnotations(Configuration config) {
+	private void processAliases(Configuration config) {
 		Annotation[] annotations = field.getAnnotations();
 		for(Annotation annotation : annotations) {
-			String name = config.getValue(annotation.annotationType());
+			String name = config.getAnnotationField(annotation.annotationType());
 			if(name!=null) {
 				try {
 					Method method = annotation.annotationType().getMethod(name);
@@ -101,7 +101,7 @@ public class FieldHolder {
 				try {
 					converters.add(conv.newInstance());
 				} catch (InstantiationException | IllegalAccessException e) {
-					System.out.println("WARNING - The converter for "+conv+" does not have a empty contructor. AbstractConverter ignored");
+					System.out.println("WARNING - The converter for "+conv+" does not have a empty public contructor; the converter is ignored.");
 				}
 			}
 		}
@@ -136,13 +136,14 @@ public class FieldHolder {
 	/**
 	 * @return the aliases of the field
 	 * @see AliasNames
+	 * @see Configuration#addAnnotation(Class, String)
 	 */
 	public Set<String> getAliases() {
 		return aliases;
 	}
 	/**
 	 * @return the aliases of the field
-	 * @see AliasNames
+	 * @see Converter
 	 */
 	public Set<DirectMapper<?,?>> getConverters() {
 		return converters;
@@ -150,6 +151,7 @@ public class FieldHolder {
 	/**
 	 * @return the name and all the aliases of the field
 	 * @see AliasNames
+	 * @see Configuration#addAnnotation(Class, String)
 	 */
 	public Set<String> getAllNames() {
 		Set<String> allNames = new TreeSet<>(getAliases());

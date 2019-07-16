@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 @Target(FIELD)
 public @interface TestAnnotation {
 	String name();
+	int age() default 0;
 }

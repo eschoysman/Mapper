@@ -28,7 +28,7 @@ class GetterFactory {
 	/**
 	 * Create a {@code Getter} instance with the given {@code name} that return always the same value
 	 * @param <T> the type of the origin object
-	 * @param <TMP> the type of the value to be mapped
+	 * @param <TYPE> the type of the value to be mapped
 	 * @param name the name identifier of the {@code getter}
 	 * @param value the constant value to be retrive
 	 * @return the {@code Getter} created
@@ -36,7 +36,7 @@ class GetterFactory {
 	 * @see Getter
 	 * @see ValueGetter
 	 */
-	public static <T,TMP> Getter<T,TMP> getter(String name, TMP value) {
+	public static <T,TYPE> Getter<T,TYPE> getter(String name, TYPE value) {
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(value);
 		return new ValueGetter<>(name,value);
@@ -45,24 +45,24 @@ class GetterFactory {
 	/**
 	 * Create a {@code Getter} instance with the given {@code name} that return the supplied value
 	 * @param <T> the type of the origin object
-	 * @param <TMP> the type of the value to be mapped
+	 * @param <TYPE> the type of the value to be mapped
 	 * @param name the name identifier of the {@code getter}
-	 * @param supplier a supplier for the value to retrive
+	 * @param supplier a supplier for the value to retrieve
 	 * @return the {@code Getter} created
 	 * @throws NullPointerException if {@code name} or {@code supplier} is null
 	 * @see Getter
 	 * @see SupplierGetter
 	 */
-	public static <T,TMP> Getter<T,TMP> getter(String name, Supplier<TMP> supplier) {
+	public static <T,TYPE> Getter<T,TYPE> getter(String name, Supplier<TYPE> supplier) {
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(supplier);
 		return new SupplierGetter<>(name,supplier);
 	}
 
 	/**
-	 * Create a {@code Getter} instance with the given {@code name} and how to retrive the value
+	 * Create a {@code Getter} instance with the given {@code name} and how to retrieve the value
 	 * @param <T> the type of the origin object
-	 * @param <TMP> the type of the value to be mapped
+	 * @param <TYPE> the type of the value to be mapped
 	 * @param name the name identifier of the {@code getter}
 	 * @param getter a function that extract the value to get 
 	 * @return the {@code Getter} created
@@ -70,7 +70,7 @@ class GetterFactory {
 	 * @see Getter
 	 * @see FunctionGetter
 	 */
-	public static <T,TMP> Getter<T,TMP> getter(String name, Function<T,TMP> getter) {
+	public static <T,TYPE> Getter<T,TYPE> getter(String name, Function<T,TYPE> getter) {
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(getter);
 		return new FunctionGetter<>(name,getter);
@@ -79,7 +79,7 @@ class GetterFactory {
 	/**
 	 * Create a {@code Getter} instance using the given {@code name} and the {@code value}
 	 * @param <T> the type of the origin object
-	 * @param <TMP> the type of the value inside of {@code field}
+	 * @param <TYPE> the type of the value inside of {@code field}
 	 * @param name the name identifier of the {@code getter}
 	 * @param field a file instance used to get the value needed for creating the {@code Getter} 
 	 * @return the {@code Getter} created
@@ -87,46 +87,46 @@ class GetterFactory {
 	 * @see Getter
 	 * @see FieldGetter
 	 */
-	public static <T,TMP> Getter<T,TMP> getter(String name, Field field) {
+	public static <T,TYPE> Getter<T,TYPE> getter(String name, Field field) {
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(field);
 		return new FieldGetter<>(name,field);
 	}
 	/**
-	 * Create a {@code Getter} instance using the field named {@code fieldName} inside the {@code clazz} type
+	 * Create a {@code Getter} instance using the field named {@code fieldName} inside the {@code type} type
 	 * @param <T> the type of the origin object
-	 * @param <TMP> the type of the value inside of {@code field}
-	 * @param clazz the class containing the field to use as getter
-	 * @param fieldName the name of the field to retrieve from the {@code clazz} type
+	 * @param <TYPE> the type of the value inside of {@code field}
+	 * @param type the class containing the field to use as getter
+	 * @param fieldName the name of the field to retrieve from the {@code type} type
 	 * @return the {@code Getter} created
-	 * @throws NullPointerException if {@code clazz} or {@code fieldName} is null
+	 * @throws NullPointerException if {@code type} or {@code fieldName} is null
 	 * @see Getter
 	 * @see MapperUtil
 	 */
-	public static <T,TMP> Getter<T,TMP> getter(Class<T> clazz, String fieldName) {
-		return getter(fieldName,clazz,fieldName);
+	public static <T,TYPE> Getter<T,TYPE> getter(Class<T> type, String fieldName) {
+		return getter(fieldName,type,fieldName);
 	}
 	/**
-	 * Create a {@code Getter} instance using the field named {@code fieldName} of the {@code clazz} type
+	 * Create a {@code Getter} instance using the field named {@code fieldName} of the {@code type} type
 	 * @param <T> the type of the origin object
-	 * @param <TMP> the type of the value inside of {@code field}
+	 * @param <TYPE> the type of the value inside of {@code field}
 	 * @param name the name identifier of the {@code getter}
-	 * @param clazz the class containing the field to use as getter
-	 * @param fieldName the name of the field to retrieve from the {@code clazz} type
+	 * @param type the class containing the field to use as getter
+	 * @param fieldName the name of the field to retrieve from the {@code type} type
 	 * @return the {@code Getter} created
-	 * @throws NullPointerException if {@code name}, {@code clazz} or {@code fieldName} is null
+	 * @throws NullPointerException if {@code name}, {@code type} or {@code fieldName} is null
 	 * @see Getter
 	 * @see MapperUtil
 	 */
-	public static <T,TMP> Getter<T,TMP> getter(String name, Class<T> clazz, String fieldName) {
-		Field field = MapperUtil.getField(clazz,fieldName);
+	public static <T,TYPE> Getter<T,TYPE> getter(String name, Class<T> type, String fieldName) {
+		Field field = MapperUtil.getField(type,fieldName);
 		return getter(name,field);
 	}
 
 	/**
 	 * Create a {@code Getter} instance using the informations present in the {@code fieldHolder}
 	 * @param <T> the type of the origin object
-	 * @param <TMP> the type of the value inside of {@code field}
+	 * @param <TYPE> the type of the value inside of {@code field}
 	 * @param name the name identifier of the {@code getter}
 	 * @param fieldHolder a instance having all the information of a {@code field}
 	 * @return the {@code Getter} created
@@ -134,7 +134,7 @@ class GetterFactory {
 	 * @see Getter
 	 * @see FieldHolder
 	 */
-	public static <T,TMP> Getter<T,TMP> getter(String name, FieldHolder fieldHolder) {
+	public static <T,TYPE> Getter<T,TYPE> getter(String name, FieldHolder fieldHolder) {
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(fieldHolder);
 		return new FieldGetter<>(name,fieldHolder.getField());

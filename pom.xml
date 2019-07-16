@@ -29,6 +29,7 @@
 	</scm>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version.source>1.8</java.version.source>
 		<java.version.target>1.8</java.version.target>
 		<junit.version>5.5.0-M1</junit.version>

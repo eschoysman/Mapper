@@ -9,18 +9,18 @@ import es.utils.mapper.factory.Factory;
  * @author eschoysman
  *
  * @param <U> the type of the destination object
- * @param <TMP> the type of the input of the {@code setter} operation
+ * @param <SETTER_IN> the type of the input of the {@code setter} operation
  * 
  * @see Setter
  * @see Factory
  */
-public class FunctionSetter<U,TMP> extends Setter<U,TMP> {
+public class FunctionSetter<U,SETTER_IN> extends Setter<U,SETTER_IN> {
 
 	/**
 	 * @param name the name identifier of the current {@code getter}
 	 * @param setter the {@code setter} operation
 	 */
-	public FunctionSetter(String name, BiConsumer<U,TMP> setter) {
+	public FunctionSetter(String name, BiConsumer<U,SETTER_IN> setter) {
 		super(name,setter);
 	}
 

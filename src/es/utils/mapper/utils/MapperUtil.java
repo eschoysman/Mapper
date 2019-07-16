@@ -22,28 +22,34 @@ public class MapperUtil {
 	 * This method returns the specific field of input class. If no field is found,
 	 * an attempt to get the field through the {@code AliasNames} annotation is done.
 	 * @param <T> type of the class
-	 * @param clazz The class you're searching the field into.
+	 * @param type The class you're searching the field into.
 	 * @param fieldName The field you're searching for.
 	 * @return The Field found. If no result is found, null is returned.
 	 * @see AliasNames
 	 */
-	public static <T> Field getField(Class<T> clazz, String fieldName) {
-		Objects.requireNonNull(clazz);
+	public static <T> Field getField(Class<T> type, String fieldName) {
+		Objects.requireNonNull(type);
 		Objects.requireNonNull(fieldName);
-		Field result = getDeclaredField(clazz,fieldName);
-		if(result==null) result = getFieldOfClass(clazz,fieldName);
-		if(result==null) result = getFieldOfClassByAnnotation(clazz,fieldName);
+		// TODO add support to Configuration.addAnnotation
+//		Mapper mapper = new Mapper();
+//		return mapper.getFieldsHolderFromCache(type).values().stream()
+//					 .filter(fieldHolder->fieldHolder.getAliases().contains(fieldName))
+//					 .map(FieldHolder::getField)
+//					 .findFirst().orElse(null);
+		Field result = getDeclaredField(type,fieldName);
+		if(result==null) result = getFieldOfClass(type,fieldName);
+		if(result==null) result = getFieldOfClassByAnnotation(type,fieldName);
 		return result;
 	}
 	
 	/**
 	 * This method returns all fields from given class, private and public ones.
-	 * @param clazz The class you should inspect.
+	 * @param type The class you should inspect.
 	 * @return A Set of Fields of the given class.
 	 */
-	public static Set<Field> getAllFields(Class<?> clazz) {
-		Field[] fields1 = clazz.getFields();
-		Field[] fields2 = clazz.getDeclaredFields();
+	public static Set<Field> getAllFields(Class<?> type) {
+		Field[] fields1 = type.getFields();
+		Field[] fields2 = type.getDeclaredFields();
 		Set<Field> fields = new LinkedHashSet<>(fields1.length+fields2.length);
 		for(Field f : fields1) fields.add(f);
 		for(Field f : fields2) fields.add(f);
@@ -51,7 +57,7 @@ public class MapperUtil {
 	}
 	
 	/**
-	 * This method returns the generic class of an input Type with generics. In case of extension,
+	 * This method returns the generic class of an input Type with generic. In case of extension,
 	 * the superclass Type is returned.
 	 * @param <TYPE> generic type returned 
 	 * @param input The type you're trying to get the class of.
@@ -65,7 +71,7 @@ public class MapperUtil {
 		    	String typeName = argTypes[0].getTypeName();
 		    	Pattern pattern = Pattern.compile(".+? extends ");
 		    	if(pattern.matcher(typeName).find())
-		    		typeName = typeName.substring(typeName.indexOf("extends")+8);
+		    		typeName = typeName.substring(typeName.indexOf("extends")+8);	// TODO caso "? extends Oggetto<T>"?
 		    	try {
 			    	@SuppressWarnings("unchecked")
 					Class<TYPE> resultClass = (Class<TYPE>)Class.forName(typeName);
@@ -78,22 +84,22 @@ public class MapperUtil {
 		return null;
 	}
 
-	private static <T> Field getDeclaredField(Class<T> clazz, String fieldName) {
+	private static <T> Field getDeclaredField(Class<T> type, String fieldName) {
 		try {
-			return clazz.getDeclaredField(fieldName);
+			return type.getDeclaredField(fieldName);
 		} catch (NoSuchFieldException | SecurityException e) {
 			return null;
 		}
 	}
-	private static <T> Field getFieldOfClass(Class<T> clazz, String fieldName) {
+	private static <T> Field getFieldOfClass(Class<T> type, String fieldName) {
 		try {
-			return clazz.getField(fieldName);
+			return type.getField(fieldName);
 		} catch (NoSuchFieldException | SecurityException e) {
 			return null;
 		}
 	}
-	private static <T> Field getFieldOfClassByAnnotation(Class<T> clazz, String fieldName) {
-		Field[] fields = clazz.getFields();
+	private static <T> Field getFieldOfClassByAnnotation(Class<T> type, String fieldName) {
+		Field[] fields = type.getFields();
 		for(Field field : fields) {
 			boolean toReturn =  Optional.ofNullable(field.getAnnotation(AliasNames.class))
 										.map(AliasNames::value)
