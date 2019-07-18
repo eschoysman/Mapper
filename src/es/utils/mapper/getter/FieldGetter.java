@@ -4,8 +4,6 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.function.Function;
 
-import es.utils.mapper.factory.Factory;
-
 /**
  * This class customize {@code FunctionGetter} creating a {@code Getter} instance from a {@code Field}
  * @author eschoysman
@@ -14,7 +12,6 @@ import es.utils.mapper.factory.Factory;
  * @param <GETTER_OUT> the type of the result of the {@code getter} operation
  * 
  * @see FunctionGetter
- * @see Factory
  */
 public class FieldGetter<T,GETTER_OUT> extends FunctionGetter<T,GETTER_OUT> {
 

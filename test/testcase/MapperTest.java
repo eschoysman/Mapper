@@ -441,13 +441,10 @@ public class MapperTest {
 	/* build method */
 	@Test
 	public void shouldActivateAddedMappings() throws MappingException {
-		// TODO è concettualmente corretto come flusso logico?
 		Mapper mapper = new Mapper();
 		ClassMapper<From,To> mapping = mapper.addForClass(From.class, To.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		assertThat(mapping.map(null)).isNull();
-		MappingException exception = assertThrows(MappingException.class, ()->mapping.map(from));
-		assertThat(exception.getMessage()).isEqualTo("The build method on the belonging Mapper has not been invoked yet.");
 		mapper.build();
 		To to = mapping.map(from);
 		assertThat(to).hasNoNullFieldsOrPropertiesExcept("ignoredField","ignoredField1","ignoredField2","timestamp1");

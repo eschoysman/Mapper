@@ -3,7 +3,6 @@ package es.utils.mapper.impl.element;
 import java.util.function.Function;
 
 import es.utils.mapper.configuration.Configuration;
-import es.utils.mapper.factory.Factory;
 import es.utils.mapper.getter.Getter;
 import es.utils.mapper.setter.Setter;
 
@@ -23,7 +22,6 @@ import es.utils.mapper.setter.Setter;
  * @param <OUT> the type of the destination object
  * @see Getter
  * @see Setter
- * @see Factory
  */
 public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 
@@ -37,8 +35,8 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @param setter an implementation of the getter logic
 	 */
 	public ElementMapper(Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
-		this.transformer = transformer;
 		this.getter = getter;
+		this.transformer = transformer;
 		this.setter = setter;
 	}
 	
@@ -59,6 +57,7 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * The logic of the mapping of the current element.
 	 * @param in the original object
 	 * @param out the destination object
+	 * @param config the configuration of the belonging Mapper
 	 */
 	public void apply(IN in, OUT out, Configuration config) {
 		// System.out.println("Calling getter \""+getFromValue()+"\"...");

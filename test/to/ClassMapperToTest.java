@@ -5,7 +5,7 @@ import es.utils.mapper.annotation.AliasNames;
 public class ClassMapperToTest {
 
 	@AliasNames("name")
-	private String nameTo;
+	public String nameTo;
 	@AliasNames("surname")
 	private String surnameTo;
 	private String fullName;
@@ -38,6 +38,10 @@ public class ClassMapperToTest {
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+	
+	public void setAge(int age) {
+		
 	}
 	
 }

@@ -22,7 +22,7 @@ import es.utils.mapper.annotation.CollectionType;
 import es.utils.mapper.configuration.Configuration;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
-import es.utils.mapper.factory.Factory;
+import es.utils.mapper.factory.CollectionFactory;
 import es.utils.mapper.holder.FieldHolder;
 import es.utils.mapper.impl.MapperObject;
 import es.utils.mapper.impl.object.ClassMapper;
@@ -189,7 +189,7 @@ public class Mapper {
 	 */
 	public Mapper build() {
 		if(isDirty) {
-			mappings.values().forEach(mapping->mapping.activate(this));
+			mappings.values().forEach(mapping->mapping.activate());
 			isDirty = false;
 		}
 		return this;
@@ -367,7 +367,7 @@ public class Mapper {
 	 * @param resultElementType destination type of the mapping 
 	 * @return the mapped collection
 	 * @see CollectionType
-	 * @see Factory#collection(Class, Class)
+	 * @see CollectionFactory#create(Class, Class)
 	 */
 	public <T,U,CT extends Collection<T>, CU extends Collection<U>> CU mapCollection(CT origin, Class<CU> collectionType, Class<U> resultElementType) {
 		if(origin==null) {
@@ -375,7 +375,7 @@ public class Mapper {
 		}
 		Objects.requireNonNull(collectionType);
 		@SuppressWarnings("unchecked")
-		CU destination = (CU)Factory.collection(null,collectionType);
+		CU destination = (CU)CollectionFactory.create(null,collectionType);
 		
 		return mapCollection(origin, destination, resultElementType);
 	}
@@ -487,13 +487,14 @@ public class Mapper {
 	}
 	
 	/**
-	 * Create a new instance of the given type first looking for a supplier in the configuration, second by the empty constructor 
+	 * Create a new instance of the given type first looking for a supplier in the configuration, second by the empty constructor
+	 * @param <TYPE> the type of the returned instance
 	 * @param type the type of the returned instance
 	 * @return a new instance of the given type
 	 * @throws MappingException if there is no empty constructor to be invoked 
 	 */
-    public <T> T createNewInstance(Class<T> type) throws MappingException {
-		Supplier<T> supplier = getConfig().getSupplier(type);
+    public <TYPE> TYPE createNewInstance(Class<TYPE> type) throws MappingException {
+		Supplier<TYPE> supplier = getConfig().getSupplier(type);
     	if(supplier==null) {
 			return newInstance(type);
     	}
@@ -502,6 +503,7 @@ public class Mapper {
 	
 	private <T,U> Mapper add(Class<T> from, Class<U> to, MapperObject<T,U> objectMapper) {
 		mappings.put(from,to, objectMapper);
+		objectMapper.setMapper(this);
 		isDirty = true;
 		return this;
 	}
@@ -512,8 +514,9 @@ public class Mapper {
 		Class<? extends Enum<?>> enumTo = (Class<? extends Enum<?>>)to;
 		@SuppressWarnings({"unchecked","rawtypes"})
 		MapperObject<T,U> enumMapper = new EnumMapper(enumFrom,enumTo);
-		mappings.put(from,to, enumMapper);
-		isDirty = true;
+		add(from,to,enumMapper);
+//		mappings.put(from,to, enumMapper);
+//		isDirty = true;
 		return enumMapper;
 	}
 	private <T,U> void mappingNotFound(Class<T> fromClass, Class<U> toClass) throws MappingNotFoundException {

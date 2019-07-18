@@ -13,7 +13,6 @@ import java.util.function.Function;
  * @see FunctionGetter
  * @see FieldGetter
  * @see SupplierGetter
- * @see ValueGetter
  */
 public abstract class Getter<T,GETTER_OUT> {
 

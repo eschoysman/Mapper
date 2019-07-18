@@ -3,7 +3,6 @@ package es.utils.mapper.impl.object;
 import java.util.EnumMap;
 import java.util.EnumSet;
 
-import es.utils.mapper.Mapper;
 import es.utils.mapper.impl.MapperObject;
 
 /**
@@ -35,8 +34,7 @@ public class EnumMapper<T extends Enum<T>,U extends Enum<U>> extends MapperObjec
 		this.defaultDestinationEnumValue = null;
 	}
 
-	public void activate(Mapper mapper) {
-		super.activate(mapper);
+	public void activate() {
 		for(T from : from.getEnumConstants()) {
 			try {
 				add(from,Enum.valueOf(to,from.name()));

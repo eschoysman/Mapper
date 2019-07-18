@@ -35,6 +35,10 @@ public abstract class MapperObject<T,U> {
 		this.to = Objects.requireNonNull(to);
 	}
 	
+	public void setMapper(Mapper mapper) {
+		this.mapper = mapper;
+	}
+	
 	/**
 	 * @return the origin class of this mapping
 	 */
@@ -50,11 +54,8 @@ public abstract class MapperObject<T,U> {
 
 	/**
 	 * The activation of a {@code MapperObject} takes into account all the present mappings to create the default mappings of the current mapping 
-	 * @param mapper the {@code Mapper} instance used to create all the default mappings
 	 */
-	public void activate(Mapper mapper) {
-		this.mapper = mapper;
-	}
+	public abstract void activate();
 	protected abstract U mapValue(T from) throws MappingException;
 	protected abstract U mapValue(T from, U to);
 	
@@ -91,5 +92,5 @@ public abstract class MapperObject<T,U> {
 			return null;
 		}
 	}
-    
+	
 }

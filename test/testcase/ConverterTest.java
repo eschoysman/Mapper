@@ -44,11 +44,13 @@ public class ConverterTest {
 		FromWithConverter from = new FromWithConverter();
 		ToWithConverter to = mapper.map(from);
 		
-		assertThat(to.getName()).isNull();
-		assertThat(out.toString()).isEqualTo("WARNING - The converter for "+ConverterDateTimestamp2.class+" does not have a empty public contructor; the converter is ignored."+System.lineSeparator());
+		String outString = out.toString();
 		out.flush();
 		out.close();
 		System.setOut(originalOut);
+
+		assertThat(to.getName()).isNull();
+		assertThat(outString).isEqualTo("WARNING - The converter for "+ConverterDateTimestamp2.class+" does not have a empty public contructor; the converter is ignored."+System.lineSeparator());
 	}
 	
 }

@@ -4,8 +4,6 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
-import es.utils.mapper.factory.Factory;
-
 /**
  * This class customize {@code FunctionGetter} creating a {@code Getter} instance from a {@code Field}
  * @author eschoysman
@@ -14,17 +12,9 @@ import es.utils.mapper.factory.Factory;
  * @param <SETTER_IN> the type of the input of the {@code setter} operation
  * 
  * @see FunctionSetter
- * @see Factory
  */
 public class FieldSetter<U,SETTER_IN> extends FunctionSetter<U,SETTER_IN> {
 
-	/**
-	 * 
-	 * @param field the field used to set the value
-	 */
-	public FieldSetter(Field field) {
-		this(field.getName(),field);
-	}
 	/**
 	 * 
 	 * @param name the name identifier of this {@code setter}

@@ -10,7 +10,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import es.utils.mapper.Mapper;
 import es.utils.mapper.annotation.AliasNames;
+import es.utils.mapper.holder.FieldHolder;
 
 /**
  * This class contains a set of method used in the mapping creation.
@@ -30,16 +32,30 @@ public class MapperUtil {
 	public static <T> Field getField(Class<T> type, String fieldName) {
 		Objects.requireNonNull(type);
 		Objects.requireNonNull(fieldName);
-		// TODO add support to Configuration.addAnnotation
-//		Mapper mapper = new Mapper();
-//		return mapper.getFieldsHolderFromCache(type).values().stream()
-//					 .filter(fieldHolder->fieldHolder.getAliases().contains(fieldName))
-//					 .map(FieldHolder::getField)
-//					 .findFirst().orElse(null);
 		Field result = getDeclaredField(type,fieldName);
 		if(result==null) result = getFieldOfClass(type,fieldName);
 		if(result==null) result = getFieldOfClassByAnnotation(type,fieldName);
 		return result;
+	}
+	/**
+	 * This method returns the specific field of input class. If no field is found,
+	 * an attempt to get the field through the {@code AliasNames} annotation is done.
+	 * @param <T> type of the class
+	 * @param type The class you're searching the field into.
+	 * @param fieldName The field you're searching for.
+	 * @param mapper the Mapper instance used to find the field with the fieldName as annotation 
+	 * @return The Field found. If no result is found, null is returned.
+	 * @see AliasNames
+	 */
+	public static <T> Field getField(Class<T> type, String fieldName, Mapper mapper) {
+		Field field = getField(type,fieldName);
+		if(field==null) {
+			field = mapper.getFieldsHolderFromCache(type).values().stream()
+					 	  .filter(fieldHolder->fieldHolder.getAliases().contains(fieldName))
+					 	  .map(FieldHolder::getField)
+					 	  .findFirst().orElse(null);
+		}
+		return field;
 	}
 	
 	/**
@@ -70,8 +86,11 @@ public class MapperUtil {
 		    if(argTypes.length>0) {
 		    	String typeName = argTypes[0].getTypeName();
 		    	Pattern pattern = Pattern.compile(".+? extends ");
-		    	if(pattern.matcher(typeName).find())
-		    		typeName = typeName.substring(typeName.indexOf("extends")+8);	// TODO caso "? extends Oggetto<T>"?
+		    	if(pattern.matcher(typeName).find()) {
+		    		int startIndex = typeName.indexOf("extends")+8;
+					int endIndex = typeName.indexOf("<");
+					typeName = typeName.substring(startIndex,endIndex==-1? typeName.length() : endIndex);
+				}
 		    	try {
 			    	@SuppressWarnings("unchecked")
 					Class<TYPE> resultClass = (Class<TYPE>)Class.forName(typeName);

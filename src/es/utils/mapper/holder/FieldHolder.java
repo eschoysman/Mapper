@@ -40,9 +40,8 @@ public class FieldHolder {
 	private boolean ignoreField;
 	
 	/**
-	 * 
 	 * @param field the field used to hold
-	 * @param config 
+	 * @param config the configuration of the belonging Mapper
 	 */
 	public FieldHolder(Field field, Configuration config) {
 		this.field = Objects.requireNonNull(field);

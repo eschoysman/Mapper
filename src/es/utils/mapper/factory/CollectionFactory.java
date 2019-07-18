@@ -12,7 +12,7 @@ import java.util.Collection;
  * If the destination class type is an array, an ArrayList is created.
  * @author eschoysman
  */
-class CollectionFactory {
+public class CollectionFactory {
 	
     private static final Class<?> ARRAY_AS_LIST_CLASS = Arrays.asList().getClass();
 

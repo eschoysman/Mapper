@@ -14,7 +14,6 @@ import es.utils.mapper.annotation.IgnoreField;
 
 public class To {
 
-	@SuppressWarnings("unused")
 	private final String classTo;
 	private CharSequence name;
 //	@IgnoreField
@@ -28,7 +27,6 @@ public class To {
 	private List<To> toCollection2;
 	@IgnoreField
 	private String ignoredField;
-	@SuppressWarnings("unused")
 	private String ignoredField1;
 	@IgnoreField
 	private String ignoredField2;

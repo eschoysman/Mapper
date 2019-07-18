@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
-import es.utils.mapper.Mapper;
 import es.utils.mapper.impl.MapperObject;
 
 /**
@@ -34,8 +33,7 @@ public class DirectMapper<T,U> extends MapperObject<T,U> {
 	}
 
 	@Override
-	public final void activate(Mapper mapper) {
-		super.activate(mapper);
+	public final void activate() {
 	}
 
 	@Override
