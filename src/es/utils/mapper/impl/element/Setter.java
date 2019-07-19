@@ -1,19 +1,16 @@
-package es.utils.mapper.setter;
+package es.utils.mapper.impl.element;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
 /**
- * This abstract class handle the logic of a generic {@code setter} operation.<br>
+ * This class handle the logic of a generic {@code setter} operation.<br>
  * @author eschoysman
  *
  * @param <U> the type of the destination object
  * @param <SETTER_IN> the type of the input of the {@code setter} operation
- * 
- * @see FunctionSetter
- * @see FieldSetter
  */
-public abstract class Setter<U,SETTER_IN> {
+public class Setter<U,SETTER_IN> {
 
 	private String name;
 	private BiConsumer<U,SETTER_IN> setter;
@@ -22,7 +19,7 @@ public abstract class Setter<U,SETTER_IN> {
 	 * @param name the name identifier of the current {@code setter}
 	 * @param setter the {@code setter} operation
 	 */
-	protected Setter(String name, BiConsumer<U,SETTER_IN> setter) {
+	public Setter(String name, BiConsumer<U,SETTER_IN> setter) {
 		this.name = Objects.requireNonNull(name);
 		this.setter = Objects.requireNonNull(setter);
 	}

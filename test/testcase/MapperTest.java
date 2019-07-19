@@ -3,6 +3,9 @@ package testcase;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,9 +22,11 @@ import es.utils.mapper.impl.MapperObject;
 import es.utils.mapper.impl.object.ClassMapper;
 import es.utils.mapper.impl.object.DirectMapper;
 import es.utils.mapper.impl.object.EnumMapper;
+import from.ClassMapperFromTest;
 import from.From;
 import from.ImplFrom;
 import from.SubFrom;
+import to.ClassMapperToTest;
 import to.ImplTo;
 import to.SubTo;
 import to.To;
@@ -334,6 +339,30 @@ public class MapperTest {
 										.isInstanceOf(ArrayList.class)
 										.hasSize(3)
 										.containsSequence(TimeUnit.MINUTES,TimeUnit.MINUTES,TimeUnit.MINUTES);
+	}
+	@Test
+	public void shouldThrowMappingExceptionBecauseOfErrorInMappingSingleElementOfCollection() throws MappingException, IOException {
+		Mapper mapper = new Mapper();
+		MapperObject<ClassMapperFromTest, ClassMapperToTest> objectMapper = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class)
+			  .createElementMapper()
+			  	.from("name", ClassMapperFromTest::getNameFrom)
+			  	.transform(String::length)
+			  	.to("age", ClassMapperToTest::setAge)
+			  	.build();
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream originalErr = System.err;
+		PrintStream ps = new PrintStream(out);
+		System.setErr(ps);
+		
+		ClassMapperToTest result = objectMapper.mapOrNull(new ClassMapperFromTest(null,null));
+
+		String outString = out.toString();
+		out.flush();
+		out.close();
+		System.setErr(originalErr);
+		assertThat(result).isNull();
+		assertThat(outString).startsWith("es.utils.mapper.exception.MappingException: java.lang.NullPointerException");
 	}
 	@Test
 	public void shouldMapCollectionOfElementByClassType() throws MappingException, MappingNotFoundException {

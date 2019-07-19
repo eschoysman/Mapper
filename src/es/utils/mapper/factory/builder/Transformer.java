@@ -5,8 +5,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import es.utils.mapper.Mapper;
-import es.utils.mapper.getter.Getter;
 import es.utils.mapper.impl.element.ElementMapper;
+import es.utils.mapper.impl.element.Getter;
 import es.utils.mapper.impl.object.ClassMapper;
 
 /**

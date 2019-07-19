@@ -3,10 +3,8 @@ package es.utils.mapper.utils;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -34,7 +32,6 @@ public class MapperUtil {
 		Objects.requireNonNull(fieldName);
 		Field result = getDeclaredField(type,fieldName);
 		if(result==null) result = getFieldOfClass(type,fieldName);
-		if(result==null) result = getFieldOfClassByAnnotation(type,fieldName);
 		return result;
 	}
 	/**
@@ -116,20 +113,6 @@ public class MapperUtil {
 		} catch (NoSuchFieldException | SecurityException e) {
 			return null;
 		}
-	}
-	private static <T> Field getFieldOfClassByAnnotation(Class<T> type, String fieldName) {
-		Field[] fields = type.getFields();
-		for(Field field : fields) {
-			boolean toReturn =  Optional.ofNullable(field.getAnnotation(AliasNames.class))
-										.map(AliasNames::value)
-										.map(Arrays::asList)
-										.map(l->l.contains(fieldName))
-										.orElse(false);
-			if(toReturn)  {
-				return field;
-			}
-		}
-		return null;
 	}
 	
 }

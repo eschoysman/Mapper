@@ -1,22 +1,17 @@
-package es.utils.mapper.getter;
+package es.utils.mapper.impl.element;
 
 import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * This abstract class handle the logic of a generic {@code getter} operation.<br>
+ * This class handle the logic of a generic {@code getter} operation.<br>
  * @author eschoysman
- *
  * @param <T> the type of the origin object
  * @param <GETTER_OUT> the type of the result of the {@code getter} operation
- * 
- * @see FunctionGetter
- * @see FieldGetter
- * @see SupplierGetter
  */
-public abstract class Getter<T,GETTER_OUT> {
+public class Getter<T,GETTER_OUT> {
 
-	private static final Getter<?,?> EMPTY = new FunctionGetter<>("",obj->null);
+	private static final Getter<?,?> EMPTY = new Getter<>("",obj->null);
 	
 	private String name;
 	private Function<T,GETTER_OUT> getter;
@@ -25,7 +20,7 @@ public abstract class Getter<T,GETTER_OUT> {
 	 * @param name the name identifier of the current {@code getter}
 	 * @param getter the {@code getter} operation
 	 */
-	protected Getter(String name, Function<T,GETTER_OUT> getter) {
+	public Getter(String name, Function<T,GETTER_OUT> getter) {
 		this.name = Objects.requireNonNull(name);
 		this.getter = Objects.requireNonNull(getter);
 	}

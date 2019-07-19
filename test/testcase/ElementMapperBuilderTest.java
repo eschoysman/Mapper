@@ -11,9 +11,8 @@ import es.utils.mapper.factory.builder.From;
 import es.utils.mapper.factory.builder.To;
 import es.utils.mapper.factory.builder.Transformer;
 import es.utils.mapper.holder.FieldHolder;
+import es.utils.mapper.impl.element.Setter;
 import es.utils.mapper.impl.object.ClassMapper;
-import es.utils.mapper.setter.FunctionSetter;
-import es.utils.mapper.setter.Setter;
 import from.ClassMapperFromTest;
 import to.ClassMapperToTest;
 
@@ -76,7 +75,7 @@ public class ElementMapperBuilderTest {
 	public void shouldCreateLastBuilderStepFromSetter() throws MappingException {
 		Mapper mapper = new Mapper();
 		ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
-		Setter<ClassMapperToTest,String> setter = new FunctionSetter<>("test",ClassMapperToTest::setNameTo);
+		Setter<ClassMapperToTest,String> setter = new Setter<>("test",ClassMapperToTest::setNameTo);
 		ElementMapperBuilder<ClassMapperFromTest,String,String,ClassMapperToTest> emb = mapping.createElementMapper().from("name",in->in.getNameFrom()).noTransform().to(setter);
 		assertThat(emb).isNotNull()
 						.isExactlyInstanceOf(ElementMapperBuilder.class)
@@ -88,7 +87,7 @@ public class ElementMapperBuilderTest {
 	public void shouldCreateLastBuilderStepFromFieldName() throws MappingException {
 		Mapper mapper = new Mapper();
 		ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
-		ElementMapperBuilder<ClassMapperFromTest,String,String,ClassMapperToTest> emb = mapping.createElementMapper().from("name",in->in.getNameFrom()).noTransform().to("surname");
+		ElementMapperBuilder<ClassMapperFromTest,String,String,ClassMapperToTest> emb = mapping.createElementMapper().from("name",in->in.getNameFrom()).noTransform().to("surnameTo");
 		assertThat(emb).isNotNull()
 						.isExactlyInstanceOf(ElementMapperBuilder.class)
 						.hasNoNullFieldsOrProperties()

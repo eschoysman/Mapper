@@ -63,7 +63,11 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 
 	protected U mapValue(T from) throws MappingException {
 		U dest = mapper.createNewInstance(to);
-		return mapValue(from,dest);
+		try {
+			return mapValue(from,dest);
+		} catch (Exception e) {
+			throw new MappingException(e);
+		}
 	}
 	protected U mapValue(T from, U to) {
 		Objects.requireNonNull(to);

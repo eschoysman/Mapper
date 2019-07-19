@@ -39,6 +39,8 @@
 		<clover.version>4.3.1</clover.version>
 		<maven.compiler.plugin>3.7.0</maven.compiler.plugin>
 		<maven.jar.plugin>3.1.2</maven.jar.plugin>
+		<maven.source.plugin>3.1.0</maven.source.plugin>
+		<maven.javadoc.plugin>3.1.1</maven.javadoc.plugin>
 	</properties>
 
 	<build>
@@ -70,6 +72,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven.source.plugin}</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -82,6 +85,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven.javadoc.plugin}</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>

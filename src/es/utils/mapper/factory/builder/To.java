@@ -6,13 +6,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import es.utils.mapper.Mapper;
-import es.utils.mapper.getter.Getter;
 import es.utils.mapper.holder.FieldHolder;
 import es.utils.mapper.impl.element.ElementMapper;
+import es.utils.mapper.impl.element.Getter;
+import es.utils.mapper.impl.element.Setter;
 import es.utils.mapper.impl.object.ClassMapper;
-import es.utils.mapper.setter.FieldSetter;
-import es.utils.mapper.setter.FunctionSetter;
-import es.utils.mapper.setter.Setter;
 import es.utils.mapper.utils.MapperUtil;
 
 /**
@@ -68,7 +66,7 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	public ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> to(String idName, BiConsumer<OUT,SETTER_IN> setter) {
 		Objects.requireNonNull(idName);
 		Objects.requireNonNull(setter);
-		Setter<OUT,SETTER_IN> resultSetter = new FunctionSetter<OUT,SETTER_IN>(idName,setter);
+		Setter<OUT,SETTER_IN> resultSetter = new Setter<OUT,SETTER_IN>(idName,setter);
 		return build(getter,transformer,resultSetter);
 	}
 	/**
@@ -97,7 +95,7 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 		Objects.requireNonNull(idName);
 		Objects.requireNonNull(fieldName);
 		Field field = MapperUtil.getField(mapping.toClass(),fieldName,mapper);
-		Setter<OUT,SETTER_IN> setter = new FieldSetter<>(idName,field);
+		Setter<OUT,SETTER_IN> setter = new Setter<>(idName,createSetterFunction(field));
 		return build(getter,transformer,setter);
 	}
 	/**
@@ -127,11 +125,21 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	public ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> to(String idName, FieldHolder fieldHolder) {
 		Objects.requireNonNull(idName);
 		Objects.requireNonNull(fieldHolder);
-		Setter<OUT,SETTER_IN> setter = new FieldSetter<>(idName,fieldHolder.getField());
+		Setter<OUT,SETTER_IN> setter = new Setter<>(idName,createSetterFunction(fieldHolder.getField()));
 		return build(getter,transformer,setter);
 	}
 	
 	// building operation
+	private static <T,IN> BiConsumer<T,IN> createSetterFunction(Field field) {
+		Objects.requireNonNull(field);
+		field.setAccessible(true);
+		return (obj,data) -> {
+			try {
+				field.set(obj,data);
+			} catch (IllegalArgumentException | IllegalAccessException | SecurityException e) {
+			}
+		};
+	}
 	private ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> build(Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
 		return new ElementMapperBuilder<>(mapping, new ElementMapper<>(getter,transformer,setter));
 	}

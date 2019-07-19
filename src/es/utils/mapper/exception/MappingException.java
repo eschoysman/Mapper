@@ -23,5 +23,11 @@ public class MappingException extends Exception {
     public MappingException(String message, Throwable cause) {
     	super(message,cause);
     }
+    /**
+     * @param cause the cause of the exception
+     */
+    public MappingException(Throwable cause) {
+    	super(cause);
+    }
 
 }

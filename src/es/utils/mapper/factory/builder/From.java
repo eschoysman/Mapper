@@ -6,12 +6,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import es.utils.mapper.Mapper;
-import es.utils.mapper.getter.FieldGetter;
-import es.utils.mapper.getter.FunctionGetter;
-import es.utils.mapper.getter.Getter;
-import es.utils.mapper.getter.SupplierGetter;
 import es.utils.mapper.holder.FieldHolder;
 import es.utils.mapper.impl.element.ElementMapper;
+import es.utils.mapper.impl.element.Getter;
 import es.utils.mapper.impl.object.ClassMapper;
 import es.utils.mapper.utils.MapperUtil;
 
@@ -59,7 +56,6 @@ public class From<IN,OUT> {
 	 * @param <SETTER_IN> the input type of the setter operation
 	 * @param defaultValue the value to be set
 	 * @return the third step of the builder to add a setter
-	 * @see Getter
 	 * @see To
 	 */
 	public <SETTER_IN> To<IN,Void,SETTER_IN,OUT> defaultValue(SETTER_IN defaultValue) {
@@ -105,7 +101,7 @@ public class From<IN,OUT> {
 	public <GETTER_OUT> Transformer<IN,GETTER_OUT,OUT> from(String idName, Supplier<GETTER_OUT> supplier) {
 		Objects.requireNonNull(idName);
 		Objects.requireNonNull(supplier);
-		Getter<IN,GETTER_OUT> getter = new SupplierGetter<IN,GETTER_OUT>(idName,supplier);
+		Getter<IN,GETTER_OUT> getter = new Getter<IN,GETTER_OUT>(idName,$->supplier.get());
 		return new Transformer<>(mapper,mapping,getter);
 	}
 	/**
@@ -122,7 +118,7 @@ public class From<IN,OUT> {
 	public <GETTER_OUT> Transformer<IN,GETTER_OUT,OUT> from(String idName, Function<IN,GETTER_OUT> getter) {
 		Objects.requireNonNull(idName);
 		Objects.requireNonNull(getter);
-		Getter<IN,GETTER_OUT> resultGetter = new FunctionGetter<IN,GETTER_OUT>(idName,getter);
+		Getter<IN,GETTER_OUT> resultGetter = new Getter<IN,GETTER_OUT>(idName,getter);
 		return new Transformer<>(mapper,mapping,resultGetter);
 	}
 	/**
@@ -153,7 +149,7 @@ public class From<IN,OUT> {
 		Objects.requireNonNull(idName);
 		Objects.requireNonNull(fieldName);
 		Field field = MapperUtil.getField(mapping.fromClass(),fieldName,mapper);
-		Getter<IN,GETTER_OUT> getter = new FieldGetter<>(idName,field);
+		Getter<IN,GETTER_OUT> getter = new Getter<>(idName,createGetterFunction(field));
 		return new Transformer<>(mapper,mapping,getter);
 	}
 	/**
@@ -184,8 +180,24 @@ public class From<IN,OUT> {
 	public <GETTER_OUT> Transformer<IN,GETTER_OUT,OUT> from(String idName, FieldHolder fieldHolder) {
 		Objects.requireNonNull(idName);
 		Objects.requireNonNull(fieldHolder);
-		Getter<IN,GETTER_OUT> getter = new FieldGetter<>(fieldHolder.getFieldName(),fieldHolder.getField());
+		Getter<IN,GETTER_OUT> getter = new Getter<>(fieldHolder.getFieldName(),createGetterFunction(fieldHolder.getField()));
 		return new Transformer<>(mapper,mapping,getter);
+	}
+
+	// private method
+	private static <T,OUT> Function<T,OUT> createGetterFunction(Field field) {
+		Objects.requireNonNull(field);
+		field.setAccessible(true);
+		return obj -> {
+			OUT result = null;
+			try {
+				@SuppressWarnings("unchecked")
+				OUT out = (OUT)field.get(obj);
+				result = out;
+			} catch (IllegalArgumentException | IllegalAccessException | SecurityException e) {
+			}
+			return result;
+		};
 	}
 	
 }
