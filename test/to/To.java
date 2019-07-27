@@ -1,17 +1,20 @@
 package to;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
+import converter.ConverterDateTimestamp;
 import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.annotation.CollectionType;
+import es.utils.mapper.annotation.Converter;
 import es.utils.mapper.annotation.IgnoreField;
 
 public class To {
 
-	@SuppressWarnings("unused")
 	private final String classTo;
 	private CharSequence name;
 //	@IgnoreField
@@ -20,30 +23,38 @@ public class To {
 	private To[] toArray;
 	@AliasNames("innerCollection")
 	@CollectionType(LinkedList.class)
-	private List<To> toCollection;
+	private List<? extends To> toCollection;
 	@AliasNames("innerCollection2")
 	private List<To> toCollection2;
 	@IgnoreField
 	private String ignoredField;
-	@SuppressWarnings("unused")
 	private String ignoredField1;
 	@IgnoreField
 	private String ignoredField2;
 
+	@AliasNames("data1")
+	private Timestamp timestamp1;
+	@AliasNames("data2")
+	private Timestamp timestamp2;
+	@AliasNames("data3")
+	@Converter(ConverterDateTimestamp.class)
+	private Timestamp timestamp3;
+	private List<? extends Optional<String>> optionalCollection;
+	
 	public To() {
 		this.classTo = "To";
 	}
 
-	public List<To> getToCollection() {
+	public List<? extends To> getToCollection() {
 		return toCollection;
 	}
 
 	@Override
 	public String toString() {
 		return String.format(
-				"To [classTo=%s, name=%s, surname=%s, toArray=%s, toCollection=%s, toCollection2=%s, ignoredField=%s, ignoredField1=%s, ignoredField2=%s]",
+				"To [classTo=%s, name=%s, surname=%s, toArray=%s, toCollection=%s, toCollection2=%s, ignoredField=%s, ignoredField1=%s, ignoredField2=%s, timestamp1=%s, timestamp2=%s, timestamp3=%s]",
 				this.classTo, this.name, this.surname, Arrays.toString(this.toArray), this.toCollection,
-				this.toCollection2, this.ignoredField, this.ignoredField1, this.ignoredField2);
+				this.toCollection2, this.ignoredField, this.ignoredField1, this.ignoredField2, this.timestamp1, this.timestamp2, this.timestamp2);
 	}
 
 	public CharSequence getName() {
@@ -62,6 +73,30 @@ public class To {
 		this.surname = surname;
 	}
 
+	public Timestamp getTimestamp1() {
+		return timestamp1;
+	}
+
+	public void setTimestamp1(Timestamp timestamp1) {
+		this.timestamp1 = timestamp1;
+	}
+
+	public Timestamp getTimestamp2() {
+		return timestamp2;
+	}
+
+	public void setTimestamp2(Timestamp timestamp2) {
+		this.timestamp2 = timestamp2;
+	}
+
+	public Timestamp getTimestamp3() {
+		return timestamp3;
+	}
+
+	public void setTimestamp3(Timestamp timestamp3) {
+		this.timestamp3 = timestamp3;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(classTo,
@@ -72,7 +107,10 @@ public class To {
 							surname,
 							toArray,
 							toCollection,
-							toCollection2);
+							toCollection2,
+							timestamp1,
+							timestamp2,
+							timestamp3);
 	}
 
 	@Override
@@ -126,7 +164,30 @@ public class To {
 				return false;
 		} else if (!this.toCollection2.equals(other.toCollection2))
 			return false;
+		if (this.timestamp1 == null) {
+			if (other.timestamp1 != null)
+				return false;
+		} else if (!this.timestamp1.equals(other.timestamp1))
+			return false;
+		if (this.timestamp2 == null) {
+			if (other.timestamp2 != null)
+				return false;
+		} else if (!this.timestamp2.equals(other.timestamp2))
+			return false;
+		if (this.timestamp3 == null) {
+			if (other.timestamp3 != null)
+				return false;
+		} else if (!this.timestamp3.equals(other.timestamp3))
+			return false;
 		return true;
+	}
+
+	public List<? extends Optional<String>> getOptionalCollection() {
+		return optionalCollection;
+	}
+
+	public void setOptionalCollection(List<? extends Optional<String>> optionalCollection) {
+		this.optionalCollection = optionalCollection;
 	}
 
 }

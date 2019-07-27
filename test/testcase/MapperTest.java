@@ -3,6 +3,9 @@ package testcase;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,13 +22,15 @@ import es.utils.mapper.impl.MapperObject;
 import es.utils.mapper.impl.object.ClassMapper;
 import es.utils.mapper.impl.object.DirectMapper;
 import es.utils.mapper.impl.object.EnumMapper;
+import from.ClassMapperFromTest;
 import from.From;
 import from.ImplFrom;
 import from.SubFrom;
+import to.ClassMapperToTest;
 import to.ImplTo;
-import to.NoEmptyConstructor;
 import to.SubTo;
 import to.To;
+import to.ToWithNoEmptyConstructor;
 
 public class MapperTest {
 
@@ -42,6 +47,19 @@ public class MapperTest {
 	public void shouldCreateClassMapper() throws MappingException {
 		Mapper mapper = new Mapper();
 		mapper.add(From.class, To.class);
+		assertThat(mapper.getAllMappings()).isNotEmpty();
+		assertThat(mapper.getAllMappings().size()).isEqualTo(1);
+		
+		MapperObject<From, To> mappingBetweenFromTo = mapper.getMappingBetween(From.class, To.class);
+		assertThat(mappingBetweenFromTo).isNotNull().isInstanceOf(ClassMapper.class);
+		MapperObject<To, From> mappingBetweenToFrom = mapper.getMappingBetween(To.class, From.class);
+		assertThat(mappingBetweenToFrom).isNull();
+	}
+	@Test
+	public void shouldAddClassMapper() throws MappingException {
+		Mapper mapper = new Mapper();
+		ClassMapper<From,To> classMapper = new ClassMapper<>(From.class,To.class);
+		mapper.add(classMapper);
 		assertThat(mapper.getAllMappings()).isNotEmpty();
 		assertThat(mapper.getAllMappings().size()).isEqualTo(1);
 		
@@ -104,12 +122,6 @@ public class MapperTest {
 		exception = assertThrows(MappingException.class, ()->mapper.add(List.class, List.class));
 		assertThat(exception.getMessage()).isEqualTo("From class or To class is an interface. Please provide a concrete class.");
 	}
-	@Test
-	public void shouldThrowsMappingExceptionIfDestinationTypeDoesNotHaveEmptyConstructor() throws MappingException {
-		Mapper mapper = new Mapper();
-		MappingException ex = assertThrows(MappingException.class,()->mapper.addForClass(From.class, NoEmptyConstructor.class));
-		assertThat(ex.getMessage()).contains("Destination class does not have a empty constructor. Please provide a empty contructor such that the mapping can be done.");
-	}
 	
 	@Test
 	public void shouldCreateDirectMapper() throws MappingException {
@@ -163,6 +175,13 @@ public class MapperTest {
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		To result = mapper.map(from);
 		assertThat(result).isNotNull().isInstanceOf(To.class);
+	}
+	@Test
+	public void shouldReturnNullFromNullInputOnly() throws MappingException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		mapper.add(From.class, To.class);
+		To result = mapper.map(null);
+		assertThat(result).isNull();
 	}
 	@Test
 	public void shouldThrowMappingNotFoundExceptionFromInputOnly() throws MappingException, MappingNotFoundException {
@@ -242,11 +261,42 @@ public class MapperTest {
 		assertThat(mapper.map(null, nullValue)).isNull();
 	}
 	@Test
-	public void shouldThrowMappingNotFoundExceptionWithNotExistingMapping() throws MappingException {
+	public void shouldThrowMappingNotFoundExceptionWithNotExistingMappingByClass() throws MappingException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		MappingNotFoundException exception = assertThrows(MappingNotFoundException.class, ()->mapper.map(from, To.class));
+		assertThat(exception.getMessage()).contains("WARNING - No mappings found in es.utils.mapper.Mapper for input class java.lang.Class and output class to.To\n" + 
+				"Exisiting destination mappings from class from.From:\n" + 
+				"\tnone\n" + 
+				"Exisiting source mappings to class to.To:\n" + 
+				"\tnone\n" + 
+				"Other exisiting mappings:\n" + 
+				"\tclass java.time.temporal.ChronoUnit -> class java.util.concurrent.TimeUnit\n"
+				+ "");
+	}
+	@Test
+	public void shouldThrowMappingNotFoundExceptionWithNotExistingMappingByClass2() throws MappingException {
+		Mapper mapper = new Mapper();
+		mapper.add(From.class, TimeUnit.class,from->TimeUnit.DAYS);
+		mapper.add(ChronoUnit.class, To.class,$->new To());
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		MappingNotFoundException exception = assertThrows(MappingNotFoundException.class, ()->mapper.map(from, To.class));
+		assertThat(exception.getMessage()).contains("WARNING - No mappings found in es.utils.mapper.Mapper for input class java.lang.Class and output class to.To\n" + 
+				"Exisiting destination mappings from class from.From:\n" + 
+				"\tclass java.util.concurrent.TimeUnit\n" + 
+				"Exisiting source mappings to class to.To:\n" + 
+				"\tclass java.time.temporal.ChronoUnit\n" + 
+				"Other exisiting mappings:\n" + 
+				"\tnone\n"
+				+ "");
+	}
+	@Test
+	public void shouldThrowMappingNotFoundExceptionWithNotExistingMappingByObject() throws MappingException {
+		Mapper mapper = new Mapper();
+		mapper.add(ChronoUnit.class, TimeUnit.class);
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		MappingNotFoundException exception = assertThrows(MappingNotFoundException.class, ()->mapper.map(from, new To()));
 		assertThat(exception.getMessage()).contains("WARNING - No mappings found in es.utils.mapper.Mapper for input class java.lang.Class and output class to.To\n" + 
 				"Exisiting destination mappings from class from.From:\n" + 
 				"\tnone\n" + 
@@ -286,6 +336,30 @@ public class MapperTest {
 
 	}
 	@Test
+	public void shouldMapArrayOfElementIntoArrayOfSuperType() throws MappingException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		String[] origin = {"MINUTES","MINUTES","MINUTES"};
+		assertThat(mapper.mapArray(origin,new CharSequence[0])).isNotNull()
+															.isInstanceOf(CharSequence[].class)
+															.hasSize(3)
+															.containsSequence("MINUTES","MINUTES","MINUTES");
+		assertThat(mapper.mapArray(null,new CharSequence[0])).isNotNull()
+														 .isInstanceOf(CharSequence[].class)
+														 .hasSize(0);
+	}
+	@Test
+	public void shouldMapArrayOfElementIntoArrayOfSubType() throws MappingException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		CharSequence[] origin = {"MINUTES","MINUTES","MINUTES"};
+		assertThat(mapper.mapArray(origin,new String[0])).isNotNull()
+															.isInstanceOf(String[].class)
+															.hasSize(3)
+															.containsOnlyNulls();
+		assertThat(mapper.mapArray(null,new String[0])).isNotNull()
+														 .isInstanceOf(String[].class)
+														 .hasSize(0);
+	}
+	@Test
 	public void shouldMapArrayOfElementAndCreateArray() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
@@ -305,18 +379,44 @@ public class MapperTest {
 										.isInstanceOf(ArrayList.class)
 										.hasSize(3)
 										.containsSequence(TimeUnit.MINUTES,TimeUnit.MINUTES,TimeUnit.MINUTES);
+		assertThat(mapper.mapCollection(null,new ArrayList<TimeUnit>(),TimeUnit.class)).isNull();
 	}
+	@Test
+	public void shouldThrowMappingExceptionBecauseOfErrorInMappingSingleElementOfCollection() throws MappingException, IOException {
+		Mapper mapper = new Mapper();
+		MapperObject<ClassMapperFromTest, ClassMapperToTest> objectMapper = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class)
+			  .createElementMapper()
+			  	.from("name", ClassMapperFromTest::getNameFrom)
+			  	.transform(String::length)
+			  	.to("age", ClassMapperToTest::setAge)
+			  	.build();
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream originalErr = System.err;
+		PrintStream ps = new PrintStream(out);
+		System.setErr(ps);
+		
+		ClassMapperToTest result = objectMapper.mapOrNull(new ClassMapperFromTest(null,null));
+
+		String outString = out.toString();
+		out.flush();
+		out.close();
+		System.setErr(originalErr);
+		assertThat(result).isNull();
+		assertThat(outString).startsWith("es.utils.mapper.exception.MappingException: java.lang.NullPointerException");
+	}
+	@SuppressWarnings("unchecked")
 	@Test
 	public void shouldMapCollectionOfElementByClassType() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
 		List<ChronoUnit> origin = Arrays.asList(ChronoUnit.MINUTES,ChronoUnit.MINUTES,ChronoUnit.MINUTES);
-		@SuppressWarnings("unchecked")
 		ArrayList<TimeUnit> resultMapCollection = mapper.mapCollection(origin,ArrayList.class,TimeUnit.class);
 		assertThat(resultMapCollection).isNotNull()
-															.isInstanceOf(ArrayList.class)
-															.hasSize(3)
-															.containsSequence(TimeUnit.MINUTES,TimeUnit.MINUTES,TimeUnit.MINUTES);
+									   .isInstanceOf(ArrayList.class)
+									   .hasSize(3)
+									   .containsSequence(TimeUnit.MINUTES,TimeUnit.MINUTES,TimeUnit.MINUTES);
+		assertThat(mapper.mapCollection(null,ArrayList.class,TimeUnit.class)).isNull();
 	}
 	
 	/* Map Method Enum */
@@ -415,11 +515,10 @@ public class MapperTest {
 		Mapper mapper = new Mapper();
 		ClassMapper<From,To> mapping = mapper.addForClass(From.class, To.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
-		assertThat(mapping.map(from)).isEqualTo(new To());
 		assertThat(mapping.map(null)).isNull();
 		mapper.build();
 		To to = mapping.map(from);
-		assertThat(to).hasNoNullFieldsOrPropertiesExcept("ignoredField","ignoredField1","ignoredField2");
+		assertThat(to).hasNoNullFieldsOrPropertiesExcept("ignoredField","ignoredField1","ignoredField2","timestamp1");
 	}
 	
 	/* toString method */
@@ -477,6 +576,22 @@ public class MapperTest {
 		mapper.add(From.class, To.class);
 		mapper.build();
 		assertThat(mapper.getNames(From.class)).contains("innerCollection2", "ignoredField1", "surname", "classFrom", "fromCollection2", "ignoredField2", "name", "fromArray", "innerCollection", "innerArray", "fromCollection", "ignoredField");
+	}
+
+	@Test
+	public void shouldCreateNewInstanceForClass() throws MappingException {
+		Mapper mapper = new Mapper();
+		mapper.add(From.class, To.class);
+		To instance = mapper.createNewInstance(To.class);
+		assertThat(instance).isEqualTo(new To());
+	}
+
+	@Test
+	public void shouldThrowMappingExceptionForCreation() throws MappingException {
+		Mapper mapper = new Mapper();
+		mapper.add(From.class, ToWithNoEmptyConstructor.class);
+		MappingException exception = assertThrows(MappingException.class, ()->mapper.createNewInstance(ToWithNoEmptyConstructor.class));
+		assertThat(exception.getMessage()).isEqualTo("Destination class does not have a public empty constructor. Please provide a public empty contructor or a Supplier in the confuguration such that the mapping can be done.");
 	}
 
 }

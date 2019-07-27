@@ -1,16 +1,24 @@
 package es.utils.mapper.holder;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
 import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.annotation.CollectionType;
+import es.utils.mapper.annotation.Converter;
 import es.utils.mapper.annotation.IgnoreField;
+import es.utils.mapper.configuration.Configuration;
+import es.utils.mapper.converter.AbstractConverter;
+import es.utils.mapper.impl.object.DirectMapper;
 
 /**
  * A wrapper object to hold a Field and its information (name, aliases, type etc...).
@@ -24,6 +32,7 @@ public class FieldHolder {
 	private Field field;
 	private String fieldName;
 	private Set<String> aliases;
+	private Set<DirectMapper<?,?>> converters;
 	private Class<?> type;
 	private Type genericType;
 	@SuppressWarnings("rawtypes")
@@ -31,23 +40,29 @@ public class FieldHolder {
 	private boolean ignoreField;
 	
 	/**
-	 * 
-	 * @param field
+	 * @param field the field used to hold
+	 * @param config the configuration of the belonging Mapper
 	 */
-	public FieldHolder(Field field) {
+	public FieldHolder(Field field, Configuration config) {
 		this.field = Objects.requireNonNull(field);
+		Objects.requireNonNull(config);
 		this.fieldName = field.getName();
 		this.type = field.getType();
 		this.genericType = field.getGenericType();
-		readAnnotations();
+		this.aliases = new TreeSet<>();
+		this.converters = new LinkedHashSet<>();
+		processAnnotations(config);
 	}
 	
-	private void readAnnotations() {
+	private void processAnnotations(Configuration config) {
 		processIgnoreField();
-		processAliasNames();
-		processCollectionType();
+		if(!this.ignoreField) {
+			processAliases(config);
+			processConverters();
+			processCollectionType();
+		}
 	}
-	
+
 	private void processIgnoreField() {
 		this.ignoreField = this.field.getAnnotation(IgnoreField.class)!=null;
 		if(this.ignoreField) {
@@ -58,21 +73,49 @@ public class FieldHolder {
 			this.ignoreField = Arrays.asList(classLevelAnnotation.value()).contains(this.fieldName);
 		}
 	}
-	private void processAliasNames() {
-		Set<String> aliases = new TreeSet<>();
-		AliasNames alias = this.field.getAnnotation(AliasNames.class);
-		if(alias!=null) {
-			for(String aliasName : alias.value())
-				if(aliasName.matches(FIELD_NAME_REGEX)) {
-					aliases.add(aliasName);
+	private void processAliases(Configuration config) {
+		Annotation[] annotations = field.getAnnotations();
+		for(Annotation annotation : annotations) {
+			String name = config.getAnnotationField(annotation.annotationType());
+			if(name!=null) {
+				try {
+					Method method = annotation.annotationType().getMethod(name);
+					Object value = method.invoke(annotation);
+					if(value.getClass().isArray()) {
+						for(String aliasName : (String[])value) {
+							addAlias(aliasName);
+						}
+					}
+					else {
+						addAlias((String)value);
+					}
+				} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				}
+			}
 		}
-		this.aliases = aliases;
+	}
+	private void processConverters() {
+		Converter converter = this.field.getAnnotation(Converter.class);
+		if(converter!=null) {
+			for(Class<? extends AbstractConverter<?,?>> conv : converter.value()) {
+				try {
+					converters.add(conv.newInstance());
+				} catch (InstantiationException | IllegalAccessException e) {
+					System.out.println("WARNING - The converter for "+conv+" does not have a empty public contructor; the converter is ignored.");
+				}
+			}
+		}
 	}
 	private void processCollectionType() {
 		CollectionType annotationCollectionType = this.field.getAnnotation(CollectionType.class);
 		if(annotationCollectionType!=null) {
 			this.collectionType = annotationCollectionType.value();
+		}
+	}
+	
+	private void addAlias(String aliasName) {
+		if(aliasName.matches(FIELD_NAME_REGEX)) {
+			aliases.add(aliasName);
 		}
 	}
 
@@ -93,13 +136,22 @@ public class FieldHolder {
 	/**
 	 * @return the aliases of the field
 	 * @see AliasNames
+	 * @see Configuration#addAnnotation(Class, String)
 	 */
 	public Set<String> getAliases() {
 		return aliases;
 	}
 	/**
+	 * @return the aliases of the field
+	 * @see Converter
+	 */
+	public Set<DirectMapper<?,?>> getConverters() {
+		return converters;
+	}
+	/**
 	 * @return the name and all the aliases of the field
 	 * @see AliasNames
+	 * @see Configuration#addAnnotation(Class, String)
 	 */
 	public Set<String> getAllNames() {
 		Set<String> allNames = new TreeSet<>(getAliases());

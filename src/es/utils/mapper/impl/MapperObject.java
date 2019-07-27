@@ -26,14 +26,17 @@ public abstract class MapperObject<T,U> {
 	protected Class<U> to;
 	
 	/**
-	 * 
-	 * @param from
-	 * @param to
+	 * @param from the type of the source object
+	 * @param to the type of the destination object
 	 * @throws NullPointerException if {@code from} or {@code to} is null
 	 */
 	protected MapperObject(Class<T> from, Class<U> to) {
 		this.from = Objects.requireNonNull(from);
 		this.to = Objects.requireNonNull(to);
+	}
+	
+	public void setMapper(Mapper mapper) {
+		this.mapper = mapper;
 	}
 	
 	/**
@@ -51,11 +54,8 @@ public abstract class MapperObject<T,U> {
 
 	/**
 	 * The activation of a {@code MapperObject} takes into account all the present mappings to create the default mappings of the current mapping 
-	 * @param mapper
 	 */
-	public void activate(Mapper mapper) {
-		this.mapper = mapper;
-	}
+	public abstract void activate();
 	protected abstract U mapValue(T from) throws MappingException;
 	protected abstract U mapValue(T from, U to);
 	
@@ -73,7 +73,6 @@ public abstract class MapperObject<T,U> {
 	 * @param from the input object to be mapped
 	 * @param to an default object that will be override by the mapping 
 	 * @return an instance of the destination type of this mapping. If the input is {@code null} return {@code null}.
-	 * @throws MappingException if an error occurs during the mapping
 	 */
     public U map(T from, U to) {
     	if(from==null)
@@ -83,15 +82,15 @@ public abstract class MapperObject<T,U> {
 
 	/**
 	 * @param from the input object to be mapped
-	 * @return an instance of the destination type of this mapping. If the input is {@code null} or some eception occurs during the mapping, returns {@code null}.
+	 * @return an instance of the destination type of this mapping. If the input is {@code null} or some exception occurs during the mapping, returns {@code null}.
 	 */
 	public U mapOrNull(T from) {
 		try {
 			return map(from);
 		} catch (MappingException e) {
-			System.err.println("Error, returning null value.");
+			e.printStackTrace();
 			return null;
 		}
 	}
-    
+	
 }

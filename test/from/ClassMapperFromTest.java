@@ -31,4 +31,10 @@ public class ClassMapperFromTest {
 		this.surnameFrom = surnameFrom;
 	}
 
+	@Override
+	public String toString() {
+		return "ClassMapperFromTest [nameFrom=" + nameFrom + ", surnameFrom=" + surnameFrom + "]";
+	}
+	
+
 }

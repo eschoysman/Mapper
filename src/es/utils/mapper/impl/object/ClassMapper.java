@@ -1,9 +1,9 @@
 package es.utils.mapper.impl.object;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -13,17 +13,15 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import es.utils.doublekeymap.TwoKeyMap;
-import es.utils.mapper.Mapper;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.factory.CollectionFactory;
-import es.utils.mapper.factory.ElementMapperFactory;
-import es.utils.mapper.factory.GetterFactory;
-import es.utils.mapper.factory.SetterFactory;
-import es.utils.mapper.getter.Getter;
+import es.utils.mapper.factory.builder.ElementMapperBuilder;
+import es.utils.mapper.factory.builder.From;
+import es.utils.mapper.factory.builder.To;
+import es.utils.mapper.factory.builder.Transformer;
 import es.utils.mapper.holder.FieldHolder;
 import es.utils.mapper.impl.MapperObject;
 import es.utils.mapper.impl.element.ElementMapper;
-import es.utils.mapper.setter.Setter;
 import es.utils.mapper.utils.MapperUtil;
 
 /**
@@ -37,7 +35,6 @@ import es.utils.mapper.utils.MapperUtil;
  * @see DirectMapper
  * @see EnumMapper
  * @see ElementMapper
- * @see ElementMapperFactory
  */
 public class ClassMapper<T,U> extends MapperObject<T,U> {
 	
@@ -65,145 +62,78 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	}
 
 	protected U mapValue(T from) throws MappingException {
-        try {
-			U dest = to.getDeclaredConstructor().newInstance();
+		U dest = mapper.createNewInstance(to);
+		try {
 			return mapValue(from,dest);
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			throw new MappingException("Error during the creation of the destination object.", e);
+		} catch (Exception e) {
+			throw new MappingException(e);
 		}
 	}
 	protected U mapValue(T from, U to) {
 		Objects.requireNonNull(to);
-		getElementMappings().forEach(me->me.apply(from,to));
+		getElementMappings().forEach(me->me.apply(from,to,mapper.getConfig()));
 		return to;
     }
 	
-	public void activate(Mapper mapper) {
-		this.mapper = mapper;
+	public void activate() {
 		createDefaultMappings();
 	}
 
 
 	// add methods
 	/**
+	 * @param <GETTER_OUT> inner type of the {@code elementMapper}, is the type returned by the getter logic
+	 * @param <SETTER_IN> inner type of the {@code elementMapper}, is the type required by the setter logic
 	 * Allow to add a custom {@code ElementMapper} into the mapping between type {@code T} and {@code U}.
-	 * @param elementMapper
-     * @return this istance
+	 * @param elementMapper the mapper for a single element of this {@code ClassMapper}
+     * @return this instance
 	 * @see ElementMapper
 	 */
-    public <T1,T2> ClassMapper<T,U> addElementMapper(ElementMapper<T,T1,T2,U> elementMapper) {
+    public <GETTER_OUT,SETTER_IN> ClassMapper<T,U> addElementMapper(ElementMapper<T,GETTER_OUT,SETTER_IN,U> elementMapper) {
     	return addElementMapper(elementMapper,false);
     }
     /**
-	 * Allow to add a custom mapping into the mapping between type {@code T} and {@code U} using a {@code Getter} and a {@code Setter}.
-	 * @param <TMP> the type of the result of the {@code getter} and of the input of the {@code setter}.
-     * @param getter {@code Getter} instance to retrieve the value to map
-     * @param setter {@code Setter} instance to set the mapped value
-     * @return the current istance
-     * @see ElementMapperFactory
-     * @see ElementMapperFactory#create(Getter, Setter)
-     */
-    public <TMP> ClassMapper<T,U> addElementMapper(Getter<T,TMP> getter, Setter<U,TMP> setter) {
-    	return addElementMapper(ElementMapperFactory.create(getter,setter),false);
-    }
-    /**
-	 * Allow to add a custom mapping into the mapping between type {@code T} and {@code U} using a {@code Getter}, a tranformer and a {@code Setter}.
-	 * @param <TMP1> the type of the origin object
-	 * @param <TMP2> the type of the destination object
-	 * @param getter {@code Getter} instance to retrieve the value to map
-     * @param transformer the function to map the result of the {@code getter} into the type required by the {@code setter}
-     * @param setter {@code Setter} instance to set the mapped value
-     * @return the current istance
-     * @see ElementMapperFactory
-     * @see ElementMapperFactory#create(Getter, Function, Setter)
-     */
-    public <TMP1,TMP2> ClassMapper<T,U> addElementMapper(Getter<T,TMP1> getter, Function<TMP1,TMP2> transformer, Setter<U,TMP2> setter) {
-    	return addElementMapper(ElementMapperFactory.create(getter,transformer,setter),false);
-    }
-    /**
 	 * Allow to add a custom {@code ElementMapper} between type {@code T} and {@code U}.
-	 * @param <TMP> the type of the result of the {@code getter} and of the input of the {@code setter}.
+	 * @param <TYPE> the type of the result of the {@code getter} and of the input of the {@code setter}.
 	 * @param fieldFrom the name identifier of the getter operation
 	 * @param getter the getter operation
 	 * @param fieldTo the name identifier of the setter operation
 	 * @param setter the setter operation
-     * @return the current istance
-     * @see ElementMapperFactory
-     * @see ElementMapperFactory#create(String, String, Function, BiConsumer)
+     * @return the current instance
      */
-	public <TMP> ClassMapper<T,U> addCustomFieldMapper(String fieldFrom, Function<T,TMP> getter, String fieldTo, BiConsumer<U,TMP> setter) {
-		return addElementMapper(ElementMapperFactory.create(fieldFrom,fieldTo,getter,setter),false);
-	}
-	/**
-	 * TODO test
-	 * Allow to add a custom {@code ElementMapper} between type {@code T} and {@code U}.
-	 * @param <TMP1> the type of the origin object
-	 * @param <TMP2> the type of the destination object
-	 * @param name the name identifier for booth getter and setter operations used to create a default {@code FieldGetter} and {@code FieldSetter}
-	 * @param transfom a function that maps the result of the {@code getter} into the correct type for the {@code setter}
-	 * @param fieldTo the name identifier of the setter operation used to create a default {@code FieldSetter}
-     * @return the current istance
-     * @see ElementMapperFactory
-     * @see ElementMapperFactory#create(String, String, Function, Function, BiConsumer)
-     * @see GetterFactory
-     * @see SetterFactory
-	 */
-	public <TMP1,TMP2> ClassMapper<T,U> addCustomFieldMapper(String name, Function<TMP1,TMP2> transfom) {
-		return addElementMapper(ElementMapperFactory.create(GetterFactory.getter(name,from,name),transfom,SetterFactory.setter(name,to,name)),false);
-	}
-	/**
-	 * TODO test
-	 * Allow to add a custom {@code ElementMapper} between type {@code T} and {@code U}.
-	 * @param <TMP1> the type of the origin object
-	 * @param <TMP2> the type of the destination object
-	 * @param fieldFrom the name identifier of the getter operation used to create a default {@code FieldGetter}
-	 * @param transfom a function that maps the result of the {@code getter} into the correct type for the {@code setter}
-	 * @param fieldTo the name identifier of the setter operation used to create a default {@code FieldSetter}
-     * @return the current istance
-     * @see ElementMapperFactory
-     * @see ElementMapperFactory#create(Strng, String, Function, Function, BiConsumer)
-     * @see GetterFactory
-     * @see SetterFactory
-	 */
-	public <TMP1,TMP2> ClassMapper<T,U> addCustomFieldMapper(String fieldFrom, Function<TMP1,TMP2> transfom, String fieldTo) {
-		return addElementMapper(ElementMapperFactory.create(GetterFactory.getter(fieldFrom,from,fieldFrom),transfom,SetterFactory.setter(fieldTo,to,fieldTo)),false);
+	public <TYPE> ClassMapper<T,U> addCustomFieldMapper(String fieldFrom, Function<T,TYPE> getter, String fieldTo, BiConsumer<U,TYPE> setter) {
+		return createElementMapper().from(fieldFrom,getter).to(fieldTo,setter).build();
 	}
 	/**
 	 * Allow to add a custom {@code ElementMapper} between type {@code T} and {@code U}.
-	 * @param <TMP1> the type of the origin object
-	 * @param <TMP2> the type of the destination object
+	 * @param <GETTER_OUT> the type of the origin object
+	 * @param <SETTER_IN> the type of the destination object
 	 * @param fieldFrom the name identifier of the getter operation
 	 * @param getter the getter operation
 	 * @param transfom a function that maps the result of the {@code getter} into the correct type for the {@code setter}
 	 * @param fieldTo the name identifier of the setter operation
 	 * @param setter the setter operation
-     * @return the current istance
-     * @see ElementMapperFactory
-     * @see ElementMapperFactory#create(String, String, Function, Function, BiConsumer)
+     * @return the current instance
 	 */
-	public <TMP1,TMP2> ClassMapper<T,U> addCustomFieldMapper(String fieldFrom, Function<T,TMP1> getter, Function<TMP1,TMP2> transfom, String fieldTo, BiConsumer<U,TMP2> setter) {
-		return addElementMapper(ElementMapperFactory.create(fieldFrom,fieldTo,getter,transfom,setter),false);
+	public <GETTER_OUT,SETTER_IN> ClassMapper<T,U> addCustomFieldMapper(String fieldFrom, Function<T,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transfom, String fieldTo, BiConsumer<U,SETTER_IN> setter) {
+		return createElementMapper().from(fieldFrom,getter).transform(transfom).to(fieldTo,setter).build();
 	}
 	/**
 	 * Allow to add a default value in the destination object.
-	 * @param <TMP1> the type of the origin object
-	 * @param <TMP2> the type of the destination object
+	 * @param <SETTER_IN> the type of the destination object
 	 * @param name  the name identifier of the setter operation
 	 * @param setter the setter operation
-     * @return the current istance
-     * @see ElementMapperFactory
-     * @see ElementMapperFactory#create(Getter, Setter)
+     * @return the current instance
 	 */
-	public <TMP1,TMP2> ClassMapper<T,U> addDefaultValue(String name, BiConsumer<U,TMP2> setter) {
-		return addElementMapper(ElementMapperFactory.create(Getter.empty(),SetterFactory.setter(name,setter)),false);
+	public <SETTER_IN> ClassMapper<T,U> addDefaultValue(String name, BiConsumer<U,SETTER_IN> setter) {
+		return createElementMapper().<SETTER_IN>fromEmpty().noTransform().to(name,setter).build();
 	}
 	
 	// ignore methods
 	/**
 	 * Allow to ignore field (both origin and destination object) during the mapping
 	 * @param valuesToIgnore set of the field name or alias names to ignore 
-	 * @return the current istance
+	 * @return the current instance
 	 */
 	public ClassMapper<T,U> ignore(String... valuesToIgnore) {
 		ignoreInputs(valuesToIgnore);
@@ -212,8 +142,8 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	}
 	/**
 	 * Allow to ignore field from input object during the mapping
-	 * @param valuesToIgnore set of the field name or alias names to ignore 
-	 * @return the current istance
+	 * @param inputsToIgnore set of the field name or alias names to ignore 
+	 * @return the current instance
 	 */
 	public ClassMapper<T,U> ignoreInputs(String... inputsToIgnore) {
 		this.inputsToIgnore.addAll(Arrays.asList(inputsToIgnore));
@@ -222,8 +152,8 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	}
 	/**
 	 * Allow to ignore field from destination object during the mapping
-	 * @param valuesToIgnore set of the field name or alias names to ignore 
-	 * @return the current istance
+	 * @param outputsToIgnore set of the field name or alias names to ignore 
+	 * @return the current instance
 	 */
 	public ClassMapper<T,U> ignoreOutputs(String... outputsToIgnore) {
 		this.outputsToIgnore.addAll(Arrays.asList(outputsToIgnore));
@@ -231,7 +161,25 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 		return this;
 	}
 	
-	
+	/**
+	 * Create a Builder for the creation of a {@link ElementMapper} for this mapping. The Builder has four steps, one for each component of the ElementMapper and one for the creation:
+	 * <ol>
+	 * <li>{@link From}: create the getter</li>
+	 * <li>{@link Transformer}: (optional) create the transformer</li>
+	 * <li>{@link To}: create the setter</li>
+	 * <li>{@link ElementMapperBuilder}: create the ElementMapper</li>
+	 * </ol>
+	 * @return the first step of the builder
+	 * @see ElementMapper
+	 * @see From
+	 * @see Transformer
+	 * @see To
+	 * @see ElementMapperBuilder
+	 */
+    public From<T,U> createElementMapper() {
+    	return From.using(mapper,this);
+    }
+    
 	// private methods
 	private void createDefaultMappings() {
 		createDefaultMappingForFields();
@@ -251,55 +199,55 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 				Class<?> srcFieldType = fieldHolderFrom.getType();
 				Class<?> destFieldType = fieldHolderTo.getType();
 				if(srcFieldType.isArray() && destFieldType.isArray()) {
-					arrayCase(fieldHolderFrom, srcFieldType.getComponentType(), fieldHolderTo, destFieldType.getComponentType());
+					arrayCase(fieldHolderFrom, fieldHolderTo, destFieldType.getComponentType());
 				}
-				Class<Object> effectiveGenericTypFrom = MapperUtil.getGenericType(fieldHolderFrom.getGenericType());
-				Class<Object> effectiveGenericTypDest = MapperUtil.getGenericType(fieldHolderTo.getGenericType());
+				Class<Object> effectiveGenericTypeDest = MapperUtil.getGenericType(fieldHolderTo.getGenericType());
 				if(Collection.class.isAssignableFrom(srcFieldType) && Collection.class.isAssignableFrom(destFieldType)) {
-					collectionCase(fieldHolderFrom, fieldHolderFrom.getType(), effectiveGenericTypFrom, fieldHolderTo, fieldHolderTo.getType(), effectiveGenericTypDest);
+					collectionCase(fieldHolderFrom, fieldHolderTo, fieldHolderTo.getType(), effectiveGenericTypeDest);
+					continue;
+				}
+				
+				Set<DirectMapper<?,?>> converters = new LinkedHashSet<>();
+				converters.addAll(fieldHolderFrom.getConverters());
+				converters.addAll(fieldHolderTo.getConverters());
+				DirectMapper<?,?> converter = converters
+							   .stream()
+							   .filter(dm->dm.fromClass().isAssignableFrom(fieldHolderFrom.getType()))
+							   .filter(dm->dm.toClass().isAssignableFrom(fieldHolderTo.getType()))
+							   .findFirst().orElse(null);
+				if(converter!=null) {
+					mapFieldWithConverter(fieldName, fieldHolderFrom, fieldHolderTo, converter);
 				}
 				else if(mapper.hasMappingBetween(srcFieldType,destFieldType)) {
 					mapFieldWithTranformation(fieldName, fieldHolderFrom, fieldHolderTo);
 				}
 				else if(destFieldType.isAssignableFrom(srcFieldType)) {
-					Class<Object> typeFrom = effectiveGenericTypFrom;
-					Class<Object> typeTo = effectiveGenericTypDest;
-					if(typeFrom!=null && typeTo!=null && mapper.hasMappingBetween(typeFrom,typeTo)) {
-						mapFieldWithTranformation(fieldName, fieldHolderFrom, fieldHolderTo);
-					}
-					Getter<T, Object> getter = GetterFactory.getter(fieldHolderFrom);
-					Setter<U, Object> setter = SetterFactory.setter(fieldHolderTo);
-					addElementMapper(ElementMapperFactory.create(getter,setter),true);
+					addElementMapper(createElementMapper().from(fieldHolderFrom).to(fieldHolderTo).getElementMapper(),true);
 				}
 			}
 		}
 	}
 
-	private <TMP1,TMP2> void arrayCase(FieldHolder srcField, Class<TMP1> srcClass, FieldHolder destField, Class<TMP2> destClass) {
-		Getter<T,TMP1[]> getter = GetterFactory.getter(srcField);
-		Function<TMP1[],TMP2[]> transformer = in->mapper.mapArray(in,destClass);
-		Setter<U,TMP2[]> setter = SetterFactory.setter(destField);
-		addElementMapper(ElementMapperFactory.create(getter,transformer,setter),true);
+	private <GETTER_OUT,SETTER_IN> void arrayCase(FieldHolder srcField, FieldHolder destField, Class<SETTER_IN> destClass) {
+		addElementMapper(createElementMapper().<GETTER_OUT[]>from(srcField).<SETTER_IN[]>transform(in->mapper.mapArray(in,destClass)).to(destField).getElementMapper(),true);
 	}
-	private <TMP1, TMP2> void collectionCase(FieldHolder srcField, Class<?> srcClass, Class<TMP1> srcGenericType,
-											 FieldHolder destField, Class<?> destClass, Class<TMP2> destGenericType) {
-		Getter<T,Collection<TMP1>> getter = GetterFactory.getter(srcField);
-		Function<Collection<TMP1>,Collection<TMP2>> transformer =
+	private <GETTER_OUT, SETTER_IN> void collectionCase(FieldHolder srcField, FieldHolder destField, Class<?> destClass, Class<SETTER_IN> destGenericType) {
+		Function<Collection<GETTER_OUT>,Collection<SETTER_IN>> transformer =
 				in->mapper.mapCollection(in,
-										 CollectionFactory.<TMP1,TMP2>create(in.getClass(),destField.getCollectionType()),
+										 CollectionFactory.<GETTER_OUT,SETTER_IN>create(in.getClass(),destField.getCollectionType()),
 										 destGenericType);
-		Setter<U,Collection<TMP2>> setter = SetterFactory.setter(destField);
-		addElementMapper(ElementMapperFactory.create(getter,transformer,setter),true);
+		addElementMapper(createElementMapper().<Collection<GETTER_OUT>>from(srcField).<Collection<SETTER_IN>>transform(transformer).to(destField).getElementMapper(),true);
 	}	
-	private <TMP1,TMP2> void mapFieldWithTranformation(String fieldName, FieldHolder srcFieldHolder, FieldHolder destFieldHolder) {
-		Getter<T, TMP1> getter = GetterFactory.getter(fieldName,srcFieldHolder);
+	private <GETTER_OUT,SETTER_IN> void mapFieldWithTranformation(String fieldName, FieldHolder srcFieldHolder, FieldHolder destFieldHolder) {
 		@SuppressWarnings("unchecked")
-		Function<TMP1,TMP2> transformer = in->mapper.mapOrNull(in,(Class<TMP2>)destFieldHolder.getType());
-		Setter<U, TMP2> setter = SetterFactory.setter(fieldName,destFieldHolder);
-		addElementMapper(ElementMapperFactory.create(getter,transformer,setter),true);
+		Function<GETTER_OUT,SETTER_IN> transformer = in->mapper.mapOrNull(in,(Class<SETTER_IN>)destFieldHolder.getType());
+		addElementMapper(createElementMapper().<GETTER_OUT>from(fieldName,srcFieldHolder).<SETTER_IN>transform(transformer).to(fieldName,destFieldHolder).getElementMapper(),true);
+	}
+	private <GETTER_OUT,SETTER_IN> void mapFieldWithConverter(String fieldName, FieldHolder srcFieldHolder, FieldHolder destFieldHolder, DirectMapper<GETTER_OUT,SETTER_IN> converter) {
+		addElementMapper(createElementMapper().<GETTER_OUT>from(fieldName,srcFieldHolder).transform(converter::mapOrNull).to(fieldName,destFieldHolder).getElementMapper(),true);
 	}
     
-    private <T1,T2> ClassMapper<T,U> addElementMapper(ElementMapper<T,T1,T2,U> elementMapper, boolean isCalledDuringConstruction) {
+    private <GETTER_OUT,SETTER_IN> ClassMapper<T,U> addElementMapper(ElementMapper<T,GETTER_OUT,SETTER_IN,U> elementMapper, boolean isCalledDuringConstruction) {
     	if(isCalledDuringConstruction) {
     		this.fieldMappings.put(elementMapper.getFromValue(), elementMapper.getDestValue(),elementMapper);
     	}

@@ -1,16 +1,12 @@
 /**
- * Provides a set of factory classes to help the user to create custom mappings.<br>
- * The package contains the following factories:
+ * Provides a factory class to help the user to create custom mappings.<br>
+ * The factory method are used to create the following instances:
  * <ul>
- * <li>{@code CollectionFactory} : for creatinga collection based on destination class type</li>
- * <li>{@code ElementMapperFactory} : for creating an ElementMapper based on input and output values</li>
- * <li>{@code GetterFactory} : for creating an Getter based on input values</li>
- * <li>{@code SetterFactory} : for creating an setter based on output values</li>
+ * <li>{@code Collection} : using {@code Factory.collection(...)}</li>
+ * <li>{@code ElementMapper} : using {@code Factory.element(...)}</li>
+ * <li>{@code Getter} : using {@code Factory.getter(...)}</li>
+ * <li>{@code Setter} : using {@code Factory.setter(...)}</li>
  * </ul>
  * @author eschoysman
- * @see es.utils.mapper.factory.CollectionFactory
- * @see es.utils.mapper.factory.ElementMapperFactory
- * @see es.utils.mapper.factory.GetterFactory
- * @see es.utils.mapper.factory.SetterFactory
  */
 package es.utils.mapper.factory;

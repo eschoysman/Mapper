@@ -3,7 +3,7 @@
  * The package contains the following classes:
  * <ul>
  * <li>{@code PairKey} : wrapper for the TwoKeyMap key object.</li>
- * <li>{@code TwoKeyMap} : Map that has two keys incapsulated inside a {@code PairKey} istance.</li>
+ * <li>{@code TwoKeyMap} : Map that has two keys encapsulated inside a {@code PairKey} instance.</li>
  * </ul>
  * @author eschoysman
  * @see es.utils.doublekeymap.PairKey

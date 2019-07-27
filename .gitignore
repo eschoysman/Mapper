@@ -11,7 +11,7 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar !Mapper.jar
+*.jar !jar/*.jar
 *.war
 *.nar
 *.ear
@@ -30,3 +30,5 @@ Mapper 2.0.iml
 .classpath
 .project
 /target/
+
+.vscode/

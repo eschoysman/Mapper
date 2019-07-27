@@ -4,13 +4,32 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.eschoysman</groupId>
 	<artifactId>mapper</artifactId>
-	<version>1.1.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 
 	<name>Mapper</name>
 	<description>Library for mapping a java object to another</description>
 	<url>https://github.com/eschoysman/Mapper</url>
 
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>http://www.opensource.org/licenses/mit-license.php</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>echoysman</name>
+			<organizationUrl>https://github.com/eschoysman</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<url>https://github.com/eschoysman/Mapper/tree/master</url>
+	</scm>
+
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version.source>1.8</java.version.source>
 		<java.version.target>1.8</java.version.target>
 		<junit.version>5.5.0-M1</junit.version>
@@ -18,28 +37,64 @@
 		<junit.engine.version>5.5.0-M1</junit.engine.version>
 		<assertj.version>3.12.2</assertj.version>
 		<clover.version>4.3.1</clover.version>
+		<maven.compiler.plugin>3.7.0</maven.compiler.plugin>
+		<maven.jar.plugin>3.1.2</maven.jar.plugin>
+		<maven.source.plugin>3.1.0</maven.source.plugin>
+		<maven.javadoc.plugin>3.1.1</maven.javadoc.plugin>
 	</properties>
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>test</testSourceDirectory>
+		<finalName>mapper</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
+				<version>${maven.compiler.plugin}</version>
 				<configuration>
 					<source>${java.version.source}</source>
 					<target>${java.version.target}</target>
 				</configuration>
 			</plugin>
 			<plugin>
-	            <groupId>org.openclover</groupId>
-	            <artifactId>clover-maven-plugin</artifactId>
-	            <version>${clover.version}</version>   
-	            <configuration>
-	            	<includesTestSourceRoots>false</includesTestSourceRoots>
-	            </configuration>  
-	        </plugin>
+				<groupId>org.openclover</groupId>
+				<artifactId>clover-maven-plugin</artifactId>
+				<version>${clover.version}</version>
+				<configuration>
+					<includesTestSourceRoots>false</includesTestSourceRoots>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven.jar.plugin}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven.source.plugin}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven.javadoc.plugin}</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
