@@ -199,12 +199,11 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 				Class<?> srcFieldType = fieldHolderFrom.getType();
 				Class<?> destFieldType = fieldHolderTo.getType();
 				if(srcFieldType.isArray() && destFieldType.isArray()) {
-					arrayCase(fieldHolderFrom, srcFieldType.getComponentType(), fieldHolderTo, destFieldType.getComponentType());
+					arrayCase(fieldHolderFrom, fieldHolderTo, destFieldType.getComponentType());
 				}
-				Class<Object> effectiveGenericTypFrom = MapperUtil.getGenericType(fieldHolderFrom.getGenericType());
-				Class<Object> effectiveGenericTypDest = MapperUtil.getGenericType(fieldHolderTo.getGenericType());
+				Class<Object> effectiveGenericTypeDest = MapperUtil.getGenericType(fieldHolderTo.getGenericType());
 				if(Collection.class.isAssignableFrom(srcFieldType) && Collection.class.isAssignableFrom(destFieldType)) {
-					collectionCase(fieldHolderFrom, fieldHolderFrom.getType(), effectiveGenericTypFrom, fieldHolderTo, fieldHolderTo.getType(), effectiveGenericTypDest);
+					collectionCase(fieldHolderFrom, fieldHolderTo, fieldHolderTo.getType(), effectiveGenericTypeDest);
 					continue;
 				}
 				
@@ -223,22 +222,16 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 					mapFieldWithTranformation(fieldName, fieldHolderFrom, fieldHolderTo);
 				}
 				else if(destFieldType.isAssignableFrom(srcFieldType)) {
-					Class<Object> typeFrom = effectiveGenericTypFrom;
-					Class<Object> typeTo = effectiveGenericTypDest;
-					if(typeFrom!=null && typeTo!=null && mapper.hasMappingBetween(typeFrom,typeTo)) {
-						mapFieldWithTranformation(fieldName, fieldHolderFrom, fieldHolderTo);
-					}
 					addElementMapper(createElementMapper().from(fieldHolderFrom).to(fieldHolderTo).getElementMapper(),true);
 				}
 			}
 		}
 	}
 
-	private <GETTER_OUT,SETTER_IN> void arrayCase(FieldHolder srcField, Class<GETTER_OUT> srcClass, FieldHolder destField, Class<SETTER_IN> destClass) {
+	private <GETTER_OUT,SETTER_IN> void arrayCase(FieldHolder srcField, FieldHolder destField, Class<SETTER_IN> destClass) {
 		addElementMapper(createElementMapper().<GETTER_OUT[]>from(srcField).<SETTER_IN[]>transform(in->mapper.mapArray(in,destClass)).to(destField).getElementMapper(),true);
 	}
-	private <GETTER_OUT, SETTER_IN> void collectionCase(FieldHolder srcField, Class<?> srcClass, Class<GETTER_OUT> srcGenericType,
-											 FieldHolder destField, Class<?> destClass, Class<SETTER_IN> destGenericType) {
+	private <GETTER_OUT, SETTER_IN> void collectionCase(FieldHolder srcField, FieldHolder destField, Class<?> destClass, Class<SETTER_IN> destGenericType) {
 		Function<Collection<GETTER_OUT>,Collection<SETTER_IN>> transformer =
 				in->mapper.mapCollection(in,
 										 CollectionFactory.<GETTER_OUT,SETTER_IN>create(in.getClass(),destField.getCollectionType()),

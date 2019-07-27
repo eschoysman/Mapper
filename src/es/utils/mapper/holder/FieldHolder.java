@@ -45,6 +45,7 @@ public class FieldHolder {
 	 */
 	public FieldHolder(Field field, Configuration config) {
 		this.field = Objects.requireNonNull(field);
+		Objects.requireNonNull(config);
 		this.fieldName = field.getName();
 		this.type = field.getType();
 		this.genericType = field.getGenericType();

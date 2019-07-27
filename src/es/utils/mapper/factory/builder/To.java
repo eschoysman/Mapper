@@ -141,7 +141,7 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 		};
 	}
 	private ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> build(Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
-		return new ElementMapperBuilder<>(mapping, new ElementMapper<>(getter,transformer,setter));
+		return new ElementMapperBuilder<>(mapping,getter,transformer,setter);
 	}
 	
 }

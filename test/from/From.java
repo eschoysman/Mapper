@@ -1,10 +1,12 @@
 package from;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import converter.ConverterDateTimestamp;
 import es.utils.mapper.annotation.AliasNames;
@@ -25,6 +27,7 @@ public class From {
 	private String ignoredField;
 	private String ignoredField1;
 	private String ignoredField2;
+	private List<? extends Optional<String>> optionalCollection;
 
 	@AliasNames("data1")
 	private Date date1;	// 2019-07-07 08:45:36
@@ -51,6 +54,7 @@ public class From {
 		this.date1 = calendar.getTime();
 		this.date2 = calendar.getTime();
 		this.date3 = calendar.getTime();
+		this.optionalCollection = new ArrayList<>();
 	}
 
 	@Override
@@ -59,6 +63,14 @@ public class From {
 				"From [classFrom=%s, name=%s, surname=%s, fromArray=%s, fromCollection=%s, fromCollection2=%s, ignoredField=%s, ignoredField1=%s, ignoredField2=%s, date1=%s, date2=%s, date3=%s]",
 				this.classFrom, this.name, this.surname, Arrays.toString(this.fromArray), this.fromCollection,
 				this.fromCollection2, this.ignoredField, this.ignoredField1, this.ignoredField2, this.date1, this.date2, this.date3);
+	}
+
+	public List<? extends Optional<String>> getOptionalCollection() {
+		return optionalCollection;
+	}
+
+	public void setOptionalCollection(List<? extends Optional<String>> optionalCollection) {
+		this.optionalCollection = optionalCollection;
 	}
 
 }

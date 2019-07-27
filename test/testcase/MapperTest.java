@@ -276,6 +276,22 @@ public class MapperTest {
 				+ "");
 	}
 	@Test
+	public void shouldThrowMappingNotFoundExceptionWithNotExistingMappingByClass2() throws MappingException {
+		Mapper mapper = new Mapper();
+		mapper.add(From.class, TimeUnit.class,from->TimeUnit.DAYS);
+		mapper.add(ChronoUnit.class, To.class,$->new To());
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		MappingNotFoundException exception = assertThrows(MappingNotFoundException.class, ()->mapper.map(from, To.class));
+		assertThat(exception.getMessage()).contains("WARNING - No mappings found in es.utils.mapper.Mapper for input class java.lang.Class and output class to.To\n" + 
+				"Exisiting destination mappings from class from.From:\n" + 
+				"\tclass java.util.concurrent.TimeUnit\n" + 
+				"Exisiting source mappings to class to.To:\n" + 
+				"\tclass java.time.temporal.ChronoUnit\n" + 
+				"Other exisiting mappings:\n" + 
+				"\tnone\n"
+				+ "");
+	}
+	@Test
 	public void shouldThrowMappingNotFoundExceptionWithNotExistingMappingByObject() throws MappingException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
@@ -320,6 +336,30 @@ public class MapperTest {
 
 	}
 	@Test
+	public void shouldMapArrayOfElementIntoArrayOfSuperType() throws MappingException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		String[] origin = {"MINUTES","MINUTES","MINUTES"};
+		assertThat(mapper.mapArray(origin,new CharSequence[0])).isNotNull()
+															.isInstanceOf(CharSequence[].class)
+															.hasSize(3)
+															.containsSequence("MINUTES","MINUTES","MINUTES");
+		assertThat(mapper.mapArray(null,new CharSequence[0])).isNotNull()
+														 .isInstanceOf(CharSequence[].class)
+														 .hasSize(0);
+	}
+	@Test
+	public void shouldMapArrayOfElementIntoArrayOfSubType() throws MappingException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		CharSequence[] origin = {"MINUTES","MINUTES","MINUTES"};
+		assertThat(mapper.mapArray(origin,new String[0])).isNotNull()
+															.isInstanceOf(String[].class)
+															.hasSize(3)
+															.containsOnlyNulls();
+		assertThat(mapper.mapArray(null,new String[0])).isNotNull()
+														 .isInstanceOf(String[].class)
+														 .hasSize(0);
+	}
+	@Test
 	public void shouldMapArrayOfElementAndCreateArray() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
@@ -339,6 +379,7 @@ public class MapperTest {
 										.isInstanceOf(ArrayList.class)
 										.hasSize(3)
 										.containsSequence(TimeUnit.MINUTES,TimeUnit.MINUTES,TimeUnit.MINUTES);
+		assertThat(mapper.mapCollection(null,new ArrayList<TimeUnit>(),TimeUnit.class)).isNull();
 	}
 	@Test
 	public void shouldThrowMappingExceptionBecauseOfErrorInMappingSingleElementOfCollection() throws MappingException, IOException {
@@ -364,17 +405,18 @@ public class MapperTest {
 		assertThat(result).isNull();
 		assertThat(outString).startsWith("es.utils.mapper.exception.MappingException: java.lang.NullPointerException");
 	}
+	@SuppressWarnings("unchecked")
 	@Test
 	public void shouldMapCollectionOfElementByClassType() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
 		List<ChronoUnit> origin = Arrays.asList(ChronoUnit.MINUTES,ChronoUnit.MINUTES,ChronoUnit.MINUTES);
-		@SuppressWarnings("unchecked")
 		ArrayList<TimeUnit> resultMapCollection = mapper.mapCollection(origin,ArrayList.class,TimeUnit.class);
 		assertThat(resultMapCollection).isNotNull()
-															.isInstanceOf(ArrayList.class)
-															.hasSize(3)
-															.containsSequence(TimeUnit.MINUTES,TimeUnit.MINUTES,TimeUnit.MINUTES);
+									   .isInstanceOf(ArrayList.class)
+									   .hasSize(3)
+									   .containsSequence(TimeUnit.MINUTES,TimeUnit.MINUTES,TimeUnit.MINUTES);
+		assertThat(mapper.mapCollection(null,ArrayList.class,TimeUnit.class)).isNull();
 	}
 	
 	/* Map Method Enum */

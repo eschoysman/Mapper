@@ -208,7 +208,7 @@ So far we only saw how to create default mapping, but rarely is the mapping we w
 
 ## In the future
 
-More to come!
+ - support for generic in custom types
 
 ---
 <a href="download"></a>

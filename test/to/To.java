@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import converter.ConverterDateTimestamp;
 import es.utils.mapper.annotation.AliasNames;
@@ -22,7 +23,7 @@ public class To {
 	private To[] toArray;
 	@AliasNames("innerCollection")
 	@CollectionType(LinkedList.class)
-	private List<To> toCollection;
+	private List<? extends To> toCollection;
 	@AliasNames("innerCollection2")
 	private List<To> toCollection2;
 	@IgnoreField
@@ -38,12 +39,13 @@ public class To {
 	@AliasNames("data3")
 	@Converter(ConverterDateTimestamp.class)
 	private Timestamp timestamp3;
+	private List<? extends Optional<String>> optionalCollection;
 	
 	public To() {
 		this.classTo = "To";
 	}
 
-	public List<To> getToCollection() {
+	public List<? extends To> getToCollection() {
 		return toCollection;
 	}
 
@@ -178,6 +180,14 @@ public class To {
 		} else if (!this.timestamp3.equals(other.timestamp3))
 			return false;
 		return true;
+	}
+
+	public List<? extends Optional<String>> getOptionalCollection() {
+		return optionalCollection;
+	}
+
+	public void setOptionalCollection(List<? extends Optional<String>> optionalCollection) {
+		this.optionalCollection = optionalCollection;
 	}
 
 }

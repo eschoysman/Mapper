@@ -11,10 +11,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import es.utils.doublekeymap.PairKey;
 import es.utils.doublekeymap.TwoKeyMap;
@@ -337,9 +337,6 @@ public class Mapper {
 		if(mapper!=null) {
 			Arrays.setAll(destination,i->mapper.mapOrNull(origin[i]));
 		}
-		else if(originType.isAssignableFrom(destinationType)) {
-			Arrays.setAll(destination,i->destinationType.cast(origin[i]));
-		}
 		return destination;
 	}
 	/**
@@ -403,13 +400,9 @@ public class Mapper {
 		if(!origin.isEmpty() && srcGenericType!=null && resultElementType!=null) {
 			@SuppressWarnings("unchecked")
 			MapperObject<T,U> mapper = (MapperObject<T,U>)getMappingBetween(srcGenericType,resultElementType);
-		Stream<T> originStream = origin.stream();
-			if(mapper!=null) {
-				originStream.map(mapper::mapOrNull).forEach(destination::add);
-			}
-			else if(srcGenericType.isAssignableFrom(resultElementType)) {
-				originStream.map(resultElementType::cast).forEach(destination::add);
-			}
+			Optional.ofNullable(mapper)
+					.map(m->origin.stream().map(m::mapOrNull))
+					.get().forEach(destination::add);
 		}
 		return destination;
 	}
@@ -436,6 +429,10 @@ public class Mapper {
 		build();
 		@SuppressWarnings("unchecked")
 		MapperObject<T,U> result = (MapperObject<T,U>)mappings.get(from,to);
+		if(result==null && to.isAssignableFrom(from)) {
+			result = new DirectMapper<T,U>(from,to,to::cast);
+			add(result);
+		}
 		return result;
 	}
 
@@ -471,11 +468,7 @@ public class Mapper {
 	 * @return the list of the names and alias allowed for the given type {@code T}
 	 */
 	public <T> List<String> getNames(Class<T> type) {
-		List<String> names = new ArrayList<>();
-		if(this.fieldHolderCache.containsKey(type)) {
-			names.addAll(this.fieldHolderCache.get(type).keySet());
-		}
-		return names;
+		return new ArrayList<>(this.fieldHolderCache.getOrDefault(type,new HashMap<String,FieldHolder>()).keySet());
 	}
 	
 	/**
@@ -500,7 +493,8 @@ public class Mapper {
     	}
 		return supplier.get();
     }
-	
+
+    
 	private <T,U> Mapper add(Class<T> from, Class<U> to, MapperObject<T,U> objectMapper) {
 		mappings.put(from,to, objectMapper);
 		objectMapper.setMapper(this);
@@ -515,8 +509,6 @@ public class Mapper {
 		@SuppressWarnings({"unchecked","rawtypes"})
 		MapperObject<T,U> enumMapper = new EnumMapper(enumFrom,enumTo);
 		add(from,to,enumMapper);
-//		mappings.put(from,to, enumMapper);
-//		isDirty = true;
 		return enumMapper;
 	}
 	private <T,U> void mappingNotFound(Class<T> fromClass, Class<U> toClass) throws MappingNotFoundException {
@@ -566,10 +558,9 @@ public class Mapper {
     	for(Field field : MapperUtil.getAllFields(type)) {
     		FieldHolder fieldHolder = new FieldHolder(field,getConfig());
     		for(String name : fieldHolder.getAllNames()) {
-    			FieldHolder prevValue = result.put(name,fieldHolder);
-	    		if(prevValue!=null) {
+	    		if(result.put(name,fieldHolder)!=null) {
 	    			try {
-						throw new MappingException("Two Fields in "+type+" have the same name or alias "+name);
+						throw new MappingException("Two Fields in "+type+" have the same name or alias \""+name+"\"");
 					} catch (MappingException e) {
 						e.printStackTrace();
 					}

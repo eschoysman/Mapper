@@ -1,5 +1,6 @@
 package es.utils.mapper.impl.element;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import es.utils.mapper.configuration.Configuration;
@@ -33,6 +34,9 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @param setter an implementation of the getter logic
 	 */
 	public ElementMapper(Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
+		Objects.requireNonNull(getter);
+		Objects.requireNonNull(transformer);
+		Objects.requireNonNull(setter);
 		this.getter = getter;
 		this.transformer = transformer;
 		this.setter = setter;

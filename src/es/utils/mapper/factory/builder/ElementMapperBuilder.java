@@ -1,6 +1,10 @@
 package es.utils.mapper.factory.builder;
 
+import java.util.function.Function;
+
 import es.utils.mapper.impl.element.ElementMapper;
+import es.utils.mapper.impl.element.Getter;
+import es.utils.mapper.impl.element.Setter;
 import es.utils.mapper.impl.object.ClassMapper;
 
 /**
@@ -21,9 +25,9 @@ public class ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> {
 	private ClassMapper<IN,OUT> mapping;
 	private ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> elementMapper;
 	
-	ElementMapperBuilder(ClassMapper<IN,OUT> mapping, ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> elementMapper) {
+	ElementMapperBuilder(ClassMapper<IN,OUT> mapping, Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
 		this.mapping = mapping;
-		this.elementMapper = elementMapper;
+		this.elementMapper = new ElementMapper<>(getter,transformer,setter);
 	}
 
 	/**

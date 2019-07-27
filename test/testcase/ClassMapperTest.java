@@ -2,6 +2,10 @@ package testcase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+
 import org.junit.jupiter.api.Test;
 
 import es.utils.mapper.Mapper;
@@ -10,7 +14,9 @@ import es.utils.mapper.exception.MappingNotFoundException;
 import es.utils.mapper.impl.object.ClassMapper;
 import from.ClassMapperFromTest;
 import from.From;
+import from.SpecificTestCaseFrom;
 import to.ClassMapperToTest;
+import to.SpecificTestCaseTo;
 import to.To;
 
 public class ClassMapperTest {
@@ -223,6 +229,25 @@ public class ClassMapperTest {
 		ClassMapper<From,To> mapping = mapper.addForClass(From.class, To.class);
 		To to = new To();
 		assertThat(mapping.map(null,to)).isEqualTo(to);
+	}
+	
+	@Test
+	public void shouldThrowMappingExceptionForDuplicateAliasOrName() throws MappingException, MappingNotFoundException, IOException {
+		Mapper mapper = new Mapper();
+		mapper.add(SpecificTestCaseFrom.class,SpecificTestCaseTo.class);
+		
+    	ByteArrayOutputStream err = new ByteArrayOutputStream();
+		PrintStream originalErr = System.err;
+		System.setErr(new PrintStream(err));
+
+		mapper.getFieldsHolderFromCache(SpecificTestCaseFrom.class);
+
+    	String errString = err.toString();
+    	err.flush();
+    	err.close();
+    	System.setErr(originalErr);
+
+		assertThat(errString).startsWith("es.utils.mapper.exception.MappingException: Two Fields in "+SpecificTestCaseFrom.class+" have the same name or alias \"string\"");
 	}
 	
 }

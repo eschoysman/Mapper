@@ -80,7 +80,7 @@ public class MapperUtil {
 		if(input!=null && input instanceof ParameterizedType) {
 		    ParameterizedType paramType = (ParameterizedType)input;
 		    Type[] argTypes = paramType.getActualTypeArguments();
-		    if(argTypes.length>0) {
+		    if(argTypes.length==1) {
 		    	String typeName = argTypes[0].getTypeName();
 		    	Pattern pattern = Pattern.compile(".+? extends ");
 		    	if(pattern.matcher(typeName).find()) {
@@ -92,9 +92,7 @@ public class MapperUtil {
 			    	@SuppressWarnings("unchecked")
 					Class<TYPE> resultClass = (Class<TYPE>)Class.forName(typeName);
 					return resultClass;
-		    	} catch (Exception e) {
-		    		return null;
-				}
+		    	} catch (Exception e) {}
 		    }
 		}
 		return null;
