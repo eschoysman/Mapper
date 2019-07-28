@@ -24,6 +24,7 @@ public class BuilderTest {
 		ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
 		ClassMapperFromTest from = new ClassMapperFromTest();
 		mapping.createElementMapper().from("name",ClassMapperFromTest::getNameFrom)
+									 .transform(String::toLowerCase)
 									 .transform(s->s.length())
 									 .to("name", ClassMapperToTest::setAge)
 									 .build();
@@ -49,6 +50,28 @@ public class BuilderTest {
     	out.close();
     	System.setOut(originalOut);
     	assertThat(outString).isNotNull().isEqualTo(from.getNameFrom());
+    	assertThat(to).isNotNull().hasFieldOrPropertyWithValue("nameTo","Pippo")
+								  .hasFieldOrPropertyWithValue("surnameTo","Sora")
+								  .hasFieldOrPropertyWithValue("age",0);
+	}
+	@Test
+	public void shouldCreateMapperWithTransformAndConsumerAndNoSetter() throws MappingException, IOException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
+		ClassMapperFromTest from = new ClassMapperFromTest();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream originalOut = System.out;
+		System.setOut(new PrintStream(out));
+    	mapping.createElementMapper().from("name",ClassMapperFromTest::getNameFrom)
+    								 .transform(String::toUpperCase)
+									 .consume(System.out::print)
+									 .build();
+    	ClassMapperToTest to = mapper.map(from);
+    	String outString = out.toString();
+    	out.flush();
+    	out.close();
+    	System.setOut(originalOut);
+    	assertThat(outString).isNotNull().isEqualTo(from.getNameFrom().toUpperCase());
     	assertThat(to).isNotNull().hasFieldOrPropertyWithValue("nameTo","Pippo")
 								  .hasFieldOrPropertyWithValue("surnameTo","Sora")
 								  .hasFieldOrPropertyWithValue("age",0);

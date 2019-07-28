@@ -3,6 +3,7 @@ package es.utils.mapper.factory.builder;
 import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import es.utils.mapper.Mapper;
@@ -40,6 +41,27 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 		this.transformer = transformer;
 	}
 
+	/**
+	 * Add a transformer between the getter and setter operations 
+	 * @param <SETTER_IN_NEW> the new input type of the setter operation
+	 * @param transformer a function to map the result of the previous transformation into the correct type for the setter
+	 * @return the third step of the builder
+	 */
+	public <SETTER_IN_NEW> To<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(Function<SETTER_IN,SETTER_IN_NEW> transformer) {
+		Objects.requireNonNull(transformer);
+		return new To<>(mapper,mapping,getter,this.transformer.andThen(transformer));
+	}
+
+	/**
+	 * Set a {@link Consumer} for the {@code SETTER_IN} value and set a empty setter
+	 * @param consumer the consumer of the {@code SETTER_IN} value
+	 * @return a ElementMapper, result of the builder
+	 */
+	public ElementMapperBuilder<IN,GETTER_OUT,Void,OUT> consume(Consumer<SETTER_IN> consumer) {
+		return this.<Void>transform(obj->{consumer.accept(obj);return null;}).toEmpty();
+	}
+	
+	
 	/**
 	 * Create a empty {@code Setter} instance
 	 * @return the second step of the builder to add a transformer
