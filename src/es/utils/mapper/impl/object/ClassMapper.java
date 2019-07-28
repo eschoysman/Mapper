@@ -116,7 +116,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
      * @return the current instance
 	 */
 	public <GETTER_OUT,SETTER_IN> ClassMapper<T,U> addCustomFieldMapper(String fieldFrom, Function<T,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transfom, String fieldTo, BiConsumer<U,SETTER_IN> setter) {
-		return createElementMapper().from(fieldFrom,getter).transform(transfom).to(fieldTo,setter).build();
+		return createElementMapper().from(fieldFrom,getter).transform(transfom::apply).to(fieldTo,setter).build();
 	}
 	/**
 	 * Allow to add a default value in the destination object.
@@ -236,12 +236,12 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 				in->mapper.mapCollection(in,
 										 CollectionFactory.<GETTER_OUT,SETTER_IN>create(in.getClass(),destField.getCollectionType()),
 										 destGenericType);
-		addElementMapper(createElementMapper().<Collection<GETTER_OUT>>from(srcField).<Collection<SETTER_IN>>transform(transformer).to(destField).getElementMapper(),true);
+		addElementMapper(createElementMapper().<Collection<GETTER_OUT>>from(srcField).<Collection<SETTER_IN>>transform(transformer::apply).to(destField).getElementMapper(),true);
 	}	
 	private <GETTER_OUT,SETTER_IN> void mapFieldWithTranformation(String fieldName, FieldHolder srcFieldHolder, FieldHolder destFieldHolder) {
 		@SuppressWarnings("unchecked")
 		Function<GETTER_OUT,SETTER_IN> transformer = in->mapper.mapOrNull(in,(Class<SETTER_IN>)destFieldHolder.getType());
-		addElementMapper(createElementMapper().<GETTER_OUT>from(fieldName,srcFieldHolder).<SETTER_IN>transform(transformer).to(fieldName,destFieldHolder).getElementMapper(),true);
+		addElementMapper(createElementMapper().<GETTER_OUT>from(fieldName,srcFieldHolder).<SETTER_IN>transform(transformer::apply).to(fieldName,destFieldHolder).getElementMapper(),true);
 	}
 	private <GETTER_OUT,SETTER_IN> void mapFieldWithConverter(String fieldName, FieldHolder srcFieldHolder, FieldHolder destFieldHolder, DirectMapper<GETTER_OUT,SETTER_IN> converter) {
 		addElementMapper(createElementMapper().<GETTER_OUT>from(fieldName,srcFieldHolder).transform(converter::mapOrNull).to(fieldName,destFieldHolder).getElementMapper(),true);

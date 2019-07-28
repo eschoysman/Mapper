@@ -403,7 +403,7 @@ public class MapperTest {
 		out.close();
 		System.setErr(originalErr);
 		assertThat(result).isNull();
-		assertThat(outString).startsWith("es.utils.mapper.exception.MappingException: java.lang.NullPointerException");
+		assertThat(outString).startsWith("es.utils.mapper.exception.MappingException: java.lang.RuntimeException: java.lang.NullPointerException");
 	}
 	@SuppressWarnings("unchecked")
 	@Test

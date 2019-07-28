@@ -2,6 +2,7 @@ package testcase;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -75,6 +76,18 @@ public class BuilderTest {
     	assertThat(to).isNotNull().hasFieldOrPropertyWithValue("nameTo","Pippo")
 								  .hasFieldOrPropertyWithValue("surnameTo","Sora")
 								  .hasFieldOrPropertyWithValue("age",0);
+	}
+	@Test
+	public void shouldThrowExceptionInConsumer() throws MappingException, IOException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
+		ClassMapperFromTest from = new ClassMapperFromTest();
+    	mapping.createElementMapper().from("name",ClassMapperFromTest::getNameFrom)
+									 .<String>transform(n->null)
+									 .consume(String::toString)
+									 .build();
+    	MappingException exception = assertThrows(MappingException.class, ()->mapper.map(from));
+    	assertThat(exception.getMessage()).isNotNull().startsWith("java.lang.RuntimeException: java.lang.RuntimeException: java.lang.RuntimeException: java.lang.NullPointerException");
 	}
 
 }

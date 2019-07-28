@@ -2,13 +2,14 @@ package es.utils.mapper.factory.builder;
 
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import es.utils.mapper.Mapper;
 import es.utils.mapper.impl.element.ElementMapper;
 import es.utils.mapper.impl.element.Getter;
 import es.utils.mapper.impl.object.ClassMapper;
+import es.utils.mapper.utils.ThrowingConsumer;
+import es.utils.mapper.utils.ThrowingFunction;
 
 /**
  * Second (optional) step of the ElementMapper builder that manage the creation of the transformer operation
@@ -35,7 +36,7 @@ public class Transformer<IN,GETTER_OUT,OUT> extends To<IN,GETTER_OUT,GETTER_OUT,
 	 * @param transformer a function to map the result of the getter into the correct type for the setter
 	 * @return the third step of the builder
 	 */
-	public <SETTER_IN> To<IN,GETTER_OUT,SETTER_IN,OUT> transform(Function<GETTER_OUT,SETTER_IN> transformer) {
+	public <SETTER_IN> To<IN,GETTER_OUT,SETTER_IN,OUT> transform(ThrowingFunction<GETTER_OUT,SETTER_IN> transformer) {
 		Objects.requireNonNull(transformer);
 		return new To<>(mapper,mapping,getter,transformer);
 	}
@@ -62,7 +63,7 @@ public class Transformer<IN,GETTER_OUT,OUT> extends To<IN,GETTER_OUT,GETTER_OUT,
 	 * @param consumer the consumer of the {@code GETTER_OUT} value
 	 * @return a ElementMapper, result of the builder
 	 */
-	public ElementMapperBuilder<IN,GETTER_OUT,Void,OUT> consume(Consumer<GETTER_OUT> consumer) {
+	public ElementMapperBuilder<IN,GETTER_OUT,Void,OUT> consume(ThrowingConsumer<GETTER_OUT> consumer) {
 		return this.<Void>transform(obj->{consumer.accept(obj);return null;}).toEmpty();
 	}
 	

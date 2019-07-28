@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import es.utils.mapper.Mapper;
 import es.utils.mapper.holder.FieldHolder;
@@ -13,6 +12,8 @@ import es.utils.mapper.impl.element.Getter;
 import es.utils.mapper.impl.element.Setter;
 import es.utils.mapper.impl.object.ClassMapper;
 import es.utils.mapper.utils.MapperUtil;
+import es.utils.mapper.utils.ThrowingConsumer;
+import es.utils.mapper.utils.ThrowingFunction;
 
 /**
  * Third step of the ElementMapper builder that manage the creation of the setter operation
@@ -32,9 +33,9 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	protected Mapper mapper;
 	protected ClassMapper<IN,OUT> mapping;
 	protected Getter<IN,GETTER_OUT> getter;
-	private Function<GETTER_OUT,SETTER_IN> transformer;
+	private ThrowingFunction<GETTER_OUT,SETTER_IN> transformer;
 	
-	To(Mapper mapper, ClassMapper<IN,OUT> mapping, Getter<IN, GETTER_OUT> getter, Function<GETTER_OUT, SETTER_IN> transformer) {
+	To(Mapper mapper, ClassMapper<IN,OUT> mapping, Getter<IN, GETTER_OUT> getter, ThrowingFunction<GETTER_OUT, SETTER_IN> transformer) {
 		this.mapper = mapper;
 		this.mapping = mapping;
 		this.getter = getter;
@@ -47,9 +48,9 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @param transformer a function to map the result of the previous transformation into the correct type for the setter
 	 * @return the third step of the builder
 	 */
-	public <SETTER_IN_NEW> To<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(Function<SETTER_IN,SETTER_IN_NEW> transformer) {
+	public <SETTER_IN_NEW> To<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformer) {
 		Objects.requireNonNull(transformer);
-		return new To<>(mapper,mapping,getter,this.transformer.andThen(transformer));
+		return new To<>(mapper,mapping,getter,this.transformer.andThen(transformer)::apply);
 	}
 
 	/**
@@ -57,7 +58,7 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @param consumer the consumer of the {@code SETTER_IN} value
 	 * @return a ElementMapper, result of the builder
 	 */
-	public ElementMapperBuilder<IN,GETTER_OUT,Void,OUT> consume(Consumer<SETTER_IN> consumer) {
+	public ElementMapperBuilder<IN,GETTER_OUT,Void,OUT> consume(ThrowingConsumer<SETTER_IN> consumer) {
 		return this.<Void>transform(obj->{consumer.accept(obj);return null;}).toEmpty();
 	}
 	
@@ -175,7 +176,7 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 			}
 		};
 	}
-	protected ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> build(Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
+	protected ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> build(Getter<IN,GETTER_OUT> getter, ThrowingFunction<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
 		return new ElementMapperBuilder<>(mapping,getter,transformer,setter);
 	}
 	
