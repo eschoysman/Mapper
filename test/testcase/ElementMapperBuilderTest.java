@@ -94,5 +94,16 @@ public class ElementMapperBuilderTest {
 						.hasFieldOrPropertyWithValue("mapping",mapping)
 						.hasFieldOrProperty("elementMapper");
 	}
+	@Test
+	public void shouldCreateEmptyLastBuilderStepFromFieldName() throws MappingException {
+		Mapper mapper = new Mapper();
+		ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
+		ElementMapperBuilder<ClassMapperFromTest,String,Void,ClassMapperToTest> emb = mapping.createElementMapper().from("name",in->in.getNameFrom()).consume(s->System.out.println(s));
+		assertThat(emb).isNotNull()
+						.isExactlyInstanceOf(ElementMapperBuilder.class)
+						.hasNoNullFieldsOrProperties()
+						.hasFieldOrPropertyWithValue("mapping",mapping)
+						.hasFieldOrProperty("elementMapper");
+	}
 	
 }

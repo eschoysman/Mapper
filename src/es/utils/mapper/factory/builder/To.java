@@ -41,6 +41,19 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	}
 
 	/**
+	 * Create a empty {@code Setter} instance
+	 * @return the second step of the builder to add a transformer
+	 * @see Getter
+	 * @see Transformer
+	 * @see To
+	 */
+	public ElementMapperBuilder<IN,GETTER_OUT,Void,OUT> toEmpty() {
+		@SuppressWarnings("unchecked")
+		ElementMapperBuilder<IN,GETTER_OUT,Void,OUT> emb = (ElementMapperBuilder<IN,GETTER_OUT,Void,OUT>)this.to(Setter.empty());
+		return emb;
+	}
+	
+	/**
 	 * Create a {@code Getter} instance using the given getter object
 	 * @param setter the Setter instance to use
 	 * @return the second step of the builder to add a transformer
@@ -140,7 +153,7 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 			}
 		};
 	}
-	private ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> build(Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
+	protected ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> build(Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
 		return new ElementMapperBuilder<>(mapping,getter,transformer,setter);
 	}
 	

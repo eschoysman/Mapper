@@ -155,7 +155,23 @@ The example above shows the basic case of a `Mapper` with only one effective map
 
 The solution is simply: add more mappings to the `mapper`.
 
-For example the `Source` class contains a `ComplexSourceObject` field and `Destination` a `ComplexDestinationObject` one.
+For example the `Source` and `Destination` classes contains a complex object as below:
+
+```java
+public class Source {
+    // ...
+    private ComplexSourceObject obj;
+    // ...
+}
+
+public class Destination {
+    // ...
+    private ComplexDestinationObject obj;
+    // ...
+}
+```
+
+Our example code become:
 
 ```java
 Mapper mapper = new Mapper();
