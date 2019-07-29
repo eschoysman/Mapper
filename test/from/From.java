@@ -36,6 +36,8 @@ public class From {
 	private Date date2;	// 2019-07-07 08:45:36
 	@AliasNames("data3")
 	private Date date3;	// 2019-07-07 08:45:36
+	@AliasNames("data4")
+	private Date date4;	// 2019-07-07 08:45:36
 	
 	public From() {
 		this("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
@@ -54,6 +56,7 @@ public class From {
 		this.date1 = calendar.getTime();
 		this.date2 = calendar.getTime();
 		this.date3 = calendar.getTime();
+		this.date4 = calendar.getTime();
 		this.optionalCollection = new ArrayList<>();
 	}
 

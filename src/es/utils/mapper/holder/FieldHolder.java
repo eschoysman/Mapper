@@ -12,7 +12,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
-import es.utils.mapper.Mapper;
 import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.annotation.CollectionType;
 import es.utils.mapper.annotation.Converter;
@@ -20,6 +19,7 @@ import es.utils.mapper.annotation.IgnoreField;
 import es.utils.mapper.configuration.Configuration;
 import es.utils.mapper.converter.AbstractConverter;
 import es.utils.mapper.impl.object.DirectMapper;
+import es.utils.mapper.utils.MapperUtil;
 
 /**
  * A wrapper object to hold a Field and its information (name, aliases, type etc...).
@@ -99,15 +99,11 @@ public class FieldHolder {
 		Converter converter = this.field.getAnnotation(Converter.class);
 		if(converter!=null) {
 			for(Class<? extends AbstractConverter<?,?>> conv : converter.value()) {
-				try {
-					converters.add(conv.newInstance());
-				} catch (InstantiationException | IllegalAccessException e) {
-					try {
-						converters.add(conv.getConstructor(Mapper.class).newInstance(config.getMapper()));
-					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
-						System.out.println("WARNING - The converter for "+conv+" does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored.");
-					}
-				}
+				@SuppressWarnings("unchecked")
+				Class<? extends AbstractConverter<Object,Object>> converterCasted = (Class<? extends AbstractConverter<Object,Object>>)conv;
+				DirectMapper<?,?> converterInstance = MapperUtil.createFromConverter(converterCasted,config.getMapper());
+				if(converterInstance!=null)
+					converters.add(converterInstance);
 			}
 		}
 	}

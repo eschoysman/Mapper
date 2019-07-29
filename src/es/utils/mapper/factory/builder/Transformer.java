@@ -5,9 +5,13 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import es.utils.mapper.Mapper;
+import es.utils.mapper.converter.AbstractConverter;
+import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.impl.element.ElementMapper;
 import es.utils.mapper.impl.element.Getter;
 import es.utils.mapper.impl.object.ClassMapper;
+import es.utils.mapper.impl.object.DirectMapper;
+import es.utils.mapper.utils.MapperUtil;
 import es.utils.mapper.utils.ThrowingConsumer;
 import es.utils.mapper.utils.ThrowingFunction;
 
@@ -39,6 +43,20 @@ public class Transformer<IN,GETTER_OUT,OUT> extends To<IN,GETTER_OUT,GETTER_OUT,
 	public <SETTER_IN> To<IN,GETTER_OUT,SETTER_IN,OUT> transform(ThrowingFunction<GETTER_OUT,SETTER_IN> transformer) {
 		Objects.requireNonNull(transformer);
 		return new To<>(mapper,mapping,getter,transformer);
+	}
+	/**
+	 * Add a transformer between the getter and setter operations using the given converter class
+	 * @param <SETTER_IN> the input type of the setter operation
+	 * @param converter the class to instance to convert the the result of the getter into the correct type for the setter
+	 * @return the third step of the builder
+	 */
+	public <SETTER_IN> To<IN,GETTER_OUT,SETTER_IN,OUT> transform(Class<? extends AbstractConverter<GETTER_OUT,SETTER_IN>> converter) throws MappingException {
+		Objects.requireNonNull(converter);
+		DirectMapper<GETTER_OUT,SETTER_IN> converterInstance = MapperUtil.createFromConverter(converter,mapper);
+		if(converterInstance==null) {
+			throw new MappingException("Converter of "+converter+" cannot be istanziate.");
+		}
+		return new To<>(mapper,mapping,getter,converterInstance::mapOrNull);
 	}
 	/**
 	 * Add a generator for the setter operation

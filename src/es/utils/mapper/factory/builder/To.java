@@ -6,11 +6,14 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import es.utils.mapper.Mapper;
+import es.utils.mapper.converter.AbstractConverter;
+import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.holder.FieldHolder;
 import es.utils.mapper.impl.element.ElementMapper;
 import es.utils.mapper.impl.element.Getter;
 import es.utils.mapper.impl.element.Setter;
 import es.utils.mapper.impl.object.ClassMapper;
+import es.utils.mapper.impl.object.DirectMapper;
 import es.utils.mapper.utils.MapperUtil;
 import es.utils.mapper.utils.ThrowingConsumer;
 import es.utils.mapper.utils.ThrowingFunction;
@@ -53,6 +56,21 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 		return new To<>(mapper,mapping,getter,this.transformer.andThen(transformer)::apply);
 	}
 
+	/**
+	 * Add a transformer between the getter and setter operations using the given converter class
+	 * @param <SETTER_IN_NEW> the input type of the setter operation
+	 * @param converter the class to instance to convert the the result of the getter into the correct type for the setter
+	 * @return the third step of the builder
+	 */
+	public <SETTER_IN_NEW> To<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(Class<? extends AbstractConverter<SETTER_IN,SETTER_IN_NEW>> converter) throws MappingException {
+		Objects.requireNonNull(converter);
+		DirectMapper<SETTER_IN,SETTER_IN_NEW> converterInstance = MapperUtil.createFromConverter(converter,mapper);
+		if(converterInstance==null) {
+			throw new MappingException("Converter of "+converter+" cannot be istanziate.");
+		}
+		return new To<>(mapper,mapping,getter,this.transformer.andThen(converterInstance::mapOrNull)::apply);
+	}
+	
 	/**
 	 * Set a {@link Consumer} for the {@code SETTER_IN} value and set a empty setter
 	 * @param consumer the consumer of the {@code SETTER_IN} value

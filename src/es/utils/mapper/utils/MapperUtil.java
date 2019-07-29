@@ -1,6 +1,7 @@
 package es.utils.mapper.utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.LinkedHashSet;
@@ -10,7 +11,9 @@ import java.util.regex.Pattern;
 
 import es.utils.mapper.Mapper;
 import es.utils.mapper.annotation.AliasNames;
+import es.utils.mapper.converter.AbstractConverter;
 import es.utils.mapper.holder.FieldHolder;
+import es.utils.mapper.impl.object.DirectMapper;
 
 /**
  * This class contains a set of method used in the mapping creation.
@@ -98,6 +101,20 @@ public class MapperUtil {
 		return null;
 	}
 
+	public static <FROM,TO> DirectMapper<FROM,TO> createFromConverter(Class<? extends AbstractConverter<FROM,TO>> converter, Mapper mapper) {
+		DirectMapper<FROM,TO> result = null;
+		try {
+			result = (DirectMapper<FROM,TO>)converter.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			try {
+				result = (DirectMapper<FROM,TO>)converter.getConstructor(Mapper.class).newInstance(mapper);
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
+				System.out.println("WARNING - The converter for "+converter+" does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored.");
+			}
+		}
+		return result;
+	}
+	
 	private static <T> Field getDeclaredField(Class<T> type, String fieldName) {
 		try {
 			return type.getDeclaredField(fieldName);
