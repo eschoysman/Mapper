@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import org.junit.jupiter.api.Test;
 

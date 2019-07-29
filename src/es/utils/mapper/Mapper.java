@@ -53,7 +53,7 @@ public class Mapper {
 	public Mapper() {
 		this.mappings = new TwoKeyMap<>();
 		this.fieldHolderCache = new HashMap<>();
-		this.config = new Configuration();
+		this.config = new Configuration(this);
 		this.isDirty = false;
 	}
 

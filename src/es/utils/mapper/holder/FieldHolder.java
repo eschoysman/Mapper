@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
+import es.utils.mapper.Mapper;
 import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.annotation.CollectionType;
 import es.utils.mapper.annotation.Converter;
@@ -58,7 +59,7 @@ public class FieldHolder {
 		processIgnoreField();
 		if(!this.ignoreField) {
 			processAliases(config);
-			processConverters();
+			processConverters(config);
 			processCollectionType();
 		}
 	}
@@ -94,14 +95,18 @@ public class FieldHolder {
 			}
 		}
 	}
-	private void processConverters() {
+	private void processConverters(Configuration config) {
 		Converter converter = this.field.getAnnotation(Converter.class);
 		if(converter!=null) {
 			for(Class<? extends AbstractConverter<?,?>> conv : converter.value()) {
 				try {
 					converters.add(conv.newInstance());
 				} catch (InstantiationException | IllegalAccessException e) {
-					System.out.println("WARNING - The converter for "+conv+" does not have a empty public contructor; the converter is ignored.");
+					try {
+						converters.add(conv.getConstructor(Mapper.class).newInstance(config.getMapper()));
+					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
+						System.out.println("WARNING - The converter for "+conv+" does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored.");
+					}
 				}
 			}
 		}

@@ -6,17 +6,20 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+import es.utils.mapper.Mapper;
 import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.exception.MappingException;
 
 public class Configuration {
 
+	private Mapper mapper;
 	private Map<Class<?>,Supplier<?>> suppliers;
 	private Map<Class<? extends Annotation>,String> annotations;
 	private boolean deepCopyEnable;
 	private UnaryOperator<?> cloner;
 
-    public Configuration() {
+    public Configuration(Mapper mapper) {
+    	this.mapper = mapper;
     	this.suppliers = new HashMap<>();
     	this.annotations = new HashMap<>();
     	initDefaultValues();
@@ -28,6 +31,10 @@ public class Configuration {
 		} catch (MappingException e) {}
     	this.deepCopyEnable = false;
     	this.cloner = obj->obj;	// non fa niente, mette un Cloner di default che restituisce l'input senza toccarlo
+    }
+    
+    public Mapper getMapper() {
+    	return this.mapper;
     }
     
     public <T> Configuration addSupplier(Class<T> type, Supplier<T> supplier) {
