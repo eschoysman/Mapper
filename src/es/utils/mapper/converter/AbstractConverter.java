@@ -27,10 +27,15 @@ public class ConverterDateTimestamp extends AbstractConverter&lt;Date,Timestamp&
  * 
  * @see Converter
  */
-public class AbstractConverter<IN,OUT> extends DirectMapper<IN,OUT> {
+public abstract class AbstractConverter<IN,OUT> extends DirectMapper<IN,OUT> {
 
+	public AbstractConverter(Class<IN> from, Class<OUT> to) {
+		this(from, to, null);
+	}
 	public AbstractConverter(Class<IN> from, Class<OUT> to, ThrowingFunction<IN,OUT> transformer) {
 		super(from, to, transformer);
 	}
+	
+	public abstract OUT convert(IN input) throws Exception;
 	
 }
