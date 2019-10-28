@@ -197,7 +197,7 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 		};
 	}
 	protected ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> build(Getter<IN,GETTER_OUT> getter, ThrowingFunction<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
-		return new ElementMapperBuilder<>(mapping,getter,transformer,setter);
+		return new ElementMapperBuilder<>(mapper,mapping,getter,transformer,setter);
 	}
 	
 }
