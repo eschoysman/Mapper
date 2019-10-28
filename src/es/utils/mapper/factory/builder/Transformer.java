@@ -22,7 +22,7 @@ import es.utils.mapper.utils.ThrowingFunction;
  * @param <IN> the type of the origin object
  * @param <GETTER_OUT> the resulting type of the getter operation
  * @param <OUT> the type of the destination object
- * @see ClassMapper#createElementMapper()
+ * @see ClassMapper#addMapping()
  * @see ElementMapper
  * @see From
  * @see To

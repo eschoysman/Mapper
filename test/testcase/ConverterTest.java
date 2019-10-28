@@ -73,9 +73,9 @@ public class ConverterTest {
 	@Test
 	public void shouldApplyConverterInBuilder() throws MappingNotFoundException, MappingException {
 		Mapper mapper = new Mapper();
-		mapper.addForClass(From.class, To.class).createElementMapper()
+		mapper.addForClass(From.class,To.class).addMapping()
 			  .<Date>from("data4").transform(ConverterDateTimestamp.class).to("data4")
-			  .build();
+			  .create();
 		mapper.build();
 		From from = new From();
 		To to = mapper.map(from);
@@ -88,9 +88,9 @@ public class ConverterTest {
 	@Test
 	public void shouldApplyConverterInBuilder2() throws MappingNotFoundException, MappingException {
 		Mapper mapper = new Mapper();
-		mapper.addForClass(From.class, To.class).createElementMapper()
+		mapper.addForClass(From.class, To.class).addMapping()
 			  .<Date>from("data4").transform(d->d).transform(ConverterDateTimestamp.class).to("data4")
-			  .build();
+			  .create();
 		mapper.build();
 		From from = new From();
 		To to = mapper.map(from);
@@ -108,9 +108,9 @@ public class ConverterTest {
 		System.setOut(new PrintStream(out));
 		Mapper mapper = new Mapper();
 		MappingException exception = assertThrows(MappingException.class, ()->
-			mapper.addForClass(From.class, To.class).createElementMapper()
+			mapper.addForClass(From.class, To.class).addMapping()
 				  .<Date>from("data4").transform(ConverterDateTimestamp2.class).to("data4")
-				  .build());
+				  .create());
 		System.setOut(originalOut);
 		assertThat(exception.getMessage()).isEqualTo("Converter of "+ConverterDateTimestamp2.class+" cannot be istanziate.");
 	}
@@ -122,9 +122,9 @@ public class ConverterTest {
 		System.setOut(new PrintStream(out));
 		Mapper mapper = new Mapper();
 		MappingException exception = assertThrows(MappingException.class, ()->
-			mapper.addForClass(From.class, To.class).createElementMapper()
+			mapper.addForClass(From.class, To.class).addMapping()
 				  .<Date>from("data4").transform(d->d).transform(ConverterDateTimestamp2.class).to("data4")
-				  .build());
+				  .create());
 		mapper.build();
 		System.setOut(originalOut);
 		assertThat(exception.getMessage()).isEqualTo("Converter of "+ConverterDateTimestamp2.class+" cannot be istanziate.");

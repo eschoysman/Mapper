@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.sql.Timestamp;
-import java.util.Date;
 
 import org.junit.jupiter.api.Test;
 
@@ -50,10 +48,10 @@ public class ClassMapperTest {
 		assertThat(to.getSurnameTo()).isEqualTo(from.getSurnameFrom());
 		assertThat(to.getFullName()).isNull();
 		
-		mapping.createElementMapper().from("fullNameFrom", f->f.getNameFrom()+" "+f.getSurnameFrom())
+		mapping.addMapping().from("fullNameFrom", f->f.getNameFrom()+" "+f.getSurnameFrom())
 									 .transform(s->s+"!")
 									 .to("fullNameTo", ClassMapperToTest::setFullName)
-									 .build();
+									 .create();
 		
 		to = mapper.map(from, ClassMapperToTest.class);
 		assertThat(to.getNameTo()).isEqualTo(from.getNameFrom());
@@ -72,9 +70,9 @@ public class ClassMapperTest {
 		assertThat(to.getSurnameTo()).isEqualTo(from.getSurnameFrom());
 		assertThat(to.getFullName()).isNull();
 		
-		mapping.createElementMapper().<String>from("fullNameFrom", ()->"Name not Found")
+		mapping.addMapping().<String>from("fullNameFrom", ()->"Name not Found")
 									 .to("fullNameTo", ClassMapperToTest::setFullName)
-									 .build();
+									 .create();
 		
 		to = mapper.map(from, ClassMapperToTest.class);
 		assertThat(to.getNameTo()).isEqualTo(from.getNameFrom());
@@ -93,10 +91,10 @@ public class ClassMapperTest {
 		assertThat(to.getSurnameTo()).isEqualTo(from.getSurnameFrom());
 		assertThat(to.getFullName()).isNull();
 
-		mapping.createElementMapper().from("fullNameFrom", f->f.getNameFrom()+" "+f.getSurnameFrom())
+		mapping.addMapping().from("fullNameFrom", f->f.getNameFrom()+" "+f.getSurnameFrom())
 									 .transform(s->s+"!")
 									 .to("fullNameTo", ClassMapperToTest::setFullName)
-									 .build();
+									 .create();
 		
 		to = mapper.map(from, ClassMapperToTest.class);
 		assertThat(to.getNameTo()).isEqualTo(from.getNameFrom());
@@ -115,8 +113,9 @@ public class ClassMapperTest {
 		assertThat(to.getSurnameTo()).isEqualTo(from.getSurnameFrom());
 		assertThat(to.getFullName()).isNull();
 
-		mapping.addCustomFieldMapper("nameFrom", in->in.getNameFrom(),
-									 "surnameTo", (t,value)->t.setSurnameTo(value));
+		mapping.addMapping().from("nameFrom", in->in.getNameFrom())
+							.to("surnameTo", (t,value)->t.setSurnameTo(value))
+							.create();
 		
 		to = mapper.map(from, ClassMapperToTest.class);
 		assertThat(to.getNameTo()).isEqualTo(from.getNameFrom());
@@ -135,9 +134,10 @@ public class ClassMapperTest {
 		assertThat(to.getSurnameTo()).isEqualTo(from.getSurnameFrom());
 		assertThat(to.getFullName()).isNull();
 
-		mapping.addCustomFieldMapper("nameFrom", in->in.getNameFrom(),
-									 s->s+"!",
-									 "surnameTo", (t,value)->t.setSurnameTo(value));
+		mapping.addMapping().from("nameFrom", in->in.getNameFrom())
+						 	.transform(s->s+"!")
+						 	.to("surnameTo", (t,value)->t.setSurnameTo(value))
+						 	.create();
 		
 		to = mapper.map(from, ClassMapperToTest.class);
 		assertThat(to.getNameTo()).isEqualTo(from.getNameFrom());

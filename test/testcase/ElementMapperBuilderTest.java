@@ -22,7 +22,7 @@ public class ElementMapperBuilderTest {
 	public void shouldCreateBuilderStepFrom() throws MappingException {
 		Mapper mapper = new Mapper();
 		ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
-		From<ClassMapperFromTest,ClassMapperToTest> from = mapping.createElementMapper();
+		From<ClassMapperFromTest,ClassMapperToTest> from = mapping.addMapping();
 		assertThat(from).isNotNull()
 		 				.isExactlyInstanceOf(From.class)
 						.hasNoNullFieldsOrProperties()
@@ -33,7 +33,7 @@ public class ElementMapperBuilderTest {
 	public void shouldCreateBuilderStepTransformerFromFieldName() throws MappingException {
 		Mapper mapper = new Mapper();
 		ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
-		Transformer<ClassMapperFromTest,String,ClassMapperToTest> transform = mapping.createElementMapper().from("name");
+		Transformer<ClassMapperFromTest,String,ClassMapperToTest> transform = mapping.addMapping().from("name");
 		assertThat(transform).isNotNull()
 							 .isInstanceOf(To.class)
 							 .isExactlyInstanceOf(Transformer.class)
@@ -48,7 +48,7 @@ public class ElementMapperBuilderTest {
 		Mapper mapper = new Mapper();
 		ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
 		FieldHolder fieldHolder = mapper.getFieldsHolderFromCache(ClassMapperFromTest.class).get("name");
-		Transformer<ClassMapperFromTest,String,ClassMapperToTest> transform = mapping.createElementMapper().from(fieldHolder);
+		Transformer<ClassMapperFromTest,String,ClassMapperToTest> transform = mapping.addMapping().from(fieldHolder);
 		assertThat(transform).isNotNull()
 							 .isInstanceOf(To.class)
 							 .isExactlyInstanceOf(Transformer.class)
@@ -62,7 +62,7 @@ public class ElementMapperBuilderTest {
 	public void shouldCreateBuilderStepTransformerFromDefaultValue() throws MappingException {
 		Mapper mapper = new Mapper();
 		ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
-		To<ClassMapperFromTest,Void,String,ClassMapperToTest> transform = mapping.createElementMapper().defaultValue("pippo");
+		To<ClassMapperFromTest,Void,String,ClassMapperToTest> transform = mapping.addMapping().defaultValue("pippo");
 		assertThat(transform).isNotNull()
 							 .isExactlyInstanceOf(To.class)
 							 .hasNoNullFieldsOrProperties()
@@ -76,7 +76,7 @@ public class ElementMapperBuilderTest {
 		Mapper mapper = new Mapper();
 		ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
 		Setter<ClassMapperToTest,String> setter = new Setter<>("test",ClassMapperToTest::setNameTo);
-		ElementMapperBuilder<ClassMapperFromTest,String,String,ClassMapperToTest> emb = mapping.createElementMapper().from("name",in->in.getNameFrom()).noTransform().to(setter);
+		ElementMapperBuilder<ClassMapperFromTest,String,String,ClassMapperToTest> emb = mapping.addMapping().from("name",in->in.getNameFrom()).noTransform().to(setter);
 		assertThat(emb).isNotNull()
 						.isExactlyInstanceOf(ElementMapperBuilder.class)
 						.hasNoNullFieldsOrProperties()
@@ -87,7 +87,7 @@ public class ElementMapperBuilderTest {
 	public void shouldCreateLastBuilderStepFromFieldName() throws MappingException {
 		Mapper mapper = new Mapper();
 		ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
-		ElementMapperBuilder<ClassMapperFromTest,String,String,ClassMapperToTest> emb = mapping.createElementMapper().from("name",in->in.getNameFrom()).noTransform().to("surnameTo");
+		ElementMapperBuilder<ClassMapperFromTest,String,String,ClassMapperToTest> emb = mapping.addMapping().from("name",in->in.getNameFrom()).noTransform().to("surnameTo");
 		assertThat(emb).isNotNull()
 						.isExactlyInstanceOf(ElementMapperBuilder.class)
 						.hasNoNullFieldsOrProperties()
@@ -98,7 +98,7 @@ public class ElementMapperBuilderTest {
 	public void shouldCreateEmptyLastBuilderStepFromFieldName() throws MappingException {
 		Mapper mapper = new Mapper();
 		ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
-		ElementMapperBuilder<ClassMapperFromTest,String,Void,ClassMapperToTest> emb = mapping.createElementMapper().from("name",in->in.getNameFrom()).consume(s->System.out.println(s));
+		ElementMapperBuilder<ClassMapperFromTest,String,Void,ClassMapperToTest> emb = mapping.addMapping().from("name",in->in.getNameFrom()).consume(s->System.out.println(s));
 		assertThat(emb).isNotNull()
 						.isExactlyInstanceOf(ElementMapperBuilder.class)
 						.hasNoNullFieldsOrProperties()

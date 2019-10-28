@@ -385,11 +385,11 @@ public class MapperTest {
 	public void shouldThrowMappingExceptionBecauseOfErrorInMappingSingleElementOfCollection() throws MappingException, IOException {
 		Mapper mapper = new Mapper();
 		MapperObject<ClassMapperFromTest, ClassMapperToTest> objectMapper = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class)
-			  .createElementMapper()
+			  .addMapping()
 			  	.from("name", ClassMapperFromTest::getNameFrom)
 			  	.transform(String::length)
 			  	.to("age", ClassMapperToTest::setAge)
-			  	.build();
+			  	.create();
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PrintStream originalErr = System.err;

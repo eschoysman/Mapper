@@ -61,6 +61,8 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @param <SETTER_IN_NEW> the input type of the setter operation
 	 * @param converter the class to instance to convert the the result of the getter into the correct type for the setter
 	 * @return the third step of the builder
+	 * @throws MappingException If the the given converter cannot be instantiate.
+	 * @throws NullPointerException If the given {@code converter} is {@code null}
 	 */
 	public <SETTER_IN_NEW> To<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(Class<? extends AbstractConverter<SETTER_IN,SETTER_IN_NEW>> converter) throws MappingException {
 		Objects.requireNonNull(converter);
@@ -110,7 +112,7 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	/**
 	 * Create a ElementMapperBuilder with the data passed to the builder
 	 * @param idName the name identifier of the {@code setter}
-	 * @param setter the setting operation of the setter 
+	 * @param setter the setting operation of the setter
 	 * @return a ElementMapper, result of the builder
 	 * @throws NullPointerException if {@code idName} or {@code setter} is null
 	 * @see Setter

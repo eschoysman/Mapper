@@ -66,7 +66,7 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 		GETTER_OUT getterResult = getter.apply(in);
 		// System.out.println("getter \""+getFromValue()+"\" output: "+getterResult);
 		// System.out.println("Copying value to map...");
-		if(config.isDeepCopyEnable() && config.getCloner()!=null) {
+		if(config.isDeepCopyEnabled() && config.getCloner()!=null) {
 			this.transformer = this.transformer.compose(config.<GETTER_OUT>getCloner()::apply);
 		}
 		// System.out.println("Applying transformation...");

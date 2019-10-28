@@ -24,11 +24,11 @@ public class BuilderTest {
 		Mapper mapper = new Mapper();
 		ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
 		ClassMapperFromTest from = new ClassMapperFromTest();
-		mapping.createElementMapper().from("name",ClassMapperFromTest::getNameFrom)
+		mapping.addMapping().from("name",ClassMapperFromTest::getNameFrom)
 									 .transform(String::toLowerCase)
 									 .transform(s->s.length())
 									 .to("name", ClassMapperToTest::setAge)
-									 .build();
+									 .create();
     	ClassMapperToTest to = mapper.map(from);
     	assertThat(to).isNotNull().hasFieldOrPropertyWithValue("nameTo","Pippo")
 								  .hasFieldOrPropertyWithValue("surnameTo","Sora")
@@ -42,9 +42,9 @@ public class BuilderTest {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PrintStream originalOut = System.out;
 		System.setOut(new PrintStream(out));
-    	mapping.createElementMapper().from("name",ClassMapperFromTest::getNameFrom)
+    	mapping.addMapping().from("name",ClassMapperFromTest::getNameFrom)
 									 .consume(System.out::print)
-									 .build();
+									 .create();
     	ClassMapperToTest to = mapper.map(from);
     	String outString = out.toString();
     	out.flush();
@@ -63,10 +63,10 @@ public class BuilderTest {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PrintStream originalOut = System.out;
 		System.setOut(new PrintStream(out));
-    	mapping.createElementMapper().from("name",ClassMapperFromTest::getNameFrom)
+    	mapping.addMapping().from("name",ClassMapperFromTest::getNameFrom)
     								 .transform(String::toUpperCase)
 									 .consume(System.out::print)
-									 .build();
+									 .create();
     	ClassMapperToTest to = mapper.map(from);
     	String outString = out.toString();
     	out.flush();
@@ -82,10 +82,10 @@ public class BuilderTest {
 		Mapper mapper = new Mapper();
 		ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
 		ClassMapperFromTest from = new ClassMapperFromTest();
-    	mapping.createElementMapper().from("name",ClassMapperFromTest::getNameFrom)
+    	mapping.addMapping().from("name",ClassMapperFromTest::getNameFrom)
 									 .<String>transform(n->null)
 									 .consume(String::toString)
-									 .build();
+									 .create();
     	MappingException exception = assertThrows(MappingException.class, ()->mapper.map(from));
     	assertThat(exception.getMessage()).isNotNull().startsWith("java.lang.RuntimeException: java.lang.RuntimeException: java.lang.RuntimeException: java.lang.NullPointerException");
 	}

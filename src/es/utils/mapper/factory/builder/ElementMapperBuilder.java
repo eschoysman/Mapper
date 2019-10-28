@@ -15,7 +15,7 @@ import es.utils.mapper.impl.object.ClassMapper;
  * @param <GETTER_OUT> the resulting type of the getter operation
  * @param <SETTER_IN> the input type of the setter operation
  * @param <OUT> the type of the destination object
- * @see ClassMapper#createElementMapper()
+ * @see ClassMapper#addMapping()
  * @see ElementMapper
  * @see From
  * @see To
@@ -44,7 +44,7 @@ public class ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @see ClassMapper 
 	 * @see ElementMapper
 	 */
-	public ClassMapper<IN,OUT> build() {
+	public ClassMapper<IN,OUT> create() {
 		mapping.addElementMapper(elementMapper);
 		return mapping;
 	}

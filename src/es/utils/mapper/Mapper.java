@@ -244,13 +244,13 @@ public class Mapper {
 	 * @see #map(Object, Object)
 	 */
 	public <T,U> U map(T from, Class<U> to) throws MappingNotFoundException, MappingException {
+		if(from==null) {
+			return null;
+		}
 		if(to == null) {
 			throw new MappingException("Destination class cannot be null");
 		}
 		U map = null;
-		if(from==null) {
-			return map;
-		}
 		MapperObject<T,U> mapper = getMappingBetween(getEffectiveClass(from),to);
 		if(mapper==null) {
 			mappingNotFound(from.getClass(),to);
@@ -470,17 +470,26 @@ public class Mapper {
 	public <T> List<String> getNames(Class<T> type) {
 		return new ArrayList<>(this.fieldHolderCache.getOrDefault(type,new HashMap<String,FieldHolder>()).keySet());
 	}
-	
+
 	/**
-	 * Return the current configuration of the mapping
-	 * @return the current configuration of the mapping
+	 * Returns the current configuration of the mapping
+	 * @return The current configuration of the mapping
 	 */
 	public Configuration getConfig() {
 		return this.config;
 	}
+	/**
+	 * Set the configuration to use
+	 * @param config The {@code Configuration} instance to associate
+	 * @return The current {@code Mapper} instance
+	 */
+	public Mapper setConfig(Configuration config) {
+		this.config = config;
+		return this;
+	}
 	
 	/**
-	 * Create a new instance of the given type first looking for a supplier in the configuration, second by the empty constructor
+	 * Create a new instance of the given type first by looking for a supplier in the configuration, second by the empty constructor
 	 * @param <TYPE> the type of the returned instance
 	 * @param type the type of the returned instance
 	 * @return a new instance of the given type
