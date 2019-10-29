@@ -96,15 +96,13 @@ public class FieldHolder {
 		}
 	}
 	private void processConverters(Configuration config) {
-		Converter converter = this.field.getAnnotation(Converter.class);
-		if(converter!=null) {
-			for(Class<? extends AbstractConverter<?,?>> conv : converter.value()) {
-				@SuppressWarnings("unchecked")
-				Class<? extends AbstractConverter<Object,Object>> converterCasted = (Class<? extends AbstractConverter<Object,Object>>)conv;
-				DirectMapper<?,?> converterInstance = MapperUtil.createFromConverter(converterCasted,config.getMapper());
-				if(converterInstance!=null)
-					converters.add(converterInstance);
-			}
+		Converter[] converter = this.field.getAnnotationsByType(Converter.class);
+		for(Converter conv : converter) {
+			@SuppressWarnings("unchecked")
+			Class<? extends AbstractConverter<Object,Object>> converterCasted = (Class<? extends AbstractConverter<Object,Object>>)conv.value();
+			DirectMapper<?,?> converterInstance = MapperUtil.createFromConverter(converterCasted,config.getMapper());
+			if(converterInstance!=null)
+				converters.add(converterInstance);
 		}
 	}
 	private void processCollectionType() {

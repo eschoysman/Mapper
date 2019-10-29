@@ -189,7 +189,8 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 							   .stream()
 							   .filter(dm->dm.fromClass().isAssignableFrom(fieldHolderFrom.getType()))
 							   .filter(dm->dm.toClass().isAssignableFrom(fieldHolderTo.getType()))
-							   .findFirst().orElse(null);
+							   .findFirst()
+							   .orElse(null);
 				if(converter!=null) {
 					mapFieldWithConverter(fieldName, fieldHolderFrom, fieldHolderTo, converter);
 				}
