@@ -16,6 +16,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
+
 import es.utils.doublekeymap.PairKey;
 import es.utils.doublekeymap.TwoKeyMap;
 import es.utils.mapper.annotation.CollectionType;
@@ -40,6 +42,7 @@ import es.utils.mapper.utils.MapperUtil;
  * @see DirectMapper
  * @see EnumMapper
  */
+@Component
 public class Mapper {
 
 	private TwoKeyMap<Class<?>,Class<?>,MapperObject<?,?>> mappings;
@@ -321,7 +324,7 @@ public class Mapper {
 	 * @param <U> the type of the destination class
 	 * @param origin array of type {@code T} object 
 	 * @param destination array of type {@code U} object
-	 * @return the {@code destination} array filled with {@code origin} elements mapped
+	 * @return the {@code destination} array filled with {@code origin} elements mapped or {@code null}s if the mapping does not exists.
 	 */
 	public <T,U> U[] mapArray(T[] origin, U[] destination) {
 		if(origin==null) {
