@@ -41,6 +41,7 @@
 		<maven.jar.plugin>3.1.2</maven.jar.plugin>
 		<maven.source.plugin>3.1.0</maven.source.plugin>
 		<maven.javadoc.plugin>3.1.1</maven.javadoc.plugin>
+		<spring.context.version>[2.5,)</spring.context.version>
 	</properties>
 
 	<build>
@@ -102,7 +103,7 @@
 		<dependency>
 		  <groupId>org.springframework</groupId>
 		  <artifactId>spring-context</artifactId>
-		  <version>[2.5,)</version>
+		  <version>${spring.context.version}</version>
 		  <optional>true</optional>
 		</dependency>
 		<dependency>
