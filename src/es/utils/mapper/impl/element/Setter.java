@@ -15,6 +15,8 @@ public class Setter<U,SETTER_IN> {
 	private String name;
 	private BiConsumer<U,SETTER_IN> setter;
 
+	private static final Setter<?,?> EMPTY = new Setter<>("",(obj,$)->{});
+
 	/**
 	 * @param name the name identifier of the current {@code setter}
 	 * @param setter the {@code setter} operation
@@ -22,6 +24,17 @@ public class Setter<U,SETTER_IN> {
 	public Setter(String name, BiConsumer<U,SETTER_IN> setter) {
 		this.name = Objects.requireNonNull(name);
 		this.setter = Objects.requireNonNull(setter);
+	}
+	
+	/**
+	 * @return an empty {@code setter} with no name and empty operation
+     * @param <U> the type of the origin object
+     * @param <SETTER_IN> the type of the result of the {@code setter} operation
+	 */
+	public static <U,SETTER_IN> Setter<U,SETTER_IN> empty() {
+		@SuppressWarnings("unchecked")
+		Setter<U,SETTER_IN> empty = (Setter<U,SETTER_IN>)EMPTY;
+		return empty;
 	}
 	
 	/**

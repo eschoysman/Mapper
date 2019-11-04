@@ -26,9 +26,9 @@ public abstract class MapperObject<T,U> {
 	protected Class<U> to;
 	
 	/**
-	 * @param from the type of the source object
-	 * @param to the type of the destination object
-	 * @throws NullPointerException if {@code from} or {@code to} is null
+	 * @param from The type of the source object
+	 * @param to The type of the destination object
+	 * @throws NullPointerException If {@code from} or {@code to} is null
 	 */
 	protected MapperObject(Class<T> from, Class<U> to) {
 		this.from = Objects.requireNonNull(from);
@@ -40,13 +40,13 @@ public abstract class MapperObject<T,U> {
 	}
 	
 	/**
-	 * @return the origin class of this mapping
+	 * @return The origin class of this mapping
 	 */
 	public Class<T> fromClass() {
 		return from;
 	}
 	/**
-	 * @return the destination class of this mapping
+	 * @return The destination class of this mapping
 	 */
 	public Class<U> toClass() {
 		return to;
@@ -60,9 +60,9 @@ public abstract class MapperObject<T,U> {
 	protected abstract U mapValue(T from, U to);
 	
 	/**
-	 * @param from the input object to be mapped
-	 * @return an instance of the destination type of this mapping. If the input is {@code null} return {@code null}.
-	 * @throws MappingException if an error occurs during the mapping
+	 * @param from The input object to be mapped
+	 * @return An instance of the destination type of this mapping. If the input is {@code null} return {@code null}.
+	 * @throws MappingException If an error occurs during the mapping
 	 */
     public U map(T from) throws MappingException {
     	if(from==null)
@@ -70,9 +70,9 @@ public abstract class MapperObject<T,U> {
     	return mapValue(from);
     }
 	/**
-	 * @param from the input object to be mapped
-	 * @param to an default object that will be override by the mapping 
-	 * @return an instance of the destination type of this mapping. If the input is {@code null} return {@code null}.
+	 * @param from The input object to be mapped
+	 * @param to A default object that will be override by the mapping 
+	 * @return An instance of the destination type of this mapping. If the input is {@code null} return {@code null}.
 	 */
     public U map(T from, U to) {
     	if(from==null)
@@ -81,8 +81,8 @@ public abstract class MapperObject<T,U> {
     }
 
 	/**
-	 * @param from the input object to be mapped
-	 * @return an instance of the destination type of this mapping. If the input is {@code null} or some exception occurs during the mapping, returns {@code null}.
+	 * @param from The input object to be mapped
+	 * @return An instance of the destination type of this mapping. If the input is {@code null} or some exception occurs during the mapping, returns {@code null}.
 	 */
 	public U mapOrNull(T from) {
 		try {

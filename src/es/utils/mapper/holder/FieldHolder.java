@@ -19,6 +19,7 @@ import es.utils.mapper.annotation.IgnoreField;
 import es.utils.mapper.configuration.Configuration;
 import es.utils.mapper.converter.AbstractConverter;
 import es.utils.mapper.impl.object.DirectMapper;
+import es.utils.mapper.utils.MapperUtil;
 
 /**
  * A wrapper object to hold a Field and its information (name, aliases, type etc...).
@@ -58,7 +59,7 @@ public class FieldHolder {
 		processIgnoreField();
 		if(!this.ignoreField) {
 			processAliases(config);
-			processConverters();
+			processConverters(config);
 			processCollectionType();
 		}
 	}
@@ -94,16 +95,14 @@ public class FieldHolder {
 			}
 		}
 	}
-	private void processConverters() {
-		Converter converter = this.field.getAnnotation(Converter.class);
-		if(converter!=null) {
-			for(Class<? extends AbstractConverter<?,?>> conv : converter.value()) {
-				try {
-					converters.add(conv.newInstance());
-				} catch (InstantiationException | IllegalAccessException e) {
-					System.out.println("WARNING - The converter for "+conv+" does not have a empty public contructor; the converter is ignored.");
-				}
-			}
+	private void processConverters(Configuration config) {
+		Converter[] converter = this.field.getAnnotationsByType(Converter.class);
+		for(Converter conv : converter) {
+			@SuppressWarnings("unchecked")
+			Class<? extends AbstractConverter<Object,Object>> converterCasted = (Class<? extends AbstractConverter<Object,Object>>)conv.value();
+			DirectMapper<?,?> converterInstance = MapperUtil.createFromConverter(converterCasted,config.getMapper());
+			if(converterInstance!=null)
+				converters.add(converterInstance);
 		}
 	}
 	private void processCollectionType() {

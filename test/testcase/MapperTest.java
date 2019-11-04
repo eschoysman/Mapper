@@ -385,11 +385,11 @@ public class MapperTest {
 	public void shouldThrowMappingExceptionBecauseOfErrorInMappingSingleElementOfCollection() throws MappingException, IOException {
 		Mapper mapper = new Mapper();
 		MapperObject<ClassMapperFromTest, ClassMapperToTest> objectMapper = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class)
-			  .createElementMapper()
+			  .addMapping()
 			  	.from("name", ClassMapperFromTest::getNameFrom)
 			  	.transform(String::length)
 			  	.to("age", ClassMapperToTest::setAge)
-			  	.build();
+			  	.create();
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PrintStream originalErr = System.err;
@@ -403,7 +403,7 @@ public class MapperTest {
 		out.close();
 		System.setErr(originalErr);
 		assertThat(result).isNull();
-		assertThat(outString).startsWith("es.utils.mapper.exception.MappingException: java.lang.NullPointerException");
+		assertThat(outString).startsWith("es.utils.mapper.exception.MappingException: java.lang.RuntimeException: java.lang.NullPointerException");
 	}
 	@SuppressWarnings("unchecked")
 	@Test
@@ -518,7 +518,7 @@ public class MapperTest {
 		assertThat(mapping.map(null)).isNull();
 		mapper.build();
 		To to = mapping.map(from);
-		assertThat(to).hasNoNullFieldsOrPropertiesExcept("ignoredField","ignoredField1","ignoredField2","timestamp1");
+		assertThat(to).hasNoNullFieldsOrPropertiesExcept("ignoredField","ignoredField1","ignoredField2","timestamp1","timestamp4");
 	}
 	
 	/* toString method */

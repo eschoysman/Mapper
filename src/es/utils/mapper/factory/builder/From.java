@@ -2,6 +2,7 @@ package es.utils.mapper.factory.builder;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -18,7 +19,7 @@ import es.utils.mapper.utils.MapperUtil;
  *
  * @param <IN> the type of the origin object
  * @param <OUT> the type of the destination object
- * @see ClassMapper#createElementMapper()
+ * @see ClassMapper#addMapping()
  * @see ElementMapper
  * @see Transformer
  * @see To
@@ -29,7 +30,7 @@ public class From<IN,OUT> {
 	private Mapper mapper;
 	private ClassMapper<IN,OUT> mapping;
 
-	From(Mapper mapper, ClassMapper<IN,OUT> mapping) {
+	private From(Mapper mapper, ClassMapper<IN,OUT> mapping) {
 		this.mapper = mapper;
 		this.mapping = mapping;
 	}
@@ -60,6 +61,17 @@ public class From<IN,OUT> {
 	 */
 	public <SETTER_IN> To<IN,Void,SETTER_IN,OUT> defaultValue(SETTER_IN defaultValue) {
 		return this.<Void>fromEmpty().<SETTER_IN>transform(()->defaultValue);
+	}
+	/**
+	 * Create a empty {@code Getter} instance and manage the provide setter
+	 * @param <SETTER_IN> the input type of the setter operation
+	 * @param idName the name identifier of the {@code setter}
+	 * @param setter the setting operation of the setter
+	 * @return a ElementMapper, result of the builder
+	 * @throws NullPointerException if {@code idName} or {@code setter} is null.
+	 */
+	public <SETTER_IN> ElementMapperBuilder<IN,Void,SETTER_IN,OUT> defaultValue(String idName, BiConsumer<OUT,SETTER_IN> setter) {
+		return this.<Void>fromEmpty().<SETTER_IN>transform(obj->null).to(idName,setter);
 	}
 	
 	/**

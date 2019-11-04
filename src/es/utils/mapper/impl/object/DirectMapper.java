@@ -1,10 +1,11 @@
 package es.utils.mapper.impl.object;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
+import es.utils.mapper.converter.AbstractConverter;
 import es.utils.mapper.impl.MapperObject;
+import es.utils.mapper.utils.ThrowingFunction;
 
 /**
  * This class customize the abstract class {@code MapperObject} creating a {@code MapperObject} that convert on object of type {@code T} into a {@code U} with a custom conversion function.
@@ -29,7 +30,7 @@ public class DirectMapper<T,U> extends MapperObject<T,U> {
 	 */
 	public DirectMapper(Class<T> from, Class<U> to, Function<T,U> transformer) {
 		super(from,to);
-		this.transformer = Objects.requireNonNull(transformer);
+		this.transformer = transformer;
 	}
 
 	@Override
@@ -38,6 +39,10 @@ public class DirectMapper<T,U> extends MapperObject<T,U> {
 
 	@Override
 	protected final U mapValue(T from) {
+		if(transformer==null && this instanceof AbstractConverter) {
+			ThrowingFunction<T,U> convert = ((AbstractConverter<T,U>)this)::convert;
+			this.transformer = convert;
+		}
 		return transformer.apply(from);
 	}
 

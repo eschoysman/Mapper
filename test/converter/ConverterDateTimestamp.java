@@ -7,7 +7,12 @@ import es.utils.mapper.converter.AbstractConverter;
 public class ConverterDateTimestamp extends AbstractConverter<Date,Timestamp> {
 
 	public ConverterDateTimestamp() {
-		super(Date.class, Timestamp.class, d->new Timestamp(d.getTime()));
+		super(Date.class,Timestamp.class);
+	}
+
+	@Override
+	public Timestamp convert(Date input) {
+		return new Timestamp(input.getTime());
 	}
 
 }

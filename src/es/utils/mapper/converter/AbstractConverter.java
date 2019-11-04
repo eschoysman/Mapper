@@ -1,9 +1,8 @@
 package es.utils.mapper.converter;
 
-import java.util.function.Function;
-
 import es.utils.mapper.annotation.Converter;
 import es.utils.mapper.impl.object.DirectMapper;
+import es.utils.mapper.utils.ThrowingFunction;
 
 /**
  * This class is used to specify a converter over a single field in a mapping inside the {@code Converter} annotation.<br>
@@ -28,10 +27,15 @@ public class ConverterDateTimestamp extends AbstractConverter&lt;Date,Timestamp&
  * 
  * @see Converter
  */
-public class AbstractConverter<IN,OUT> extends DirectMapper<IN,OUT> {
+public abstract class AbstractConverter<IN,OUT> extends DirectMapper<IN,OUT> {
 
-	public AbstractConverter(Class<IN> from, Class<OUT> to, Function<IN, OUT> transformer) {
+	public AbstractConverter(Class<IN> from, Class<OUT> to) {
+		this(from, to, null);
+	}
+	public AbstractConverter(Class<IN> from, Class<OUT> to, ThrowingFunction<IN,OUT> transformer) {
 		super(from, to, transformer);
 	}
+	
+	public abstract OUT convert(IN input) throws Exception;
 	
 }

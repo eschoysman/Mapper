@@ -3,15 +3,20 @@ package es.utils.mapper.factory.builder;
 import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 import es.utils.mapper.Mapper;
+import es.utils.mapper.converter.AbstractConverter;
+import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.holder.FieldHolder;
 import es.utils.mapper.impl.element.ElementMapper;
 import es.utils.mapper.impl.element.Getter;
 import es.utils.mapper.impl.element.Setter;
 import es.utils.mapper.impl.object.ClassMapper;
+import es.utils.mapper.impl.object.DirectMapper;
 import es.utils.mapper.utils.MapperUtil;
+import es.utils.mapper.utils.ThrowingConsumer;
+import es.utils.mapper.utils.ThrowingFunction;
 
 /**
  * Third step of the ElementMapper builder that manage the creation of the setter operation
@@ -31,15 +36,66 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	protected Mapper mapper;
 	protected ClassMapper<IN,OUT> mapping;
 	protected Getter<IN,GETTER_OUT> getter;
-	private Function<GETTER_OUT,SETTER_IN> transformer;
+	private ThrowingFunction<GETTER_OUT,SETTER_IN> transformer;
 	
-	To(Mapper mapper, ClassMapper<IN,OUT> mapping, Getter<IN, GETTER_OUT> getter, Function<GETTER_OUT, SETTER_IN> transformer) {
+	To(Mapper mapper, ClassMapper<IN,OUT> mapping, Getter<IN, GETTER_OUT> getter, ThrowingFunction<GETTER_OUT, SETTER_IN> transformer) {
 		this.mapper = mapper;
 		this.mapping = mapping;
 		this.getter = getter;
 		this.transformer = transformer;
 	}
 
+	/**
+	 * Add a transformer between the getter and setter operations 
+	 * @param <SETTER_IN_NEW> the new input type of the setter operation
+	 * @param transformer a function to map the result of the previous transformation into the correct type for the setter
+	 * @return the third step of the builder
+	 */
+	public <SETTER_IN_NEW> To<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformer) {
+		Objects.requireNonNull(transformer);
+		return new To<>(mapper,mapping,getter,this.transformer.andThen(transformer)::apply);
+	}
+
+	/**
+	 * Add a transformer between the getter and setter operations using the given converter class
+	 * @param <SETTER_IN_NEW> the input type of the setter operation
+	 * @param converter the class to instance to convert the the result of the getter into the correct type for the setter
+	 * @return the third step of the builder
+	 * @throws MappingException If the the given converter cannot be instantiate.
+	 * @throws NullPointerException If the given {@code converter} is {@code null}
+	 */
+	public <SETTER_IN_NEW> To<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(Class<? extends AbstractConverter<SETTER_IN,SETTER_IN_NEW>> converter) throws MappingException {
+		Objects.requireNonNull(converter);
+		DirectMapper<SETTER_IN,SETTER_IN_NEW> converterInstance = MapperUtil.createFromConverter(converter,mapper);
+		if(converterInstance==null) {
+			throw new MappingException("Converter of "+converter+" cannot be istanziate.");
+		}
+		return new To<>(mapper,mapping,getter,this.transformer.andThen(converterInstance::mapOrNull)::apply);
+	}
+	
+	/**
+	 * Set a {@link Consumer} for the {@code SETTER_IN} value and set a empty setter
+	 * @param consumer the consumer of the {@code SETTER_IN} value
+	 * @return a ElementMapper, result of the builder
+	 */
+	public ElementMapperBuilder<IN,GETTER_OUT,Void,OUT> consume(ThrowingConsumer<SETTER_IN> consumer) {
+		return this.<Void>transform(obj->{consumer.accept(obj);return null;}).toEmpty();
+	}
+	
+	
+	/**
+	 * Create a empty {@code Setter} instance
+	 * @return the second step of the builder to add a transformer
+	 * @see Getter
+	 * @see Transformer
+	 * @see To
+	 */
+	public ElementMapperBuilder<IN,GETTER_OUT,Void,OUT> toEmpty() {
+		@SuppressWarnings("unchecked")
+		ElementMapperBuilder<IN,GETTER_OUT,Void,OUT> emb = (ElementMapperBuilder<IN,GETTER_OUT,Void,OUT>)this.to(Setter.empty());
+		return emb;
+	}
+	
 	/**
 	 * Create a {@code Getter} instance using the given getter object
 	 * @param setter the Setter instance to use
@@ -56,7 +112,7 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	/**
 	 * Create a ElementMapperBuilder with the data passed to the builder
 	 * @param idName the name identifier of the {@code setter}
-	 * @param setter the setting operation of the setter 
+	 * @param setter the setting operation of the setter
 	 * @return a ElementMapper, result of the builder
 	 * @throws NullPointerException if {@code idName} or {@code setter} is null
 	 * @see Setter
@@ -140,8 +196,8 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 			}
 		};
 	}
-	private ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> build(Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
-		return new ElementMapperBuilder<>(mapping,getter,transformer,setter);
+	protected ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> build(Getter<IN,GETTER_OUT> getter, ThrowingFunction<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
+		return new ElementMapperBuilder<>(mapper,mapping,getter,transformer,setter);
 	}
 	
 }

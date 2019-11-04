@@ -26,7 +26,7 @@ public class Getter<T,GETTER_OUT> {
 	}
 	
 	/**
-	 * @return an empty {@code getter} with no name and identity operation
+	 * @return an empty {@code getter} with no name and returns {@code null} value
      * @param <T> the type of the origin object
      * @param <GETTER_OUT> the type of the result of the {@code getter} operation
 	 */

@@ -39,6 +39,8 @@ public class To {
 	@AliasNames("data3")
 	@Converter(ConverterDateTimestamp.class)
 	private Timestamp timestamp3;
+	@AliasNames("data4")
+	private Timestamp timestamp4;
 	private List<? extends Optional<String>> optionalCollection;
 	
 	public To() {
@@ -96,6 +98,9 @@ public class To {
 	public void setTimestamp3(Timestamp timestamp3) {
 		this.timestamp3 = timestamp3;
 	}
+	public Timestamp getTimestamp4() {
+		return timestamp4;
+	}
 
 	@Override
 	public int hashCode() {
@@ -110,7 +115,8 @@ public class To {
 							toCollection2,
 							timestamp1,
 							timestamp2,
-							timestamp3);
+							timestamp3,
+							timestamp4);
 	}
 
 	@Override
@@ -178,6 +184,11 @@ public class To {
 			if (other.timestamp3 != null)
 				return false;
 		} else if (!this.timestamp3.equals(other.timestamp3))
+			return false;
+		if (this.timestamp4 == null) {
+			if (other.timestamp4 != null)
+				return false;
+		} else if (!this.timestamp4.equals(other.timestamp4))
 			return false;
 		return true;
 	}
