@@ -53,4 +53,13 @@ public class Setter<U,SETTER_IN> {
 		setter.accept(dest,data);
 	}
 	
+	/**
+	 * Returns a human readable string of the current {@code Setter}
+	 */
+	@Override
+	public String toString() {
+		return "Setter[name="+getName()+"]";
+	}
+	
+	
 }

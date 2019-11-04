@@ -51,4 +51,12 @@ public class Getter<T,GETTER_OUT> {
 		return getter.apply(input);
 	}
 	
+	/**
+	 * Returns a human readable string of the current {@code Getter}
+	 */
+	@Override
+	public String toString() {
+		return "Getter[name="+getName()+"]";
+	}
+	
 }

@@ -74,5 +74,14 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 		// System.out.println("Applying setter \""+getDestValue()+"\" with input: "+transformed);
 		setter.apply(out,transformed);
 	}
+	
+	/**
+	 * Returns a human readable string of the current {@code ElementMapper}
+	 */
+	@Override
+	public String toString() {
+		return "ElementMapper["+getter+","+setter+"]";
+	}
+	
 
 }

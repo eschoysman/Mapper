@@ -92,5 +92,13 @@ public abstract class MapperObject<T,U> {
 			return null;
 		}
 	}
+
+	/**
+	 * Returns a human redable string of this {@code MapperObject}
+	 */
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName()+"[from="+fromClass().getName()+",to="+toClass().getName()+"]";
+	}
 	
 }
