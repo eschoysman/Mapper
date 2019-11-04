@@ -20,7 +20,7 @@ public class Configuration {
 	private UnaryOperator<?> cloner;
 
 	/**
-	 * Create a configuration assiciated to the given {@code Mapper} instance.
+	 * Create a configuration associated to the given {@code Mapper} instance.
 	 * @param mapper the {@code Mapper} instance associated to this configuration.
 	 * @see Mapper
 	 */
