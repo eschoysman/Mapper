@@ -471,14 +471,14 @@ public class Mapper {
 	 * @return the list of the names and alias allowed for the given type {@code T}
 	 */
 	public <T> List<String> getNames(Class<T> type) {
-		return new ArrayList<>(this.fieldHolderCache.getOrDefault(type,new HashMap<String,FieldHolder>()).keySet());
+		return new ArrayList<>(getFieldsHolderFromCache(type).keySet());
 	}
 
 	/**
 	 * Returns the current configuration of the mapping
 	 * @return The current configuration of the mapping
 	 */
-	public Configuration getConfig() {
+	public Configuration config() {
 		return this.config;
 	}
 	/**
@@ -499,7 +499,7 @@ public class Mapper {
 	 * @throws MappingException if there is no empty constructor to be invoked 
 	 */
     public <TYPE> TYPE createNewInstance(Class<TYPE> type) throws MappingException {
-		Supplier<TYPE> supplier = getConfig().getSupplier(type);
+		Supplier<TYPE> supplier = config().getSupplier(type);
     	if(supplier==null) {
 			return newInstance(type);
     	}
@@ -568,7 +568,7 @@ public class Mapper {
 	private Map<String,FieldHolder> getAllFields(Class<?> type) {
     	Map<String,FieldHolder> result = new HashMap<>();
     	for(Field field : MapperUtil.getAllFields(type)) {
-    		FieldHolder fieldHolder = new FieldHolder(field,getConfig());
+    		FieldHolder fieldHolder = new FieldHolder(field,config());
     		for(String name : fieldHolder.getAllNames()) {
 	    		if(result.put(name,fieldHolder)!=null) {
 	    			try {

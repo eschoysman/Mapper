@@ -135,7 +135,7 @@ public class FieldHolder {
 	/**
 	 * @return the aliases of the field
 	 * @see AliasNames
-	 * @see Configuration#addAnnotation(Class, String)
+	 * @see Configuration#useAnnotation(Class, String)
 	 */
 	public Set<String> getAliases() {
 		return aliases;
@@ -150,7 +150,7 @@ public class FieldHolder {
 	/**
 	 * @return the name and all the aliases of the field
 	 * @see AliasNames
-	 * @see Configuration#addAnnotation(Class, String)
+	 * @see Configuration#useAnnotation(Class, String)
 	 */
 	public Set<String> getAllNames() {
 		Set<String> allNames = new TreeSet<>(getAliases());

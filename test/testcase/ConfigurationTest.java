@@ -23,7 +23,7 @@ public class ConfigurationTest {
 	public void shouldCreateMapper() throws MappingException {
 		Mapper mapper = new Mapper();
 		Supplier<ToWithNoEmptyConstructor> supplier = ()->ToWithNoEmptyConstructor.withName("Pippo");
-		mapper.getConfig().addSupplier(ToWithNoEmptyConstructor.class, supplier);
+		mapper.config().addSupplier(ToWithNoEmptyConstructor.class, supplier);
 		ToWithNoEmptyConstructor newInstance = mapper.createNewInstance(ToWithNoEmptyConstructor.class);
 		assertThat(newInstance).isNotNull();
 		assertThat(newInstance.getName()).isEqualTo("Pippo");
@@ -33,7 +33,7 @@ public class ConfigurationTest {
 	public void shouldReadAnnotation() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(FromWithAnnotation.class,ToWithAnnotation.class);
-		mapper.getConfig().addAnnotation(TestAnnotation.class, "name");
+		mapper.config().useAnnotation(TestAnnotation.class, "name");
 		FromWithAnnotation from = new FromWithAnnotation();
 		ToWithAnnotation to = mapper.map(from);
 		assertThat(to).isNotNull();
@@ -43,7 +43,7 @@ public class ConfigurationTest {
 	public void shouldThrowMappingExceptionForWrongAnnotationField() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(FromWithAnnotation.class,ToWithAnnotation.class);
-		MappingException exception = assertThrows(MappingException.class,()->mapper.getConfig().addAnnotation(TestAnnotation.class, "age"));
+		MappingException exception = assertThrows(MappingException.class,()->mapper.config().useAnnotation(TestAnnotation.class, "age"));
 		assertThat(exception.getMessage()).isEqualTo("The fieldName of the given annotation does not return String or String[].");
 	}
 	
@@ -53,9 +53,9 @@ public class ConfigurationTest {
 		Mapper mapper = new Mapper();
 		mapper.add(FromWithAnnotation.class, ToWithAnnotation.class);
 		
-		Configuration configurations = mapper.getConfig();
+		Configuration configurations = mapper.config();
 		configurations.setCloner(clonerFnz);
-		configurations.addAnnotation(TestAnnotation.class, "name");
+		configurations.useAnnotation(TestAnnotation.class, "name");
 		
 		FromWithAnnotation from = new FromWithAnnotation();
 		ToWithAnnotation to = mapper.map(from);

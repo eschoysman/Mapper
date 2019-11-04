@@ -28,7 +28,7 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 	private Getter<IN,GETTER_OUT> getter;
 	private Function<GETTER_OUT,SETTER_IN> transformer;
 	private Setter<OUT,SETTER_IN> setter;
-	private Mapper mapper;
+//	private Mapper mapper;
 	
 	/**
 	 * @param getter an implementation of the getter logic
@@ -36,7 +36,7 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @param setter an implementation of the getter logic
 	 */
 	public ElementMapper(Mapper mapper, Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
-		this.mapper = Objects.requireNonNull(mapper);
+//		this.mapper = Objects.requireNonNull(mapper);
 		this.getter = Objects.requireNonNull(getter);
 		this.transformer = Objects.requireNonNull(transformer);
 		this.setter = Objects.requireNonNull(setter);

@@ -71,7 +71,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	}
 	protected U mapValue(T from, U to) {
 		Objects.requireNonNull(to);
-		getElementMappings().forEach(me->me.apply(from,to,mapper.getConfig()));
+		getElementMappings().forEach(me->me.apply(from,to,mapper.config()));
 		return to;
     }
 	

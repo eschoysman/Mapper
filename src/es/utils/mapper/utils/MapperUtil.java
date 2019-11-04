@@ -49,9 +49,9 @@ public class MapperUtil {
 	 */
 	public static <T> Field getField(Class<T> type, String fieldName, Mapper mapper) {
 		Field field = getField(type,fieldName);
-		if(field==null) {
+		if(field==null && mapper!=null) {
 			field = mapper.getFieldsHolderFromCache(type).values().stream()
-					 	  .filter(fieldHolder->fieldHolder.getAliases().contains(fieldName))
+					 	  .filter(fieldHolder->fieldHolder.getAllNames().contains(fieldName))
 					 	  .map(FieldHolder::getField)
 					 	  .findFirst().orElse(null);
 		}

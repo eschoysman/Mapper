@@ -33,7 +33,7 @@ public class Configuration {
 
 	private void initDefaultValues() {
 		try {
-			addAnnotation(AliasNames.class);
+			useAnnotation(AliasNames.class);
 		} catch (MappingException e) {}
 		setCloner(null);
 	}
@@ -61,7 +61,7 @@ public class Configuration {
 	 * @param type of the wanted supplier
 	 * @return The supplier for the given type if present, {@code null} otherwise
 	 */
-public <T> Supplier<T> getSupplier(Class<T> type) {
+	public <T> Supplier<T> getSupplier(Class<T> type) {
 		@SuppressWarnings("unchecked")
 		Supplier<T> supplier = (Supplier<T>)suppliers.get(type);
 		return supplier;
@@ -74,10 +74,10 @@ public <T> Supplier<T> getSupplier(Class<T> type) {
 	 * @param annotationType The type of the annotation
 	 * @return The current configuration instance
 	 * @throws MappingException If the fieldName does not exists in the annotation type or if it exists but does not return {@code String} or {@code String[]}.
-	 * @see #addAnnotation(Class, String)
+	 * @see #useAnnotation(Class, String)
 	 */
-	public <T extends Annotation> Configuration addAnnotation(Class<T> annotationType) throws MappingException {
-		return addAnnotation(annotationType,"value");
+	public <T extends Annotation> Configuration useAnnotation(Class<T> annotationType) throws MappingException {
+		return useAnnotation(annotationType,"value");
 	}
 	/**
 	 * Allow to customize the annotation used to specify the alias name of a field using the "fieldName" field of the annotation.<br>
@@ -85,9 +85,9 @@ public <T> Supplier<T> getSupplier(Class<T> type) {
 	 * @param annotationType The type of the annotation
 	 * @return The current configuration instance
 	 * @throws MappingException If the fieldName does not exists in the annotation type or if it exists but does not return {@code String} or {@code String[]}.
-	 * @see #addAnnotation(Class)
+	 * @see #useAnnotation(Class)
 	 */
-	public <T extends Annotation> Configuration addAnnotation(Class<T> annotationType, String fieldName) throws MappingException {
+	public <T extends Annotation> Configuration useAnnotation(Class<T> annotationType, String fieldName) throws MappingException {
 		fieldName = Optional.ofNullable(fieldName).orElse("value");
 		try {
 			Class<?> returnType = annotationType.getMethod(fieldName).getReturnType();
