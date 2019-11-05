@@ -87,7 +87,25 @@ public class BuilderTest {
 									 .consume(String::toString)
 									 .create();
     	MappingException exception = assertThrows(MappingException.class, ()->mapper.map(from));
-    	assertThat(exception.getMessage()).isNotNull().startsWith("java.lang.RuntimeException: java.lang.RuntimeException: java.lang.RuntimeException: java.lang.NullPointerException");
+    	assertThat(exception.getMessage()).isNotNull().startsWith("java.lang.RuntimeException: java.lang.RuntimeException: java.lang.RuntimeException: java.lang.RuntimeException: java.lang.NullPointerException");
 	}
-
+	@Test
+	public void shouldMapValueWithDefaultValue() throws MappingException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
+		ClassMapperFromTest from = new ClassMapperFromTest();
+    	mapping.addMapping().from("name",ClassMapperFromTest::getNameFrom)
+							.<Integer>transform(n->null)
+							.to("age",ClassMapperToTest::setAge)
+							.defaultValue(42)
+							.create()
+				.addMapping().from("name",ClassMapperFromTest::getNameFrom)
+							.<String>transform(n->null)
+							.to("name",ClassMapperToTest::setNameTo)
+							.create();
+    	ClassMapperToTest to = mapper.map(from);
+    	assertThat(to).isNotNull().hasFieldOrPropertyWithValue("age",42);
+    	assertThat(to.getNameTo()).isNull();
+	}
+	
 }

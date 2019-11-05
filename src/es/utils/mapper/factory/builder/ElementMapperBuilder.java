@@ -1,15 +1,17 @@
 package es.utils.mapper.factory.builder;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import es.utils.mapper.Mapper;
 import es.utils.mapper.impl.element.ElementMapper;
 import es.utils.mapper.impl.element.Getter;
 import es.utils.mapper.impl.element.Setter;
 import es.utils.mapper.impl.object.ClassMapper;
+import es.utils.mapper.utils.ThrowingFunction;
 
 /**
- * Fourth step of the ElementMapper builder that manage the creation of the ElementMapper itself
+ * Fifth step of the ElementMapper builder that manage the creation of the ElementMapper itself
  * @author eschoysman
  *
  * @param <IN> the type of the origin object
@@ -23,12 +25,25 @@ import es.utils.mapper.impl.object.ClassMapper;
  */
 public class ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> {
 
-	private ClassMapper<IN,OUT> mapping;
-	private ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> elementMapper;
+	protected Mapper mapper;
+	protected ClassMapper<IN,OUT> mapping;
+	protected Getter<IN,GETTER_OUT> getter;
+	protected ThrowingFunction<GETTER_OUT,SETTER_IN> transformer;
+	protected Setter<OUT,SETTER_IN> setter;
+	protected Supplier<SETTER_IN> defaultValue;
+	protected ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> elementMapper;
 	
-	ElementMapperBuilder(Mapper mapper, ClassMapper<IN,OUT> mapping, Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
+	protected ElementMapperBuilder(Mapper mapper, ClassMapper<IN,OUT> mapping, Getter<IN,GETTER_OUT> getter,
+																	 Function<GETTER_OUT,SETTER_IN> transformer,
+																	 Setter<OUT,SETTER_IN> setter,
+																	 Supplier<SETTER_IN> defaultValue) {
+		this.mapper = mapper;
 		this.mapping = mapping;
-		this.elementMapper = new ElementMapper<>(mapper,getter,transformer,setter);
+		this.mapping = mapping;
+		this.getter = getter;
+		this.transformer = transformer::apply;
+		this.setter = setter;
+		this.defaultValue = defaultValue;
 	}
 	
 	/**
@@ -37,6 +52,9 @@ public class ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @see ElementMapper
 	 */
 	public ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> getElementMapper() {
+		if(elementMapper==null) {
+			elementMapper = new ElementMapper<>(mapper,getter,transformer,setter,defaultValue);
+		}
 		return elementMapper;
 	}
 	/**
@@ -46,7 +64,7 @@ public class ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @see ElementMapper
 	 */
 	public ClassMapper<IN,OUT> create() {
-		mapping.addElementMapper(elementMapper);
+		mapping.addElementMapper(getElementMapper());
 		return mapping;
 	}
 	

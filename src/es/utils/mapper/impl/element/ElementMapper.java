@@ -2,6 +2,7 @@ package es.utils.mapper.impl.element;
 
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import es.utils.mapper.Mapper;
 import es.utils.mapper.configuration.Configuration;
@@ -28,6 +29,7 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 	private Getter<IN,GETTER_OUT> getter;
 	private Function<GETTER_OUT,SETTER_IN> transformer;
 	private Setter<OUT,SETTER_IN> setter;
+	private Supplier<SETTER_IN> defaultValue;
 //	private Mapper mapper;
 	
 	/**
@@ -35,11 +37,22 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @param transformer a function to map the result of the getter into the correct type for the setter
 	 * @param setter an implementation of the getter logic
 	 */
-	public ElementMapper(Mapper mapper, Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
+	public ElementMapper(Mapper mapper, Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter, Supplier<SETTER_IN> defaultValue) {
 //		this.mapper = Objects.requireNonNull(mapper);
 		this.getter = Objects.requireNonNull(getter);
 		this.transformer = Objects.requireNonNull(transformer);
 		this.setter = Objects.requireNonNull(setter);
+		this.defaultValue = defaultValue;
+	}
+
+	/**
+	 * Set a supplier for the default value to set in the destination if the value in this point is {@code null}
+	 * @param defaultValue the supplier for the default value
+	 * @return
+	 */
+	public ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> setDEfaultValue(Supplier<SETTER_IN> defaultValue) {
+		this.defaultValue = defaultValue;
+		return this;
 	}
 	
 	/**
@@ -71,6 +84,10 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 		}
 		// System.out.println("Applying transformation...");
 		SETTER_IN transformed = transformer.apply(getterResult);
+		if(transformed==null && defaultValue!=null) {
+			// sysout("applying default value");
+			transformed = defaultValue.get();
+		}
 		// System.out.println("Applying setter \""+getDestValue()+"\" with input: "+transformed);
 		setter.apply(out,transformed);
 	}
