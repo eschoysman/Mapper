@@ -5,14 +5,14 @@
  * <li>{@code From}: create the getter</li>
  * <li>{@code Transformer}: (optional) create the transformer</li>
  * <li>{@code To}: create the setter</li>
- * <li>{@code DefaultValueBuild}: (optional) create a default value for the setter</li>
+ * <li>{@code Default}: (optional) create a default value for the setter</li>
  * <li>{@code ElementMapperBuilder}: create the ElementMapper</li>
  * </ol>
  * @author eschoysman
  * @see es.utils.mapper.factory.builder.From
  * @see es.utils.mapper.factory.builder.Transformer
  * @see es.utils.mapper.factory.builder.To
- * @see es.utils.mapper.factory.builder.DefaultValueBuild
+ * @see es.utils.mapper.factory.builder.Default
  * @see es.utils.mapper.factory.builder.ElementMapperBuilder
  */
 package es.utils.mapper.factory.builder;

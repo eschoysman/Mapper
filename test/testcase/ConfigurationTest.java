@@ -13,7 +13,10 @@ import es.utils.mapper.Mapper;
 import es.utils.mapper.configuration.Configuration;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
+import es.utils.mapper.impl.object.ClassMapper;
+import from.ClassMapperFromTest;
 import from.FromWithAnnotation;
+import to.ClassMapperToTest;
 import to.ToWithAnnotation;
 import to.ToWithNoEmptyConstructor;
 
@@ -30,7 +33,7 @@ public class ConfigurationTest {
 	}
 
 	@Test
-	public void shouldReadAnnotation() throws MappingException, MappingNotFoundException {
+	public void shouldReadCustomAnnotation() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(FromWithAnnotation.class,ToWithAnnotation.class);
 		mapper.config().useAnnotation(TestAnnotation.class, "name");
@@ -63,5 +66,5 @@ public class ConfigurationTest {
 		assertThat(to.getName()==from.getName()).isFalse();
 		assertThat(to.getName()).isEqualTo(from.getName());
 	}
-
+	
 }

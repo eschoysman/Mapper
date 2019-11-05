@@ -21,9 +21,9 @@ import es.utils.mapper.impl.object.ClassMapper;
  * @see From
  * @see To
  */
-public class DefaultValueBuild<IN,GETTER_OUT,SETTER_IN,OUT> extends ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> {
+public class Default<IN,GETTER_OUT,SETTER_IN,OUT> extends ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> {
 
-	protected DefaultValueBuild(Mapper mapper, ClassMapper<IN, OUT> mapping, Getter<IN,GETTER_OUT> getter,
+	protected Default(Mapper mapper, ClassMapper<IN, OUT> mapping, Getter<IN,GETTER_OUT> getter,
 																		Function<GETTER_OUT,SETTER_IN> transformer,
 																		Setter<OUT,SETTER_IN> setter) {
 		super(mapper,mapping,getter,transformer,setter,null);
@@ -36,5 +36,13 @@ public class DefaultValueBuild<IN,GETTER_OUT,SETTER_IN,OUT> extends ElementMappe
 		this.defaultValue = defaultValue;
 		return this;
 	}
+	public ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> defaultValueFor(Class<SETTER_IN> defaultValueType) {
+		this.defaultValue = mapper.config().getDefaultValueSupplier(defaultValueType);
+		return this;
+	}
+//	 public ElementMapperBuilder<IN,GETTER_OUT,SETTER_IN,OUT> noDefaultValue() {
+//	 	this.defaultValue = null;
+//	 	return this;
+//	 }
 	
 }

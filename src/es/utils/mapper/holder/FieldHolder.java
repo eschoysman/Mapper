@@ -11,10 +11,12 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Supplier;
 
 import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.annotation.CollectionType;
 import es.utils.mapper.annotation.Converter;
+import es.utils.mapper.annotation.DefaultValue;
 import es.utils.mapper.annotation.IgnoreField;
 import es.utils.mapper.configuration.Configuration;
 import es.utils.mapper.converter.AbstractConverter;
@@ -34,6 +36,7 @@ public class FieldHolder {
 	private String fieldName;
 	private Set<String> aliases;
 	private Set<DirectMapper<?,?>> converters;
+	private Supplier<?> defaultValue;
 	private Class<?> type;
 	private Type genericType;
 	@SuppressWarnings("rawtypes")
@@ -60,6 +63,7 @@ public class FieldHolder {
 		if(!this.ignoreField) {
 			processAliases(config);
 			processConverters(config);
+			processDefaultValue(config);
 			processCollectionType();
 		}
 	}
@@ -105,6 +109,24 @@ public class FieldHolder {
 				converters.add(converterInstance);
 		}
 	}
+	private void processDefaultValue(Configuration config) {
+		this.defaultValue = config.getDefaultValueSupplier(getType());
+		DefaultValue defaultValueType = this.field.getAnnotation(DefaultValue.class);
+		if(defaultValueType!=null) {
+			this.defaultValue = config.getDefaultValueSupplier(defaultValueType.value());
+		}
+//		if(String.class.isAssignableFrom(getType())) {
+//			// read @DefaultString
+//		}
+//		if(Class.class.isAssignableFrom(getType())) {
+//			// read @DefaultClass
+//		}
+//		if(getType().isEnum()) {
+//			if(true/*same enumtype*/) {
+//				// read @DefaultEnum
+//			}
+//		}
+	}
 	private void processCollectionType() {
 		CollectionType annotationCollectionType = this.field.getAnnotation(CollectionType.class);
 		if(annotationCollectionType!=null) {
@@ -146,6 +168,15 @@ public class FieldHolder {
 	 */
 	public Set<DirectMapper<?,?>> getConverters() {
 		return converters;
+	}
+	/**
+	 * @return the default value supplier of the field
+	 * @see DefaultValue
+	 */
+	public <TYPE> Supplier<TYPE> getDefautValueSuppplier() {
+		@SuppressWarnings("unchecked")
+		Supplier<TYPE> result = (Supplier<TYPE>)defaultValue;
+		return result;
 	}
 	/**
 	 * @return the name and all the aliases of the field

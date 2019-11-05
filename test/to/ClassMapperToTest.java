@@ -1,6 +1,9 @@
 package to;
 
+import converter.ConverterToNull;
 import es.utils.mapper.annotation.AliasNames;
+import es.utils.mapper.annotation.Converter;
+import es.utils.mapper.annotation.DefaultValue;
 
 public class ClassMapperToTest {
 
@@ -9,6 +12,8 @@ public class ClassMapperToTest {
 	@AliasNames("surname")
 	private String surnameTo;
 	private String fullName;
+	@Converter(ConverterToNull.class)
+	@DefaultValue(Integer.class)
 	private int age;
 	
 	public ClassMapperToTest(String nameTo, String surnameTo) {

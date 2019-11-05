@@ -13,9 +13,12 @@ public class ClassMapperFromTest {
 		this.nameFrom = nameFrom;
 		this.surnameFrom = surnameFrom;
 	}
-	
+
 	public ClassMapperFromTest() {
 		this("Pippo", "Sora");
+	}
+	public static ClassMapperFromTest empty() {
+		return new ClassMapperFromTest(null,null);
 	}
 	
 	public String getNameFrom() {

@@ -15,6 +15,7 @@ public class Configuration {
 
 	private Mapper mapper;
 	private Map<Class<?>,Supplier<?>> suppliers;
+	private Map<Class<?>,Supplier<?>> defaultValues;
 	private Map<Class<? extends Annotation>,String> annotations;
 	private boolean deepCopyEnabled;
 	private UnaryOperator<?> cloner;
@@ -28,6 +29,7 @@ public class Configuration {
 		this.mapper = mapper.setConfig(this);
 		this.suppliers = new HashMap<>();
 		this.annotations = new HashMap<>();
+		this.defaultValues = new HashMap<>();
 		initDefaultValues();
 	}
 
@@ -64,6 +66,28 @@ public class Configuration {
 	public <T> Supplier<T> getSupplier(Class<T> type) {
 		@SuppressWarnings("unchecked")
 		Supplier<T> supplier = (Supplier<T>)suppliers.get(type);
+		return supplier;
+	}
+	
+	/**
+	 * Customize how to create a default value for the given type.
+	 * @param <T> the type of the class instance to supply
+	 * @param type the type default value to supply
+	 * @param defaultValue the supplier
+	 * @return The current configuration instance
+	 */
+	public <T> Configuration addDefaultValueSupplier(Class<T> type, Supplier<T> defaultValue) {
+		this.defaultValues.put(type,defaultValue);
+		return this;
+	}
+	/**
+	 * @param <T> the type of the class
+	 * @param type of the wanted default value supplier
+	 * @return The supplier for the given type if present, {@code null} otherwise
+	 */
+	public <T> Supplier<T> getDefaultValueSupplier(Class<T> type) {
+		@SuppressWarnings("unchecked")
+		Supplier<T> supplier = (Supplier<T>)defaultValues.get(type);
 		return supplier;
 	}
 

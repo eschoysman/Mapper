@@ -98,7 +98,7 @@ public abstract class MapperObject<T,U> {
 	 */
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName()+"[from="+fromClass().getName()+",to="+toClass().getName()+"]";
+		return this.getClass().getSimpleName()+"[<"+fromClass()+","+toClass()+">]";
 	}
 	
 }

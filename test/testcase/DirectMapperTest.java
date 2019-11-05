@@ -8,6 +8,9 @@ import es.utils.mapper.Mapper;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
 import es.utils.mapper.impl.MapperObject;
+import es.utils.mapper.impl.object.DirectMapper;
+import from.From;
+import to.To;
 
 public class DirectMapperTest {
 
@@ -28,4 +31,10 @@ public class DirectMapperTest {
 		assertThat(mapping.toClass()).isEqualTo(String[].class);
 	}
 
+	@Test
+	public void shouldReturnStringRappresentation() throws MappingException {
+		DirectMapper<From,To> dm = new DirectMapper<>(From.class,To.class,in->new To());
+		assertThat(dm.toString()).isEqualTo("DirectMapper[<class from.From,class to.To>]");
+	}
+	
 }

@@ -1,10 +1,11 @@
 package testcase;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import es.utils.mapper.Mapper;
 import es.utils.mapper.exception.MappingException;
@@ -55,6 +56,12 @@ public class EnumMapperTest {
 		assertThat(mapper.map(TimeUnit.NANOSECONDS, ChronoUnit.class)).isNull();
 		mapping.setDefaultDestinationEnumValue(ChronoUnit.FOREVER);
 		assertThat(mapper.map(TimeUnit.NANOSECONDS, ChronoUnit.class)).isEqualTo(ChronoUnit.FOREVER);
+	}
+
+	@Test
+	public void shouldReturnStringRappresentation() throws MappingException {
+		EnumMapper<TimeUnit,ChronoUnit> em = new EnumMapper<>(TimeUnit.class,ChronoUnit.class);
+		assertThat(em.toString()).isEqualTo("EnumMapper[<class java.util.concurrent.TimeUnit,class java.time.temporal.ChronoUnit>]");
 	}
 
 }

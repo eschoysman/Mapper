@@ -251,5 +251,11 @@ public class ClassMapperTest {
 
 		assertThat(errString).startsWith("es.utils.mapper.exception.MappingException: Two Fields in "+SpecificTestCaseFrom.class+" have the same name or alias \"string\"");
 	}
+
+	@Test
+	public void shouldReturnStringRappresentation() throws MappingException {
+		ClassMapper<From,To> cm = new ClassMapper<>(From.class,To.class);
+		assertThat(cm.toString()).isEqualTo("ClassMapper[<class from.From,class to.To>]");
+	}
 	
 }

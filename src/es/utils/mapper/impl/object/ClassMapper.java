@@ -13,6 +13,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import es.utils.doublekeymap.TwoKeyMap;
+import es.utils.mapper.annotation.DefaultValue;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.factory.CollectionFactory;
 import es.utils.mapper.factory.builder.ElementMapperBuilder;
@@ -137,11 +138,12 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	}
 	
 	/**
-	 * Create a Builder for the creation of a {@link ElementMapper} for this mapping. The Builder has four steps, one for each component of the ElementMapper and one for the creation:
+	 * Create a Builder for the creation of a {@link ElementMapper} for this mapping. The Builder has five steps, one for each component of the ElementMapper and one for the creation:
 	 * <ol>
 	 * <li>{@link From}: create the getter</li>
 	 * <li>{@link Transformer}: (optional) create the transformer</li>
 	 * <li>{@link To}: create the setter</li>
+	 * <li>{@link DefaultValue}: (optional) create a supplier for default value</li>
 	 * <li>{@link ElementMapperBuilder}: create the ElementMapper</li>
 	 * </ol>
 	 * @return The first step of the builder
@@ -153,6 +155,26 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	 */
     public From<T,U> addMapping() {
     	return From.using(mapper,this);
+    }
+    /**
+     * Returns the {@code ElementMapper} between the names {@code from} and {@code to} if present and both names not ignored by the mapping
+     * @param <GETTER_OUT> the type returned by the getter
+     * @param <SETTER_IN> the type required by the setter
+     * @param idNameFrom the name identifier of the {@code setter} associated to the {@code ElementMapper} to return
+     * @param idNameTo the name identifier of the {@code getter} associated to the {@code ElementMapper} to return
+     * @return the {@code ElementMapper} if present and {@code from} and {@code to} not ignored
+     */
+    public <GETTER_OUT,SETTER_IN> ElementMapper<T,GETTER_OUT,SETTER_IN,U> getMapping(String idNameFrom, String idNameTo) {
+    	if(inputsToIgnore.contains(idNameFrom) || outputsToIgnore.contains(idNameTo)) {
+    		return null;
+    	}
+    	ElementMapper<T,?,?,U> elementMapper = fieldMappings.get(idNameFrom,idNameTo);
+    	if(elementMapper==null) {
+    		elementMapper = customMappings.get(idNameFrom,idNameTo);
+    	}
+    	@SuppressWarnings("unchecked")
+		ElementMapper<T,GETTER_OUT,SETTER_IN,U> result = (ElementMapper<T,GETTER_OUT,SETTER_IN,U>)elementMapper;
+		return result;
     }
     
 	// private methods
@@ -198,7 +220,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 					mapFieldWithTranformation(fieldName, fieldHolderFrom, fieldHolderTo);
 				}
 				else if(destFieldType.isAssignableFrom(srcFieldType)) {
-					addElementMapper(addMapping().from(fieldHolderFrom).to(fieldHolderTo).getElementMapper(),true);
+					addElementMapper(addMapping().from(fieldHolderFrom).to(fieldHolderTo).defaultValue(fieldHolderTo.getDefautValueSuppplier()).getElementMapper(),true);
 				}
 			}
 		}
@@ -217,10 +239,10 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	private <GETTER_OUT,SETTER_IN> void mapFieldWithTranformation(String fieldName, FieldHolder srcFieldHolder, FieldHolder destFieldHolder) {
 		@SuppressWarnings("unchecked")
 		Function<GETTER_OUT,SETTER_IN> transformer = in->mapper.mapOrNull(in,(Class<SETTER_IN>)destFieldHolder.getType());
-		addElementMapper(addMapping().<GETTER_OUT>from(fieldName,srcFieldHolder).<SETTER_IN>transform(transformer::apply).to(fieldName,destFieldHolder).getElementMapper(),true);
+		addElementMapper(addMapping().<GETTER_OUT>from(fieldName,srcFieldHolder).<SETTER_IN>transform(transformer::apply).to(fieldName,destFieldHolder).defaultValue(destFieldHolder.getDefautValueSuppplier()).getElementMapper(),true);
 	}
 	private <GETTER_OUT,SETTER_IN> void mapFieldWithConverter(String fieldName, FieldHolder srcFieldHolder, FieldHolder destFieldHolder, DirectMapper<GETTER_OUT,SETTER_IN> converter) {
-		addElementMapper(addMapping().<GETTER_OUT>from(fieldName,srcFieldHolder).transform(converter::mapOrNull).to(fieldName,destFieldHolder).getElementMapper(),true);
+		addElementMapper(addMapping().<GETTER_OUT>from(fieldName,srcFieldHolder).transform(converter::mapOrNull).to(fieldName,destFieldHolder).defaultValue(destFieldHolder.getDefautValueSuppplier()).getElementMapper(),true);
 	}
     
     private <GETTER_OUT,SETTER_IN> ClassMapper<T,U> addElementMapper(ElementMapper<T,GETTER_OUT,SETTER_IN,U> elementMapper, boolean isCalledDuringConstruction) {

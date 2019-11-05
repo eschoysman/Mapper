@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import es.utils.mapper.Mapper;
 import es.utils.mapper.converter.AbstractConverter;
@@ -87,7 +88,7 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @return the second step of the builder to add a transformer
 	 * @see Getter
 	 * @see Transformer
-	 * @see DefaultValueBuild
+	 * @see Default
 	 */
 	public ElementMapperBuilder<IN,GETTER_OUT,Void,OUT> toEmpty() {
 		@SuppressWarnings("unchecked")
@@ -102,9 +103,9 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @throws NullPointerException if {@code setter} is null
 	 * @see Getter
 	 * @see Transformer
-	 * @see DefaultValueBuild
+	 * @see Default
 	 */
-	public DefaultValueBuild<IN,GETTER_OUT,SETTER_IN,OUT> to(Setter<OUT,SETTER_IN> setter) {
+	public Default<IN,GETTER_OUT,SETTER_IN,OUT> to(Setter<OUT,SETTER_IN> setter) {
 		Objects.requireNonNull(setter);
 		return build(getter,transformer,setter);
 	}
@@ -117,9 +118,9 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @see Setter
 	 * @see From
 	 * @see Transformer
-	 * @see DefaultValueBuild
+	 * @see Default
 	 */
-	public DefaultValueBuild<IN,GETTER_OUT,SETTER_IN,OUT> to(String idName, BiConsumer<OUT,SETTER_IN> setter) {
+	public Default<IN,GETTER_OUT,SETTER_IN,OUT> to(String idName, BiConsumer<OUT,SETTER_IN> setter) {
 		Objects.requireNonNull(idName);
 		Objects.requireNonNull(setter);
 		Setter<OUT,SETTER_IN> resultSetter = new Setter<OUT,SETTER_IN>(idName,setter);
@@ -133,13 +134,13 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @see Setter
 	 * @see From
 	 * @see Transformer
-	 * @see DefaultValueBuild
+	 * @see Default
 	 */
-	public DefaultValueBuild<IN,GETTER_OUT,SETTER_IN,OUT> to(String fieldName) {
+	public Default<IN,GETTER_OUT,SETTER_IN,OUT> to(String fieldName) {
 		return to(fieldName,fieldName);
 	}
 	/**
-	 * Create a DefaultValueBuild with the data passed to the builder
+	 * Create a Default with the data passed to the builder
 	 * @param idName the name identifier of the {@code getter}
 	 * @param fieldName the name of the field to retrieve from the generic {@code OUT} type
 	 * @return a ElementMapper, result of the builder
@@ -147,9 +148,9 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @see Setter
 	 * @see From
 	 * @see Transformer
-	 * @see DefaultValueBuild
+	 * @see Default
 	 */
-	public DefaultValueBuild<IN,GETTER_OUT,SETTER_IN,OUT> to(String idName, String fieldName) {
+	public Default<IN,GETTER_OUT,SETTER_IN,OUT> to(String idName, String fieldName) {
 		Objects.requireNonNull(idName);
 		Objects.requireNonNull(fieldName);
 		Field field = MapperUtil.getField(mapping.toClass(),fieldName,mapper);
@@ -164,9 +165,9 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @see Setter
 	 * @see FieldHolder
 	 * @see Transformer
-	 * @see DefaultValueBuild
+	 * @see Default
 	 */
-	public DefaultValueBuild<IN,GETTER_OUT,SETTER_IN,OUT> to(FieldHolder fieldHolder) {
+	public Default<IN,GETTER_OUT,SETTER_IN,OUT> to(FieldHolder fieldHolder) {
 		return to(fieldHolder.getFieldName(),fieldHolder);
 	}
 	/**
@@ -178,13 +179,14 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @see Setter
 	 * @see FieldHolder
 	 * @see Transformer
-	 * @see DefaultValueBuild
+	 * @see Default
 	 */
-	public DefaultValueBuild<IN,GETTER_OUT,SETTER_IN,OUT> to(String idName, FieldHolder fieldHolder) {
+	public Default<IN,GETTER_OUT,SETTER_IN,OUT> to(String idName, FieldHolder fieldHolder) {
 		Objects.requireNonNull(idName);
 		Objects.requireNonNull(fieldHolder);
 		Setter<OUT,SETTER_IN> setter = new Setter<>(idName,createSetterFunction(fieldHolder.getField()));
-		return build(getter,transformer,setter);
+		Supplier<SETTER_IN> defautValueSuppplier = fieldHolder.getDefautValueSuppplier();
+		return (Default<IN,GETTER_OUT,SETTER_IN,OUT>)build(getter,transformer,setter).defaultValue(defautValueSuppplier);
 	}
 	
 	// building operation
@@ -198,8 +200,8 @@ public class To<IN,GETTER_OUT,SETTER_IN,OUT> {
 			}
 		};
 	}
-	protected DefaultValueBuild<IN,GETTER_OUT,SETTER_IN,OUT> build(Getter<IN,GETTER_OUT> getter, ThrowingFunction<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
-		return new DefaultValueBuild<>(mapper,mapping,getter,transformer,setter);
+	protected Default<IN,GETTER_OUT,SETTER_IN,OUT> build(Getter<IN,GETTER_OUT> getter, ThrowingFunction<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter) {
+		return new Default<>(mapper,mapping,getter,transformer,setter);
 	}
 	
 }

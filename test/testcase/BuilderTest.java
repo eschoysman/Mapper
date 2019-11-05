@@ -89,6 +89,7 @@ public class BuilderTest {
     	MappingException exception = assertThrows(MappingException.class, ()->mapper.map(from));
     	assertThat(exception.getMessage()).isNotNull().startsWith("java.lang.RuntimeException: java.lang.RuntimeException: java.lang.RuntimeException: java.lang.RuntimeException: java.lang.NullPointerException");
 	}
+	
 	@Test
 	public void shouldMapValueWithDefaultValue() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();

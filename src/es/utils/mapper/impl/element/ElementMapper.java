@@ -26,11 +26,11 @@ import es.utils.mapper.configuration.Configuration;
  */
 public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 
+	private Mapper mapper;
 	private Getter<IN,GETTER_OUT> getter;
 	private Function<GETTER_OUT,SETTER_IN> transformer;
 	private Setter<OUT,SETTER_IN> setter;
 	private Supplier<SETTER_IN> defaultValue;
-//	private Mapper mapper;
 	
 	/**
 	 * @param getter an implementation of the getter logic
@@ -38,11 +38,11 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @param setter an implementation of the getter logic
 	 */
 	public ElementMapper(Mapper mapper, Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter, Supplier<SETTER_IN> defaultValue) {
-//		this.mapper = Objects.requireNonNull(mapper);
+		this.mapper = Objects.requireNonNull(mapper);
 		this.getter = Objects.requireNonNull(getter);
 		this.transformer = Objects.requireNonNull(transformer);
 		this.setter = Objects.requireNonNull(setter);
-		this.defaultValue = defaultValue;
+		this.setDefaultValue(defaultValue);
 	}
 
 	/**
@@ -50,8 +50,17 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @param defaultValue the supplier for the default value
 	 * @return
 	 */
-	public ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> setDEfaultValue(Supplier<SETTER_IN> defaultValue) {
+	public ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> setDefaultValue(Supplier<SETTER_IN> defaultValue) {
 		this.defaultValue = defaultValue;
+		return this;
+	}
+	/**
+	 * Set a supplier (from the mapper configuration) for the default value to set in the destination if the value in this point is {@code null}.  
+	 * @param defaultValue the type of the supplier for the default value
+	 * @return a supplier of the given type
+	 */
+	public ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> setDefaultValue(Class<SETTER_IN> defaultValueType) {
+		this.defaultValue = mapper.config().getDefaultValueSupplier(defaultValueType);
 		return this;
 	}
 	
@@ -84,9 +93,11 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 		}
 		// System.out.println("Applying transformation...");
 		SETTER_IN transformed = transformer.apply(getterResult);
-		if(transformed==null && defaultValue!=null) {
-			// sysout("applying default value");
-			transformed = defaultValue.get();
+		if(transformed==null) {
+			if(defaultValue!=null) {
+				// sysout("applying default value");
+				transformed = defaultValue.get();
+			}
 		}
 		// System.out.println("Applying setter \""+getDestValue()+"\" with input: "+transformed);
 		setter.apply(out,transformed);

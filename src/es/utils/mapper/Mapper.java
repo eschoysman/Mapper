@@ -192,6 +192,7 @@ public class Mapper {
 	 */
 	public Mapper build() {
 		if(isDirty) {
+//			this.fieldHolderCache.keySet().forEach(k->this.fieldHolderCache.put(k,getAllFields(k)));
 			mappings.values().forEach(mapping->mapping.activate());
 			isDirty = false;
 		}
