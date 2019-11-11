@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiConsumer;
@@ -156,6 +157,9 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
     public From<T,U> addMapping() {
     	return From.using(mapper,this);
     }
+    public <GETTER_OUT,SETTER_IN> Optional<ElementMapper<T,GETTER_OUT,SETTER_IN,U>> getMapping(String idNameFromTo) {
+    	return getMapping(idNameFromTo,idNameFromTo);
+    }
     /**
      * Returns the {@code ElementMapper} between the names {@code from} and {@code to} if present and both names not ignored by the mapping
      * @param <GETTER_OUT> the type returned by the getter
@@ -164,9 +168,9 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
      * @param idNameTo the name identifier of the {@code getter} associated to the {@code ElementMapper} to return
      * @return the {@code ElementMapper} if present and {@code from} and {@code to} not ignored
      */
-    public <GETTER_OUT,SETTER_IN> ElementMapper<T,GETTER_OUT,SETTER_IN,U> getMapping(String idNameFrom, String idNameTo) {
+    public <GETTER_OUT,SETTER_IN> Optional<ElementMapper<T,GETTER_OUT,SETTER_IN,U>> getMapping(String idNameFrom, String idNameTo) {
     	if(inputsToIgnore.contains(idNameFrom) || outputsToIgnore.contains(idNameTo)) {
-    		return null;
+    		return Optional.empty();
     	}
     	ElementMapper<T,?,?,U> elementMapper = fieldMappings.get(idNameFrom,idNameTo);
     	if(elementMapper==null) {
@@ -174,7 +178,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
     	}
     	@SuppressWarnings("unchecked")
 		ElementMapper<T,GETTER_OUT,SETTER_IN,U> result = (ElementMapper<T,GETTER_OUT,SETTER_IN,U>)elementMapper;
-		return result;
+    	return Optional.ofNullable(result);
     }
     
 	// private methods
@@ -265,7 +269,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
     		tmpList.removeIf(em->inputsToIgnore.contains(em.getFromValue()));
     		tmpList.removeIf(em->outputsToIgnore.contains(em.getDestValue()));
     		elementMappings = new ArrayList<>(tmpList);
-    		isDirty = false;
+    		this.isDirty = false;
     	}
     	return elementMappings;
     }

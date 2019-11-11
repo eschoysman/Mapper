@@ -14,6 +14,10 @@ public class ToWithAnnotation {
 		return this.field;
 	}
 
+	public void setField(CharSequence field) {
+		this.field = field;
+	}
+
 	@Override
 	public String toString() {
 		return String.format("ToWithAnnotation [name=%s]", field);

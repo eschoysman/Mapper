@@ -5,12 +5,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
 import es.utils.mapper.Mapper;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
+import es.utils.mapper.impl.element.ElementMapper;
 import es.utils.mapper.impl.object.ClassMapper;
 import from.ClassMapperFromTest;
 import from.From;
@@ -256,6 +258,41 @@ public class ClassMapperTest {
 	public void shouldReturnStringRappresentation() throws MappingException {
 		ClassMapper<From,To> cm = new ClassMapper<>(From.class,To.class);
 		assertThat(cm.toString()).isEqualTo("ClassMapper[<class from.From,class to.To>]");
+	}
+
+	@Test
+	public void shouldReturnElementMapper() throws MappingException {
+		Mapper mapper = new Mapper();
+		ClassMapper<From,To> mapping = mapper.addForClass(From.class, To.class);
+		mapper.build();
+		Optional<ElementMapper<From,Object,Object,To>> em = mapping.getMapping("name");
+		assertThat(em.isPresent()).isTrue();
+	}
+	@Test
+	public void shouldNotReturnElementMapperBecauseFromFieldIsIgnored() throws MappingException {
+		Mapper mapper = new Mapper();
+		ClassMapper<From,To> mapping = mapper.addForClass(From.class, To.class);
+		mapping.ignoreInputs("ignoredField1");
+		mapper.build();
+		Optional<ElementMapper<From,Object,Object,To>> em = mapping.getMapping("ignoredField1");
+		assertThat(em.isPresent()).isFalse();
+	}
+	@Test
+	public void shouldNotReturnElementMapperBecauseToFieldIsIgnored() throws MappingException {
+		Mapper mapper = new Mapper();
+		ClassMapper<From,To> mapping = mapper.addForClass(From.class, To.class);
+		mapping.ignoreOutputs("ignoredField2");
+		mapper.build();
+		Optional<ElementMapper<From,Object,Object,To>> em = mapping.getMapping("ignoredField2");
+		assertThat(em.isPresent()).isFalse();
+	}
+	@Test
+	public void shouldNotReturnElementMapperBecauseNotPresent() throws MappingException {
+		Mapper mapper = new Mapper();
+		ClassMapper<From,To> mapping = mapper.addForClass(From.class, To.class);
+		mapper.build();
+		Optional<ElementMapper<From,Object,Object,To>> em = mapping.getMapping("ignoredField2");
+		assertThat(em.isPresent()).isFalse();
 	}
 	
 }

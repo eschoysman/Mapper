@@ -14,9 +14,7 @@ import es.utils.mapper.configuration.Configuration;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
 import es.utils.mapper.impl.object.ClassMapper;
-import from.ClassMapperFromTest;
 import from.FromWithAnnotation;
-import to.ClassMapperToTest;
 import to.ToWithAnnotation;
 import to.ToWithNoEmptyConstructor;
 
@@ -65,6 +63,26 @@ public class ConfigurationTest {
 		assertThat(to).isNotNull();
 		assertThat(to.getName()==from.getName()).isFalse();
 		assertThat(to.getName()).isEqualTo(from.getName());
+	}
+	
+	@Test
+	public void shouldUseDefaultValueSupplier() throws MappingException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		ClassMapper<FromWithAnnotation,ToWithAnnotation> classMapper = mapper.addForClass(FromWithAnnotation.class,ToWithAnnotation.class);
+		Configuration configurations = mapper.config();
+		configurations.useAnnotation(TestAnnotation.class, "name");
+		configurations.addDefaultValueSupplier(CharSequence.class, ()->"<No value>");
+		
+		FromWithAnnotation from = new FromWithAnnotation(null);
+		ToWithAnnotation to1 = mapper.map(from);
+		assertThat(to1).isNotNull();
+		assertThat(to1.getName()).isEqualTo("<No value>");
+		classMapper.addMapping().from("name",FromWithAnnotation::getName).transform(s->(CharSequence)s).to("field",ToWithAnnotation::setField).defaultValueFor(CharSequence.class).create();
+		assertThat(classMapper.<String,CharSequence>getMapping("name").isPresent()).isFalse();
+		classMapper.<String,CharSequence>getMapping("name","field").get().setDefaultValue(CharSequence.class);
+		ToWithAnnotation to2 = mapper.map(from);
+		assertThat(to2).isNotNull();
+		assertThat(to2.getName()).isEqualTo("<No value>");
 	}
 	
 }

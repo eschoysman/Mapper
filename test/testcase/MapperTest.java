@@ -418,7 +418,16 @@ public class MapperTest {
 									   .containsSequence(TimeUnit.MINUTES,TimeUnit.MINUTES,TimeUnit.MINUTES);
 		assertThat(mapper.mapCollection(null,ArrayList.class,TimeUnit.class)).isNull();
 	}
-	
+	@Test
+	public void shouldMapTwoObjectsAndResultAreEquals() throws MappingException, MappingNotFoundException, IOException {
+		Mapper mapper = new Mapper();
+		mapper.add(From.class, To.class);
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		To to1 = mapper.map(from,To.class);
+		To to2 = mapper.map(from,To.class);
+		assertThat(to1).isEqualTo(to2);
+	}
+
 	/* Map Method Enum */
 	@Test
 	public void shouldMapExistingMappingBetweenEnums() throws MappingException, MappingNotFoundException {

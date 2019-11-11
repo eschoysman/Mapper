@@ -2,6 +2,8 @@ package testcase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 
 import es.utils.mapper.Mapper;
@@ -117,6 +119,16 @@ public class ElementMapperBuilderTest {
 		ClassMapper<Object,Object> classMapper = new ClassMapper<>(Object.class,Object.class);
 		ElementMapper<Object,String,String,Object> em = From.using(mapper,classMapper).from(getter).to(setter).getElementMapper();
 		assertThat(em.toString()).isEqualTo("ElementMapper[Getter[name=getterName],Setter[name=setterName]]");
+	}
+	@Test
+	public void shouldReturnElementMapper() throws MappingException {
+		Getter<Object,String> getter = new Getter<>("getterName",Object::toString);
+		Setter<Object,String> setter = new Setter<>("setterName",(a,b)->{});
+		Mapper mapper = new Mapper();
+		ClassMapper<Object,Object> classMapper = mapper.addForClass(Object.class,Object.class).addMapping().from(getter).to(setter).create();
+		Optional<ElementMapper<Object,String,String,Object>> em = classMapper.getMapping("getterName","setterName");
+		assertThat(em.isPresent()).isTrue();
+		assertThat(em.get().toString()).isEqualTo("ElementMapper[Getter[name=getterName],Setter[name=setterName]]");
 	}
 	
 }
