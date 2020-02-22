@@ -3,7 +3,7 @@ package to;
 import converter.ConverterToNull;
 import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.annotation.Converter;
-import es.utils.mapper.annotation.DefaultValue;
+import es.utils.mapper.annotation.Default;
 
 public class ClassMapperToTest {
 
@@ -13,8 +13,9 @@ public class ClassMapperToTest {
 	private String surnameTo;
 	private String fullName;
 	@Converter(ConverterToNull.class)
-	@DefaultValue(Integer.class)
+	@Default(type=Integer.class)
 	private int age;
+	public String publicField;
 	
 	public ClassMapperToTest(String nameTo, String surnameTo) {
 		this.nameTo = nameTo;

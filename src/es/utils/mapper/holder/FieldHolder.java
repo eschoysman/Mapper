@@ -16,10 +16,10 @@ import java.util.function.Supplier;
 import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.annotation.CollectionType;
 import es.utils.mapper.annotation.Converter;
-import es.utils.mapper.annotation.DefaultValue;
 import es.utils.mapper.annotation.IgnoreField;
 import es.utils.mapper.configuration.Configuration;
 import es.utils.mapper.converter.AbstractConverter;
+import es.utils.mapper.defaultvalue.DefaultValueStrategy;
 import es.utils.mapper.impl.object.DirectMapper;
 import es.utils.mapper.utils.MapperUtil;
 
@@ -55,6 +55,7 @@ public class FieldHolder {
 		this.genericType = field.getGenericType();
 		this.aliases = new TreeSet<>();
 		this.converters = new LinkedHashSet<>();
+		this.defaultValue = ()->null;
 		processAnnotations(config);
 	}
 	
@@ -110,22 +111,7 @@ public class FieldHolder {
 		}
 	}
 	private void processDefaultValue(Configuration config) {
-		this.defaultValue = config.getDefaultValueSupplier(getType());
-		DefaultValue defaultValueType = this.field.getAnnotation(DefaultValue.class);
-		if(defaultValueType!=null) {
-			this.defaultValue = config.getDefaultValueSupplier(defaultValueType.value());
-		}
-//		if(String.class.isAssignableFrom(getType())) {
-//			// read @DefaultString
-//		}
-//		if(Class.class.isAssignableFrom(getType())) {
-//			// read @DefaultClass
-//		}
-//		if(getType().isEnum()) {
-//			if(true/*same enumtype*/) {
-//				// read @DefaultEnum
-//			}
-//		}
+		this.defaultValue = new DefaultValueManager(config,this).getSupplier();
 	}
 	private void processCollectionType() {
 		CollectionType annotationCollectionType = this.field.getAnnotation(CollectionType.class);
@@ -170,10 +156,11 @@ public class FieldHolder {
 		return converters;
 	}
 	/**
+	 * @param <TYPE> the type of the value supplied
 	 * @return the default value supplier of the field
-	 * @see DefaultValue
+	 * @see DefaultValueStrategy
 	 */
-	public <TYPE> Supplier<TYPE> getDefautValueSuppplier() {
+	public <TYPE> Supplier<TYPE> getDefautValueSupplier() {
 		@SuppressWarnings("unchecked")
 		Supplier<TYPE> result = (Supplier<TYPE>)defaultValue;
 		return result;

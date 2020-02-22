@@ -87,7 +87,7 @@ public class BuilderTest {
 									 .consume(String::toString)
 									 .create();
     	MappingException exception = assertThrows(MappingException.class, ()->mapper.map(from));
-    	assertThat(exception.getMessage()).isNotNull().startsWith("java.lang.RuntimeException: java.lang.RuntimeException: java.lang.RuntimeException: java.lang.RuntimeException: java.lang.NullPointerException");
+    	assertThat(exception.getMessage()).isNotNull().startsWith("java.lang.RuntimeException: java.lang.RuntimeException: java.lang.RuntimeException: java.lang.NullPointerException");
 	}
 	
 	@Test
@@ -97,8 +97,8 @@ public class BuilderTest {
 		ClassMapperFromTest from = new ClassMapperFromTest();
     	mapping.addMapping().from("name",ClassMapperFromTest::getNameFrom)
 							.<Integer>transform(n->null)
+							.defaultOutput(42)
 							.to("age",ClassMapperToTest::setAge)
-							.defaultValue(42)
 							.create()
 				.addMapping().from("name",ClassMapperFromTest::getNameFrom)
 							.<String>transform(n->null)

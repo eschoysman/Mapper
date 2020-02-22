@@ -67,7 +67,7 @@ public class Mapper {
 	 * @param <T> the origin type of the mapping
 	 * @param <U> the destination type of the mapping
 	 * @param objectMapper the mapping to add to this {@code Mapper} instance
-	 * @return this {@code Mapper} instance
+	 * @return The current {@code Mapper} instance
 	 */
 	public <T,U> Mapper add(MapperObject<T,U> objectMapper) {
 		return add(objectMapper.fromClass(),objectMapper.toClass(),objectMapper);
@@ -591,4 +591,5 @@ public class Mapper {
 				throw new MappingException("Destination class does not have a public empty constructor. Please provide a public empty contructor or a Supplier in the confuguration such that the mapping can be done.");
 		}
     }
+
 }

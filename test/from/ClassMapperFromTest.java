@@ -8,6 +8,7 @@ public class ClassMapperFromTest {
 	private String nameFrom;
 	@AliasNames("surname")
 	private String surnameFrom;
+	public String publicField;
 	
 	public ClassMapperFromTest(String nameFrom, String surnameFrom) {
 		this.nameFrom = nameFrom;

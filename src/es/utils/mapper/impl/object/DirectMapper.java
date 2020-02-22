@@ -31,6 +31,10 @@ public class DirectMapper<T,U> extends MapperObject<T,U> {
 	public DirectMapper(Class<T> from, Class<U> to, Function<T,U> transformer) {
 		super(from,to);
 		this.transformer = transformer;
+		if(transformer==null && this instanceof AbstractConverter) {
+			ThrowingFunction<T,U> convert = ((AbstractConverter<T,U>)this)::convert;
+			this.transformer = convert;
+		}
 	}
 
 	@Override
@@ -39,10 +43,6 @@ public class DirectMapper<T,U> extends MapperObject<T,U> {
 
 	@Override
 	protected final U mapValue(T from) {
-		if(transformer==null && this instanceof AbstractConverter) {
-			ThrowingFunction<T,U> convert = ((AbstractConverter<T,U>)this)::convert;
-			this.transformer = convert;
-		}
 		return transformer.apply(from);
 	}
 

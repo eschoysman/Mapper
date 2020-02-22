@@ -20,7 +20,7 @@ import es.utils.mapper.impl.object.DirectMapper;
  * @author eschoysman
  */
 public class MapperUtil {
-
+    
 	/**
 	 * This method returns the specific field of input class. If no field is found,
 	 * an attempt to get the field through the {@code AliasNames} annotation is done.
@@ -101,6 +101,14 @@ public class MapperUtil {
 		return null;
 	}
 
+	/**
+	 * Create a mapping using the implementation present in the sub-class of the given {@link AbstractConverter} and {@code mapper} instance.
+	 * @param converter the type of the custom {@code AbstractConverter} to use
+	 * @param mapper the {@code mapper} instance needed for instantiate the {@code AbstractConverter}
+	 * @param <FROM> the type of the origin object
+	 * @param <TO> the type of the destination object
+	 * @return the newly created mapping if successfully instantiate, otherwise prints a warning and returns {@code null}.
+	 */
 	public static <FROM,TO> DirectMapper<FROM,TO> createFromConverter(Class<? extends AbstractConverter<FROM,TO>> converter, Mapper mapper) {
 		DirectMapper<FROM,TO> result = null;
 		try {

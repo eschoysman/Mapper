@@ -5,7 +5,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import es.utils.mapper.Mapper;
-import es.utils.mapper.configuration.Configuration;
+import es.utils.mapper.defaultvalue.DefaultValueStrategy;
 
 /**
  * This class contains the informations and the logic needed the execute the mapping of an single element:
@@ -28,49 +28,60 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 
 	private Mapper mapper;
 	private Getter<IN,GETTER_OUT> getter;
+	private Supplier<GETTER_OUT> defaultInput;
 	private Function<GETTER_OUT,SETTER_IN> transformer;
+	private Supplier<SETTER_IN> defaultOutput;
 	private Setter<OUT,SETTER_IN> setter;
-	private Supplier<SETTER_IN> defaultValue;
 	
 	/**
+	 * @param mapper the mapper of belonging
 	 * @param getter an implementation of the getter logic
+	 * @param defaultInput supplier for the default input value
 	 * @param transformer a function to map the result of the getter into the correct type for the setter
+	 * @param defaultOutput supplier for the default output value
 	 * @param setter an implementation of the getter logic
 	 */
-	public ElementMapper(Mapper mapper, Getter<IN,GETTER_OUT> getter, Function<GETTER_OUT,SETTER_IN> transformer, Setter<OUT,SETTER_IN> setter, Supplier<SETTER_IN> defaultValue) {
+	public ElementMapper(Mapper mapper, Getter<IN,GETTER_OUT> getter,
+										Supplier<GETTER_OUT> defaultInput,
+										Function<GETTER_OUT,SETTER_IN> transformer,
+										Supplier<SETTER_IN> defaultOutput,
+										Setter<OUT,SETTER_IN> setter) {
 		this.mapper = Objects.requireNonNull(mapper);
 		this.getter = Objects.requireNonNull(getter);
+		this.defaultInput = Objects.requireNonNull(defaultInput);
 		this.transformer = Objects.requireNonNull(transformer);
+		this.defaultOutput = Objects.requireNonNull(defaultOutput);
 		this.setter = Objects.requireNonNull(setter);
-		this.setDefaultValue(defaultValue);
 	}
 
-	/**
-	 * Set a supplier for the default value to set in the destination if the value in this point is {@code null}
-	 * @param defaultValue the supplier for the default value
-	 * @return
-	 */
-	public ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> setDefaultValue(Supplier<SETTER_IN> defaultValue) {
-		this.defaultValue = defaultValue;
-		return this;
-	}
+//	/**
+//	 * Set a supplier for the default value to set in the destination if the value in this point is {@code null}
+//	 * @param defaultOutput the supplier for the default value
+//	 * @return
+//	 */
+//	public ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> setDefaultValue(Supplier<SETTER_IN> defaultValue) {
+//		this.defaultOutput = defaultValue;
+//		return this;
+//	}
 	/**
 	 * Set a supplier (from the mapper configuration) for the default value to set in the destination if the value in this point is {@code null}.  
-	 * @param defaultValue the type of the supplier for the default value
+	 * @param defaultOutput the type of the supplier for the default value
 	 * @return a supplier of the given type
 	 */
-	public ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> setDefaultValue(Class<SETTER_IN> defaultValueType) {
-		this.defaultValue = mapper.config().getDefaultValueSupplier(defaultValueType);
+	public ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> setDefaultValue(Class<SETTER_IN> defaultOutput) {
+		this.defaultOutput = mapper.config().getDefaultValueSupplier(defaultOutput);
 		return this;
 	}
 	
 	/**
+	 * The name identifier of the getter
 	 * @return the name identifier of the getter
 	 */
 	public String getFromValue() {
 		return getter.getName();
 	}
 	/**
+	 * The name identifier of the setter
 	 * @return the name identifier of the setter
 	 */
 	public String getDestValue() {
@@ -81,27 +92,35 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * The logic of the mapping of the current element.
 	 * @param in the original object
 	 * @param out the destination object
-	 * @param config the configuration of the belonging Mapper
 	 */
-	public void apply(IN in, OUT out, Configuration config) {
-		// System.out.println("Calling getter \""+getFromValue()+"\"...");
-		GETTER_OUT getterResult = getter.apply(in);
-		// System.out.println("getter \""+getFromValue()+"\" output: "+getterResult);
-		// System.out.println("Copying value to map...");
-		if(config.isDeepCopyEnabled() && config.getCloner()!=null) {
-			this.transformer = this.transformer.compose(config.<GETTER_OUT>getCloner()::apply);
-		}
-		// System.out.println("Applying transformation...");
-		SETTER_IN transformed = transformer.apply(getterResult);
-		if(transformed==null) {
-			if(defaultValue!=null) {
-				// sysout("applying default value");
-				transformed = defaultValue.get();
-			}
-		}
-		// System.out.println("Applying setter \""+getDestValue()+"\" with input: "+transformed);
-		setter.apply(out,transformed);
+	public void apply(IN in, OUT out) {
+		GETTER_OUT getterResult = getter(in);
+		getterResult = defaultValueGetter(getterResult);
+		SETTER_IN transformed = transform(getterResult);
+		transformed = defaultValueSetter(transformed);
+		setter(out,transformed);
+//		setter(out,defaultValueSetter(transform(defaultValueGetter(getter(in)))));
 	}
+//	public void apply(IN in, OUT out/*, Configuration config*/) {
+//		// System.out.println("Calling getter \""+getFromValue()+"\"...");
+//		GETTER_OUT getterResult = getter.apply(in);
+//		// System.out.println("getter \""+getFromValue()+"\" output: "+getterResult);
+//		// System.out.println("Copying value to map...");
+//		if(mapper.config().isDeepCopyEnabled() && mapper.config().getCloner()!=null) {
+//			this.transformer = this.transformer.compose(mapper.config().<GETTER_OUT>getCloner()::apply);
+//		}
+//		// System.out.println("Applying transformation...");
+//		SETTER_IN transformed = transformer.apply(getterResult);
+//		if(transformed==null) {
+//			// congif.defaultStrategy != NEVER => (ALWAYS || CUSTOM)+OUTPUT = !NEVER & OUTPUT
+//			if(mapper.config().getDefaultValuesStrategy()!=DefaultValueStrategy.NEVER && defaultOutput!=null) {
+//				// sysout("applying default value");
+//				transformed = defaultOutput.get();
+//			}
+//		}
+//		// System.out.println("Applying setter \""+getDestValue()+"\" with input: "+transformed);
+//		setter.apply(out,transformed);
+//	}
 	
 	/**
 	 * Returns a human readable string of the current {@code ElementMapper}
@@ -111,5 +130,39 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 		return "ElementMapper["+getter+","+setter+"]";
 	}
 	
+	
+	// PRIVATE METHODS
+	
+	private GETTER_OUT getter(IN in) {
+		GETTER_OUT getterResult = getter.apply(in);
+		return getterResult;
+	}
+	private GETTER_OUT defaultValueGetter(GETTER_OUT current) {
+		if(current==null) {
+			if(mapper.config().hasStrategy(DefaultValueStrategy.INPUT) && defaultOutput!=null) {
+				current = defaultInput.get();
+			}
+		}
+		return current;
+	}
+	private SETTER_IN transform(GETTER_OUT getterResult) {
+		if(mapper.config().isDeepCopyEnabled() && mapper.config().getCloner()!=null) {
+			this.transformer = this.transformer.compose(mapper.config().<GETTER_OUT>getCloner()::apply);
+		}
+		SETTER_IN transformed = transformer.apply(getterResult);
+		return transformed;
+	}
+	private SETTER_IN defaultValueSetter(SETTER_IN current) {
+		if(current==null) {
+			if(mapper.config().hasStrategy(DefaultValueStrategy.OUTPUT) && defaultOutput!=null) {
+				current = defaultOutput.get();
+			}
+		}
+		return current;
+	}
+	private void setter(OUT out, SETTER_IN transformed) {
+		// System.out.println("Applying setter \""+getDestValue()+"\" with input: "+transformed);
+		setter.apply(out,transformed);
+	}
 
 }

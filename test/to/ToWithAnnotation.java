@@ -1,10 +1,12 @@
 package to;
 
 import annotation.TestAnnotation;
+import es.utils.mapper.annotation.AliasNames;
 
 public class ToWithAnnotation {
 
 	@TestAnnotation(name="name")
+	@AliasNames("name")
 	private CharSequence field;
 	
 	public ToWithAnnotation() {

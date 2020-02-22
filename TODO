@@ -1,0 +1,9 @@
+Logger:
+	- creare metodi di log
+	- individuare ovunque i punti di:
+		- creazione e personalizzazione dei mapping (creazione)
+		- applicazione della logica durante un mapping (esecuzione)
+
+
+Trovare un modo per poter condividere Configuration e Logger (variabili di Mapper) con tutte le altre classi
+senza dover passare "mapper" ovunque (ThreadLocal? Map<id,Config> e Map<id,Logger> statici?)

@@ -1,16 +1,25 @@
 package es.utils.mapper.configuration;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import es.utils.mapper.Mapper;
 import es.utils.mapper.annotation.AliasNames;
+import es.utils.mapper.defaultvalue.DefaultValueStrategy;
+
+import static es.utils.mapper.defaultvalue.DefaultValueStrategy.*;
 import es.utils.mapper.exception.MappingException;
 
+/**
+ * This class handle the configuration at Mapper level.
+ * @author eschoysman
+ *
+ */
 public class Configuration {
 
 	private Mapper mapper;
@@ -19,6 +28,7 @@ public class Configuration {
 	private Map<Class<? extends Annotation>,String> annotations;
 	private boolean deepCopyEnabled;
 	private UnaryOperator<?> cloner;
+	private EnumSet<DefaultValueStrategy> defaultValuesStrategy;
 
 	/**
 	 * Create a configuration associated to the given {@code Mapper} instance.
@@ -38,6 +48,7 @@ public class Configuration {
 			useAnnotation(AliasNames.class);
 		} catch (MappingException e) {}
 		setCloner(null);
+		setDefaultValueStrategy(DEFAULT);
 	}
 	
 	/**
@@ -107,12 +118,15 @@ public class Configuration {
 	 * Allow to customize the annotation used to specify the alias name of a field using the "fieldName" field of the annotation.<br>
 	 * @param <T> The generic type of the annotation
 	 * @param annotationType The type of the annotation
+	 * @param fieldName method name of the annotation containing the alias value to use
 	 * @return The current configuration instance
 	 * @throws MappingException If the fieldName does not exists in the annotation type or if it exists but does not return {@code String} or {@code String[]}.
 	 * @see #useAnnotation(Class)
 	 */
 	public <T extends Annotation> Configuration useAnnotation(Class<T> annotationType, String fieldName) throws MappingException {
-		fieldName = Optional.ofNullable(fieldName).orElse("value");
+		if(fieldName==null || fieldName.trim().isEmpty()) {
+			fieldName = "value";
+		}
 		try {
 			Class<?> returnType = annotationType.getMethod(fieldName).getReturnType();
 			if(String.class.equals(returnType.getComponentType()) || returnType.equals(String.class)) {
@@ -193,5 +207,50 @@ public class Configuration {
 		UnaryOperator<T> cloner = (UnaryOperator<T>)this.cloner;
 		return cloner;
 	}
-	
+
+	/**
+	 * Set the logic of the defaultValue strategy.
+	 * @param defaultValuesStrategy array of strategies to use
+	 * @return The current configuration instance
+	 * @see #hasStrategy(DefaultValueStrategy)
+	 * @see DefaultValueStrategy
+	 */
+	public Configuration setDefaultValueStrategy(DefaultValueStrategy... defaultValuesStrategy) {
+		EnumSet<DefaultValueStrategy> input = EnumSet.noneOf(DefaultValueStrategy.class);
+		Arrays.stream(defaultValuesStrategy).forEach(input::add);
+		if(!input.isEmpty() && !input.contains(NEVER) && !input.contains(DEFAULT) && !input.contains(ALWAYS) && !input.contains(CUSTOM)) {
+			input.add(CUSTOM);
+		}
+		if(this.defaultValuesStrategy!=null) {
+			this.defaultValuesStrategy.clear();
+		}
+		if(input.isEmpty() || input.remove(NEVER)) {
+			this.defaultValuesStrategy = EnumSet.of(NEVER);
+			return this;
+		}
+		if(input.remove(DEFAULT)) {
+			this.defaultValuesStrategy = EnumSet.of(ALWAYS,OUTPUT);
+			return this;
+		}
+		input.forEach(this.defaultValuesStrategy::add);
+		if((this.defaultValuesStrategy.contains(ALWAYS) || this.defaultValuesStrategy.contains(CUSTOM))
+				&& !this.defaultValuesStrategy.contains(INPUT) && !this.defaultValuesStrategy.contains(OUTPUT)) {
+			this.defaultValuesStrategy.add(INPUT);
+			this.defaultValuesStrategy.add(OUTPUT);
+		}
+		if(!this.defaultValuesStrategy.contains(ALWAYS)) {
+			this.defaultValuesStrategy.add(CUSTOM);
+		}
+		return this;
+	}
+	/**
+	 * @param strategy the strategy to use
+	 * @return Returns {@code true} if the diven defaultValue strategy is set in the configurations, {@code false} otherwise
+	 * @see #setDefaultValueStrategy(DefaultValueStrategy...)
+	 * @see DefaultValueStrategy
+	 */
+	public boolean hasStrategy(DefaultValueStrategy strategy) {
+		return this.defaultValuesStrategy.contains(strategy);
+	}
+
 }

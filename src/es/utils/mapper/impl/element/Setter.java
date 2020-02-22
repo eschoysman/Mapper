@@ -18,6 +18,7 @@ public class Setter<U,SETTER_IN> {
 	private static final Setter<?,?> EMPTY = new Setter<>("",(obj,$)->{});
 
 	/**
+	 * Create a {@code Setter} instance with a identifier and a operation
 	 * @param name the name identifier of the current {@code setter}
 	 * @param setter the {@code setter} operation
 	 */
@@ -27,6 +28,7 @@ public class Setter<U,SETTER_IN> {
 	}
 	
 	/**
+	 * Returns an empty {@code setter} with no name and empty operation
 	 * @return an empty {@code setter} with no name and empty operation
      * @param <U> the type of the origin object
      * @param <SETTER_IN> the type of the result of the {@code setter} operation
@@ -38,6 +40,7 @@ public class Setter<U,SETTER_IN> {
 	}
 	
 	/**
+	 * The name identifier of the current {@code setter}
 	 * @return the name identifier of the current {@code setter}
 	 */
 	public String getName() {

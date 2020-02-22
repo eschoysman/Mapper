@@ -2,7 +2,6 @@ package es.utils.mapper.converter;
 
 import es.utils.mapper.annotation.Converter;
 import es.utils.mapper.impl.object.DirectMapper;
-import es.utils.mapper.utils.ThrowingFunction;
 
 /**
  * This class is used to specify a converter over a single field in a mapping inside the {@code Converter} annotation.<br>
@@ -29,13 +28,22 @@ public class ConverterDateTimestamp extends AbstractConverter&lt;Date,Timestamp&
  */
 public abstract class AbstractConverter<IN,OUT> extends DirectMapper<IN,OUT> {
 
-	public AbstractConverter(Class<IN> from, Class<OUT> to) {
-		this(from, to, null);
-	}
-	public AbstractConverter(Class<IN> from, Class<OUT> to, ThrowingFunction<IN,OUT> transformer) {
-		super(from, to, transformer);
+	/**
+	 * Create a DirectMapper from type {@code from} to type {@code to} with no transformation.
+	 * The conversion is done calling the abstract method {@code convert}.
+	 * @param from source type
+	 * @param to destination type
+	 */
+	protected AbstractConverter(Class<IN> from, Class<OUT> to) {
+		super(from,to,null);
 	}
 	
+	/**
+	 * The conversion implementation for the current {@code DirectMapper} implementation
+	 * @param input input object
+	 * @return the input object converted
+	 * @throws Exception allow the implementation to throw any kind of exception 
+	 */
 	public abstract OUT convert(IN input) throws Exception;
 	
 }

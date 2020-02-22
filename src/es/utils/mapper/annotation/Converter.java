@@ -23,4 +23,5 @@ public @interface Converter {
 	 * @return The converter type that could be used to map the annotated field.
 	 */
 	Class<? extends AbstractConverter<?,?>> value();
+	
 }

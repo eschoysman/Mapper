@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import annotation.TestAnnotation;
 import es.utils.mapper.Mapper;
+import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.configuration.Configuration;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
@@ -35,6 +36,26 @@ public class ConfigurationTest {
 		Mapper mapper = new Mapper();
 		mapper.add(FromWithAnnotation.class,ToWithAnnotation.class);
 		mapper.config().useAnnotation(TestAnnotation.class, "name");
+		FromWithAnnotation from = new FromWithAnnotation();
+		ToWithAnnotation to = mapper.map(from);
+		assertThat(to).isNotNull();
+		assertThat(to.getName()).isEqualTo("Pippo");
+	}
+	@Test
+	public void shouldReadCustomAnnotationEmptyName() throws MappingException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		mapper.add(FromWithAnnotation.class,ToWithAnnotation.class);
+		mapper.config().useAnnotation(AliasNames.class,"\t    ");
+		FromWithAnnotation from = new FromWithAnnotation();
+		ToWithAnnotation to = mapper.map(from);
+		assertThat(to).isNotNull();
+		assertThat(to.getName()).isEqualTo("Pippo");
+	}
+	@Test
+	public void shouldReadCustomAnnotationNullName() throws MappingException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		mapper.add(FromWithAnnotation.class,ToWithAnnotation.class);
+		mapper.config().useAnnotation(AliasNames.class,null);
 		FromWithAnnotation from = new FromWithAnnotation();
 		ToWithAnnotation to = mapper.map(from);
 		assertThat(to).isNotNull();
@@ -77,7 +98,7 @@ public class ConfigurationTest {
 		ToWithAnnotation to1 = mapper.map(from);
 		assertThat(to1).isNotNull();
 		assertThat(to1.getName()).isEqualTo("<No value>");
-		classMapper.addMapping().from("name",FromWithAnnotation::getName).transform(s->(CharSequence)s).to("field",ToWithAnnotation::setField).defaultValueFor(CharSequence.class).create();
+		classMapper.addMapping().from("name",FromWithAnnotation::getName).transform(s->(CharSequence)s).defaultOutputFor(CharSequence.class).to("field",ToWithAnnotation::setField).create();
 		assertThat(classMapper.<String,CharSequence>getMapping("name").isPresent()).isFalse();
 		classMapper.<String,CharSequence>getMapping("name","field").get().setDefaultValue(CharSequence.class);
 		ToWithAnnotation to2 = mapper.map(from);

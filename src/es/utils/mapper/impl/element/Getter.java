@@ -17,6 +17,7 @@ public class Getter<T,GETTER_OUT> {
 	private Function<T,GETTER_OUT> getter;
 	
 	/**
+	 * Create a {@code Getter} instance with a identifier and a operation
 	 * @param name the name identifier of the current {@code getter}
 	 * @param getter the {@code getter} operation
 	 */
@@ -26,6 +27,7 @@ public class Getter<T,GETTER_OUT> {
 	}
 	
 	/**
+	 * Returns an empty {@code getter} with no name and returns {@code null} value
 	 * @return an empty {@code getter} with no name and returns {@code null} value
      * @param <T> the type of the origin object
      * @param <GETTER_OUT> the type of the result of the {@code getter} operation
@@ -37,6 +39,7 @@ public class Getter<T,GETTER_OUT> {
 	}
 	
 	/**
+	 * The name identifier of the current {@code getter}
 	 * @return the name identifier of the current {@code getter}
 	 */
 	public String getName() {
@@ -44,6 +47,7 @@ public class Getter<T,GETTER_OUT> {
 	}
 
 	/**
+	 * The value associated to the current {@code getter} during its creation
 	 * @param input the object on which the current {@code getter} is to be applied 
 	 * @return the value associated to the current {@code getter} during its creation
 	 */
