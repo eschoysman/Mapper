@@ -23,6 +23,7 @@
 hs_err_pid*
 .clover/
 .idea/
+*.iml
 .settings/
 bin/
 report/
@@ -30,5 +31,5 @@ Mapper 2.0.iml
 .classpath
 .project
 /target/
-
+Mapper.wiki/
 .vscode/
