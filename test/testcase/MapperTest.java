@@ -516,6 +516,22 @@ public class MapperTest {
 		TimeUnit to = null;
 		assertThat(mapper.mapOrNull(ChronoUnit.CENTURIES, to)).isNull();
 	}
+	@Test
+	public void shouldReturnNullValueWithNotExistingMappingAndImplicitDestinationType() throws MappingException {
+		Mapper mapper = new Mapper();
+		mapper.add(ChronoUnit.class, TimeUnit.class);
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		To result = mapper.mapOrNull(from);
+		assertThat(result).isNull();
+	}
+	@Test
+	public void shouldReturnMappedValueWithExistingDestinationType() throws MappingException {
+		Mapper mapper = new Mapper();
+		mapper.add(ChronoUnit.class, TimeUnit.class);
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		TimeUnit result = mapper.mapOrNull(ChronoUnit.DAYS);
+		assertThat(result).isNotNull().isEqualTo(TimeUnit.DAYS);
+	}
 
 	
 	/* build method */

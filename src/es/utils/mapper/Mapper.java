@@ -233,6 +233,27 @@ public class Mapper {
 			return null;
 		}
 	}
+	/**
+	 * @param <T> the type of the object to be mapped
+	 * @param <U> the type of the destination object
+	 * @param from the input object to be mapped
+	 * @param <T> the type of the object to be mapped
+	 * @param <U> the type of the destination object
+	 * @param from the input object to be mapped
+	 * @return if there is only one mapping from {@code from.getClass()}, execute that mapping and return the result,
+	 * otherwise or if some exception occurs during the mapping, returns {@code null}.
+	 * @see #mapOrNull(Object, Class)
+	 * @see #map(Object, Class)
+	 * @see #map(Object, Object)
+	 * @see #map(Object)
+	 */
+	public <T,U> U mapOrNull(T from) {
+		try {
+			return map(from);
+		} catch (MappingNotFoundException | MappingException e) {
+			return (U)null;
+		}
+	}
 	
 	/**
 	 * @param <T> the type of the object to be mapped
