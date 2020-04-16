@@ -7,10 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
@@ -483,8 +480,8 @@ public class MapperTest {
 		mapper.add(From.class, To.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		Class<?> myType = null;
-		assertThat(mapper.mapOrNull(from, myType)).isNull();
-		assertThat(mapper.mapOrNull(from, To.class)).isNotNull();
+		assertThat(mapper.mapOptional(from, myType)).isNotPresent();
+		assertThat(mapper.mapOptional(from, To.class)).isPresent();
 	}
 	@Test
 	public void shouldReturnNullValueWithNullDestination() throws MappingException, MappingNotFoundException {
@@ -492,45 +489,45 @@ public class MapperTest {
 		mapper.add(From.class, To.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		To to = null;
-		assertThat(mapper.mapOrNull(from, to)).isNull();
-		assertThat(mapper.mapOrNull(from, new To())).isNotNull();
+		assertThat(mapper.mapOptional(from, to)).isNotPresent();
+		assertThat(mapper.mapOptional(from, new To())).isPresent();
 	}
 	@Test
 	public void shouldReturnNullValueWithNotExistingMapping() throws MappingException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
-		assertThat(mapper.mapOrNull(from, To.class)).isNull();
+		assertThat(mapper.mapOptional(from, To.class)).isNotPresent();
 	}
 	@Test
 	public void shoulReturnNullValueNullClassEnumDestination() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
 		Class<?> myType = null;
-		assertThat(mapper.mapOrNull(ChronoUnit.MINUTES, myType)).isNull();
+		assertThat(mapper.mapOptional(ChronoUnit.MINUTES, myType)).isNotPresent();
 	}
 	@Test
 	public void shouldReturnNullValueWithNullDestinationEnum() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
 		TimeUnit to = null;
-		assertThat(mapper.mapOrNull(ChronoUnit.CENTURIES, to)).isNull();
+		assertThat(mapper.mapOptional(ChronoUnit.CENTURIES, to)).isNotPresent();
 	}
 	@Test
 	public void shouldReturnNullValueWithNotExistingMappingAndImplicitDestinationType() throws MappingException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
-		To result = mapper.mapOrNull(from);
-		assertThat(result).isNull();
+		Optional<To> result = mapper.mapOptional(from);
+		assertThat(result).isNotPresent();
 	}
 	@Test
 	public void shouldReturnMappedValueWithExistingDestinationType() throws MappingException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
-		TimeUnit result = mapper.mapOrNull(ChronoUnit.DAYS);
-		assertThat(result).isNotNull().isEqualTo(TimeUnit.DAYS);
+		Optional<TimeUnit> result = mapper.mapOptional(ChronoUnit.DAYS);
+		assertThat(result).isPresent().containsSame(TimeUnit.DAYS);
 	}
 
 	

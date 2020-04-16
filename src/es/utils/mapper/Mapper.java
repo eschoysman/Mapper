@@ -204,16 +204,16 @@ public class Mapper {
 	 * @param <U> the type of the resulting object
 	 * @param from the input object to be mapped
 	 * @param to the destination type required for the mapping
-	 * @return an instance of type {@code U}. If the input is {@code null} or some exception occurs during the mapping, returns {@code null}.
-	 * @see #mapOrNull(Object, Object)
+	 * @return an Optional containing an instance of type {@code U}. If the input is {@code null} or some exception occurs during the mapping, returns {@code Optional.empty()}.
+	 * @see #mapOptional(Object, Object)
 	 * @see #map(Object, Class)
 	 * @see #map(Object, Object)
 	 */
-	public <T,U> U mapOrNull(T from, Class<U> to) {
+	public <T,U> Optional<U> mapOptional(T from, Class<U> to) {
 		try {
-			return map(from,to);
+			return Optional.ofNullable(map(from,to));
 		} catch (MappingNotFoundException | MappingException e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 	/**
@@ -221,16 +221,16 @@ public class Mapper {
 	 * @param <U> the type of the destination object
 	 * @param from the input object to be mapped
 	 * @param to the destination instance that will be overridden during the mapping
-	 * @return an instance of type {@code U}. If the input is {@code null} or some exception occurs during the mapping, returns {@code null}.
-	 * @see #mapOrNull(Object, Class)
+	 * @return an Optional containing an instance of type {@code U}. If the input is {@code null} or some exception occurs during the mapping, returns {@code Optional.empty()}.
+	 * @see #mapOptional(Object, Class)
 	 * @see #map(Object, Class)
 	 * @see #map(Object, Object)
 	 */
-	public <T,U> U mapOrNull(T from, U to) {
+	public <T,U> Optional<U> mapOptional(T from, U to) {
 		try {
-			return map(from,to);
+			return Optional.ofNullable(map(from,to));
 		} catch (MappingNotFoundException | MappingException e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 	/**
@@ -240,21 +240,21 @@ public class Mapper {
 	 * @param <T> the type of the object to be mapped
 	 * @param <U> the type of the destination object
 	 * @param from the input object to be mapped
-	 * @return if there is only one mapping from {@code from.getClass()}, execute that mapping and return the result,
-	 * otherwise or if some exception occurs during the mapping, returns {@code null}.
-	 * @see #mapOrNull(Object, Class)
+	 * @return if there is only one mapping from {@code from.getClass()}, execute that mapping and return the result as an Optional,
+	 * otherwise or if some exception occurs during the mapping, returns {@code Optional.empty()}.
+	 * @see #mapOptional(Object, Class)
 	 * @see #map(Object, Class)
 	 * @see #map(Object, Object)
 	 * @see #map(Object)
 	 */
-	public <T,U> U mapOrNull(T from) {
+	public <T,U> Optional<U> mapOptional(T from) {
 		try {
-			return map(from);
+			return Optional.ofNullable(map(from));
 		} catch (MappingNotFoundException | MappingException e) {
-			return (U)null;
+			return Optional.<U>empty();
 		}
 	}
-	
+
 	/**
 	 * @param <T> the type of the object to be mapped
 	 * @param <U> the type of the resulting object
@@ -264,8 +264,8 @@ public class Mapper {
 	 * @return a instance of type {@code U} created following the mappings rules between types {@code T} and {@code U}.
 	 * @throws MappingNotFoundException if no mapping between types {@code T} and {@code U} is found
 	 * @throws MappingException if {@code to}is {@code null} or an error occurs during the mapping
-	 * @see #mapOrNull(Object, Class)
-	 * @see #mapOrNull(Object, Object)
+	 * @see #mapOptional(Object, Class)
+	 * @see #mapOptional(Object, Object)
 	 * @see #map(Object, Object)
 	 */
 	public <T,U> U map(T from, Class<U> to) throws MappingNotFoundException, MappingException {
@@ -293,8 +293,8 @@ public class Mapper {
 	 * @return the object {@code to} updated during the mapping
 	 * @throws MappingNotFoundException if no mapping between types {@code T} and {@code U} is found
 	 * @throws MappingException if {@code to}is {@code null} or an error occurs during the mapping
-	 * @see #mapOrNull(Object, Class)
-	 * @see #mapOrNull(Object, Object)
+	 * @see #mapOptional(Object, Class)
+	 * @see #mapOptional(Object, Object)
 	 * @see #map(Object, Class)
 	 */
 	public <T,U> U map(T from, U to) throws MappingNotFoundException, MappingException {
@@ -313,7 +313,6 @@ public class Mapper {
 		}
 		return to;
 	}
-	
 	/**
 	 * @param <T> the type of the object to be mapped
 	 * @param <U> the type of the mapped object
@@ -451,13 +450,13 @@ public class Mapper {
 	 * @return the mapping between types {@code T} and {@code U} if present, {@code null} otherwise 
 	 */
 	public <T,U> MapperObject<T,U> getMappingBetween(Class<T> from, Class<U> to) {
-		build();
 		@SuppressWarnings("unchecked")
 		MapperObject<T,U> result = (MapperObject<T,U>)mappings.get(from,to);
 		if(result==null && to.isAssignableFrom(from)) {
 			result = new DirectMapper<T,U>(from,to,to::cast);
 			add(result);
 		}
+		build();
 		return result;
 	}
 

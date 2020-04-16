@@ -236,7 +236,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	}	
 	private <GETTER_OUT,SETTER_IN> void mapFieldWithTranformation(String fieldName, FieldHolder srcFieldHolder, FieldHolder destFieldHolder) {
 		@SuppressWarnings("unchecked")
-		Function<GETTER_OUT,SETTER_IN> transformer = in->mapper.mapOrNull(in,(Class<SETTER_IN>)destFieldHolder.getType());
+		Function<GETTER_OUT,SETTER_IN> transformer = in->mapper.mapOptional(in,(Class<SETTER_IN>)destFieldHolder.getType()).orElse(null);
 		addElementMapper(addMapping().<GETTER_OUT>from(fieldName,srcFieldHolder).<SETTER_IN>transform(transformer::apply).defaultOutput(destFieldHolder.getDefautValueSupplier()).to(fieldName,destFieldHolder).getElementMapper(),true);
 	}
 	private <GETTER_OUT,SETTER_IN> void mapFieldWithConverter(String fieldName, FieldHolder srcFieldHolder, FieldHolder destFieldHolder, DirectMapper<GETTER_OUT,SETTER_IN> converter) {
