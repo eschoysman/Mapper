@@ -14,6 +14,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import es.utils.doublekeymap.TwoKeyMap;
+import es.utils.mapper.exception.ExceptionBuilder;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.factory.CollectionFactory;
 import es.utils.mapper.factory.builder.EMBuilder;
@@ -65,7 +66,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 		try {
 			return mapValue(from,dest);
 		} catch (Exception e) {
-			throw new MappingException(e);
+			throw ExceptionBuilder.forType(MappingException.class).cause(e).build();
 		}
 	}
 	protected U mapValue(T from, U to) {
@@ -236,7 +237,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	}	
 	private <GETTER_OUT,SETTER_IN> void mapFieldWithTranformation(String fieldName, FieldHolder srcFieldHolder, FieldHolder destFieldHolder) {
 		@SuppressWarnings("unchecked")
-		Function<GETTER_OUT,SETTER_IN> transformer = in->mapper.mapOptional(in,(Class<SETTER_IN>)destFieldHolder.getType()).orElse(null);
+		Function<GETTER_OUT,SETTER_IN> transformer = in->mapper.mapAsOptional(in,(Class<SETTER_IN>)destFieldHolder.getType()).orElse(null);
 		addElementMapper(addMapping().<GETTER_OUT>from(fieldName,srcFieldHolder).<SETTER_IN>transform(transformer::apply).defaultOutput(destFieldHolder.getDefautValueSupplier()).to(fieldName,destFieldHolder).getElementMapper(),true);
 	}
 	private <GETTER_OUT,SETTER_IN> void mapFieldWithConverter(String fieldName, FieldHolder srcFieldHolder, FieldHolder destFieldHolder, DirectMapper<GETTER_OUT,SETTER_IN> converter) {

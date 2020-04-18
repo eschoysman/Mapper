@@ -112,7 +112,7 @@ public class ConverterTest {
 				  .<Date>from("data4").transform(ConverterDateTimestamp2.class).to("data4")
 				  .create());
 		System.setOut(originalOut);
-		assertThat(exception.getMessage()).isEqualTo("Converter of "+ConverterDateTimestamp2.class+" cannot be istanziate.");
+		assertThat(exception.getMessage()).isEqualTo("Converter of "+ConverterDateTimestamp2.class+" cannot be instantiate.");
 	}
 	
 	@Test
@@ -127,7 +127,7 @@ public class ConverterTest {
 				  .create());
 		mapper.build();
 		System.setOut(originalOut);
-		assertThat(exception.getMessage()).isEqualTo("Converter of "+ConverterDateTimestamp2.class+" cannot be istanziate.");
+		assertThat(exception.getMessage()).isEqualTo("Converter of "+ConverterDateTimestamp2.class+" cannot be instantiate.");
 	}
 	
 }

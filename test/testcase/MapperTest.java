@@ -264,11 +264,11 @@ public class MapperTest {
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		MappingNotFoundException exception = assertThrows(MappingNotFoundException.class, ()->mapper.map(from, To.class));
 		assertThat(exception.getMessage()).contains("WARNING - No mappings found in es.utils.mapper.Mapper for input class java.lang.Class and output class to.To\n" + 
-				"Exisiting destination mappings from class from.From:\n" + 
+				"Existing destination mappings from class from.From:\n" +
 				"\tnone\n" + 
-				"Exisiting source mappings to class to.To:\n" + 
+				"Existing source mappings to class to.To:\n" +
 				"\tnone\n" + 
-				"Other exisiting mappings:\n" + 
+				"Other existing mappings:\n" +
 				"\tclass java.time.temporal.ChronoUnit -> class java.util.concurrent.TimeUnit\n"
 				+ "");
 	}
@@ -280,11 +280,11 @@ public class MapperTest {
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		MappingNotFoundException exception = assertThrows(MappingNotFoundException.class, ()->mapper.map(from, To.class));
 		assertThat(exception.getMessage()).contains("WARNING - No mappings found in es.utils.mapper.Mapper for input class java.lang.Class and output class to.To\n" + 
-				"Exisiting destination mappings from class from.From:\n" + 
+				"Existing destination mappings from class from.From:\n" +
 				"\tclass java.util.concurrent.TimeUnit\n" + 
-				"Exisiting source mappings to class to.To:\n" + 
+				"Existing source mappings to class to.To:\n" +
 				"\tclass java.time.temporal.ChronoUnit\n" + 
-				"Other exisiting mappings:\n" + 
+				"Other existing mappings:\n" +
 				"\tnone\n"
 				+ "");
 	}
@@ -295,11 +295,11 @@ public class MapperTest {
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		MappingNotFoundException exception = assertThrows(MappingNotFoundException.class, ()->mapper.map(from, new To()));
 		assertThat(exception.getMessage()).contains("WARNING - No mappings found in es.utils.mapper.Mapper for input class java.lang.Class and output class to.To\n" + 
-				"Exisiting destination mappings from class from.From:\n" + 
+				"Existing destination mappings from class from.From:\n" +
 				"\tnone\n" + 
-				"Exisiting source mappings to class to.To:\n" + 
+				"Existing source mappings to class to.To:\n" +
 				"\tnone\n" + 
-				"Other exisiting mappings:\n" + 
+				"Other existing mappings:\n" +
 				"\tclass java.time.temporal.ChronoUnit -> class java.util.concurrent.TimeUnit\n"
 				+ "");
 	}
@@ -480,8 +480,8 @@ public class MapperTest {
 		mapper.add(From.class, To.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		Class<?> myType = null;
-		assertThat(mapper.mapOptional(from, myType)).isNotPresent();
-		assertThat(mapper.mapOptional(from, To.class)).isPresent();
+		assertThat(mapper.mapAsOptional(from, myType)).isNotPresent();
+		assertThat(mapper.mapAsOptional(from, To.class)).isPresent();
 	}
 	@Test
 	public void shouldReturnNullValueWithNullDestination() throws MappingException, MappingNotFoundException {
@@ -489,36 +489,36 @@ public class MapperTest {
 		mapper.add(From.class, To.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		To to = null;
-		assertThat(mapper.mapOptional(from, to)).isNotPresent();
-		assertThat(mapper.mapOptional(from, new To())).isPresent();
+		assertThat(mapper.mapAsOptional(from, to)).isNotPresent();
+		assertThat(mapper.mapAsOptional(from, new To())).isPresent();
 	}
 	@Test
 	public void shouldReturnNullValueWithNotExistingMapping() throws MappingException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
-		assertThat(mapper.mapOptional(from, To.class)).isNotPresent();
+		assertThat(mapper.mapAsOptional(from, To.class)).isNotPresent();
 	}
 	@Test
 	public void shoulReturnNullValueNullClassEnumDestination() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
 		Class<?> myType = null;
-		assertThat(mapper.mapOptional(ChronoUnit.MINUTES, myType)).isNotPresent();
+		assertThat(mapper.mapAsOptional(ChronoUnit.MINUTES, myType)).isNotPresent();
 	}
 	@Test
 	public void shouldReturnNullValueWithNullDestinationEnum() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
 		TimeUnit to = null;
-		assertThat(mapper.mapOptional(ChronoUnit.CENTURIES, to)).isNotPresent();
+		assertThat(mapper.mapAsOptional(ChronoUnit.CENTURIES, to)).isNotPresent();
 	}
 	@Test
 	public void shouldReturnNullValueWithNotExistingMappingAndImplicitDestinationType() throws MappingException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
-		Optional<To> result = mapper.mapOptional(from);
+		Optional<To> result = mapper.mapAsOptional(from);
 		assertThat(result).isNotPresent();
 	}
 	@Test
@@ -526,7 +526,7 @@ public class MapperTest {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
-		Optional<TimeUnit> result = mapper.mapOptional(ChronoUnit.DAYS);
+		Optional<TimeUnit> result = mapper.mapAsOptional(ChronoUnit.DAYS);
 		assertThat(result).isPresent().containsSame(TimeUnit.DAYS);
 	}
 
@@ -613,7 +613,7 @@ public class MapperTest {
 		Mapper mapper = new Mapper();
 		mapper.add(From.class, ToWithNoEmptyConstructor.class);
 		MappingException exception = assertThrows(MappingException.class, ()->mapper.createNewInstance(ToWithNoEmptyConstructor.class));
-		assertThat(exception.getMessage()).isEqualTo("Destination class does not have a public empty constructor. Please provide a public empty contructor or a Supplier in the confuguration such that the mapping can be done.");
+		assertThat(exception.getMessage()).isEqualTo("Destination class does not have a public empty constructor. Please provide a public empty constructor or a Supplier in the configuration such that the mapping can be done.");
 	}
 
 }

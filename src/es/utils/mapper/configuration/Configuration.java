@@ -13,6 +13,8 @@ import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.defaultvalue.DefaultValueStrategy;
 
 import static es.utils.mapper.defaultvalue.DefaultValueStrategy.*;
+
+import es.utils.mapper.exception.ExceptionBuilder;
 import es.utils.mapper.exception.MappingException;
 
 /**
@@ -135,7 +137,7 @@ public class Configuration {
 				throw new RuntimeException("The fieldName of the given annotation returns "+returnType);
 			}
 		} catch (RuntimeException | NoSuchMethodException e) {
-			throw new MappingException("The fieldName of the given annotation does not return String or String[].",e);
+			throw ExceptionBuilder.forType(MappingException.class).message("The fieldName of the given annotation does not return String or String[].").cause(e).build();
 		}
 		return this;
 	}

@@ -16,6 +16,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import es.utils.mapper.exception.ExceptionBuilder;
 import org.springframework.stereotype.Component;
 
 import es.utils.doublekeymap.PairKey;
@@ -97,7 +98,7 @@ public class Mapper {
 			Objects.requireNonNull(from);
 			Objects.requireNonNull(to);
 			if(from.isInterface() || to.isInterface()) {
-				throw new MappingException("From class or To class is an interface. Please provide a concrete class.");
+				throw ExceptionBuilder.forType(MappingException.class).message("From class or To class is an interface. Please provide a concrete class.").build();
 			}
 			if(from.isEnum() && to.isEnum()) {
 				createEnumMapper(from,to);
@@ -106,7 +107,7 @@ public class Mapper {
 				addForClass(from,to);
 			}
 		} catch (NullPointerException npe) {
-			throw new MappingException("From class or To class is null", npe);
+			throw ExceptionBuilder.forType(MappingException.class).message("From class or To class is null").cause(npe).build();
 		}
 		return this;
 	}
@@ -205,11 +206,11 @@ public class Mapper {
 	 * @param from the input object to be mapped
 	 * @param to the destination type required for the mapping
 	 * @return an Optional containing an instance of type {@code U}. If the input is {@code null} or some exception occurs during the mapping, returns {@code Optional.empty()}.
-	 * @see #mapOptional(Object, Object)
+	 * @see #mapAsOptional(Object, Object)
 	 * @see #map(Object, Class)
 	 * @see #map(Object, Object)
 	 */
-	public <T,U> Optional<U> mapOptional(T from, Class<U> to) {
+	public <T,U> Optional<U> mapAsOptional(T from, Class<U> to) {
 		try {
 			return Optional.ofNullable(map(from,to));
 		} catch (MappingNotFoundException | MappingException e) {
@@ -222,11 +223,11 @@ public class Mapper {
 	 * @param from the input object to be mapped
 	 * @param to the destination instance that will be overridden during the mapping
 	 * @return an Optional containing an instance of type {@code U}. If the input is {@code null} or some exception occurs during the mapping, returns {@code Optional.empty()}.
-	 * @see #mapOptional(Object, Class)
+	 * @see #mapAsOptional(Object, Class)
 	 * @see #map(Object, Class)
 	 * @see #map(Object, Object)
 	 */
-	public <T,U> Optional<U> mapOptional(T from, U to) {
+	public <T,U> Optional<U> mapAsOptional(T from, U to) {
 		try {
 			return Optional.ofNullable(map(from,to));
 		} catch (MappingNotFoundException | MappingException e) {
@@ -242,12 +243,12 @@ public class Mapper {
 	 * @param from the input object to be mapped
 	 * @return if there is only one mapping from {@code from.getClass()}, execute that mapping and return the result as an Optional,
 	 * otherwise or if some exception occurs during the mapping, returns {@code Optional.empty()}.
-	 * @see #mapOptional(Object, Class)
+	 * @see #mapAsOptional(Object, Class)
 	 * @see #map(Object, Class)
 	 * @see #map(Object, Object)
 	 * @see #map(Object)
 	 */
-	public <T,U> Optional<U> mapOptional(T from) {
+	public <T,U> Optional<U> mapAsOptional(T from) {
 		try {
 			return Optional.ofNullable(map(from));
 		} catch (MappingNotFoundException | MappingException e) {
@@ -264,8 +265,8 @@ public class Mapper {
 	 * @return a instance of type {@code U} created following the mappings rules between types {@code T} and {@code U}.
 	 * @throws MappingNotFoundException if no mapping between types {@code T} and {@code U} is found
 	 * @throws MappingException if {@code to}is {@code null} or an error occurs during the mapping
-	 * @see #mapOptional(Object, Class)
-	 * @see #mapOptional(Object, Object)
+	 * @see #mapAsOptional(Object, Class)
+	 * @see #mapAsOptional(Object, Object)
 	 * @see #map(Object, Object)
 	 */
 	public <T,U> U map(T from, Class<U> to) throws MappingNotFoundException, MappingException {
@@ -273,7 +274,7 @@ public class Mapper {
 			return null;
 		}
 		if(to == null) {
-			throw new MappingException("Destination class cannot be null");
+			throw ExceptionBuilder.forType(MappingException.class).message("Destination class cannot be null").build();
 		}
 		U map = null;
 		MapperObject<T,U> mapper = getMappingBetween(getEffectiveClass(from),to);
@@ -293,8 +294,8 @@ public class Mapper {
 	 * @return the object {@code to} updated during the mapping
 	 * @throws MappingNotFoundException if no mapping between types {@code T} and {@code U} is found
 	 * @throws MappingException if {@code to}is {@code null} or an error occurs during the mapping
-	 * @see #mapOptional(Object, Class)
-	 * @see #mapOptional(Object, Object)
+	 * @see #mapAsOptional(Object, Class)
+	 * @see #mapAsOptional(Object, Object)
 	 * @see #map(Object, Class)
 	 */
 	public <T,U> U map(T from, U to) throws MappingNotFoundException, MappingException {
@@ -302,7 +303,7 @@ public class Mapper {
 			return to;
 		}
 		if(to == null) {
-			throw new MappingException("Destination object cannot be null");
+			throw ExceptionBuilder.forType(MappingException.class).message("Destination object cannot be null").build();
 		}
 		MapperObject<T,U> mapperBetween = getMappingBetween(getEffectiveClass(from),getEffectiveClass(to));
 		if(mapperBetween==null) {
@@ -332,14 +333,87 @@ public class Mapper {
 											.filter(m->from.getClass().isAssignableFrom(m.fromClass()))
 											.collect(Collectors.toList());
 		if(list.size()!=1) {
-			throw new MappingNotFoundException("Found "+list.size()+" mapping(s) from "+from.getClass()+". Cannot uniquely map the input.");
+			throw ExceptionBuilder.forType(MappingNotFoundException.class).message("Found "+list.size()+" mapping(s) from "+from.getClass()+". Cannot uniquely map the input.").build();
 		}
 		@SuppressWarnings("unchecked")
 		MapperObject<T,U> mapper = (MapperObject<T,U>)list.get(0);
 		map = mapper.map(from);
 		return map;
 	}
-	
+
+	/**
+	 * @param <T> the type of the object to be mapped
+	 * @param <U> the type of the resulting object
+	 * @param <E> the type of the exception to throw
+	 * Convert the {@code from} object into a {@code U} type object
+	 * @param from the input object to be mapped
+	 * @param to the destination type required for the mapping
+	 * @param exceptionBuilder instance of {@code ExceptionBuilder} used to throw custom {@link Exception} in case of error curing the mapping
+	 * @return a instance of type {@code U} created following the mappings rules between types {@code T} and {@code U}.
+	 * @throws E the exception used to create the exceptionBuilder in one of the following case:
+	 * <ol>
+	 *     <li>no mapping between types {@code T} and {@code U} is found</li>
+	 *     <li>{@code to} is {@code null}</li>
+	 *     <li>an error occurs during the mapping</li>
+	 * </ol>
+	 * @see #mapAsOptional(Object, Class)
+	 * @see #mapAsOptional(Object, Object)
+	 * @see #map(Object, Object)
+	 */
+	public <T,U, E extends Exception> U map(T from, Class<U> to, ExceptionBuilder<E> exceptionBuilder) throws E {
+		try {
+			return map(from, to);
+		} catch(MappingException | MappingNotFoundException e) {
+			throw exceptionBuilder.cause(e).build();
+		}
+	}
+	/**
+	 * @param <T> the type of the object to be mapped
+	 * @param <U> the type of the destination object
+	 * @param <E> the type of the exception to throw
+	 * @param from the input object to be mapped
+	 * @param to the destination instance that will be overridden during the mapping
+	 * @param exceptionBuilder instance of {@code ExceptionBuilder} used to throw custom {@link Exception} in case of error curing the mapping
+	 * @return the object {@code to} updated during the mapping
+	 * @throws E the exception used to create the exceptionBuilder in one of the following case:
+ 	 * <ol>
+ 	 *     <li>no mapping between types {@code T} and {@code U} is found</li>
+ 	 *     <li>{@code to} is {@code null}</li>
+ 	 *     <li>an error occurs during the mapping</li>
+ 	 * </ol>
+	 * @see #mapAsOptional(Object, Class)
+	 * @see #mapAsOptional(Object, Object)
+	 * @see #map(Object, Class)
+	 */
+	public <T,U, E extends  Exception> U map(T from, U to, ExceptionBuilder<E> exceptionBuilder) throws E {
+		try {
+			return map(from, to);
+		} catch(MappingException | MappingNotFoundException e) {
+			throw exceptionBuilder.cause(e).build();
+		}
+	}
+	/**
+	 * @param <T> the type of the object to be mapped
+	 * @param <U> the type of the mapped object
+	 * @param <E> the type of the exception to throw
+	 * @param from the input object to be mapped
+	 * @param exceptionBuilder instance of {@code ExceptionBuilder} used to throw custom {@link Exception} in case of error curing the mapping
+	 * @return if there is only one mapping from {@code from.getClass()}, execute that mapping and return the result
+	 * @throws E the exception used to create the exceptionBuilder in one of the following case:
+	 * <ol>
+	 *     <li>no mapping or more than one from {@code from.getClass()} is found</li>
+	 *     <li>{@code to} is {@code null}</li>
+	 *     <li>an error occurs during the mapping</li>
+	 * </ol>
+	 */
+	public <T,U, E extends  Exception> U map(T from, ExceptionBuilder<E> exceptionBuilder) throws E {
+		try {
+			return map(from);
+		} catch(MappingException | MappingNotFoundException e) {
+			throw exceptionBuilder.cause(e).build();
+		}
+	}
+
 	/**
 	 * @param <T> the type of the source class
 	 * @param <U> the type of the destination class
@@ -560,22 +634,22 @@ public class Mapper {
 				other.add(mapper.fromClass()+" -> "+mapper.toClass());
 			}
 		};
-		sb.append("Exisiting destination mappings from "+fromClass+":\n");
+		sb.append("Existing destination mappings from "+fromClass+":\n");
 		if(dest.isEmpty()) {
 			dest.add("none");
 		}
 		dest.forEach(s->sb.append("\t"+s+"\n"));
-		sb.append("Exisiting source mappings to "+toClass+":\n");
+		sb.append("Existing source mappings to "+toClass+":\n");
 		if(src.isEmpty()) {
 			src.add("none");
 		}
 		src.forEach(s->sb.append("\t"+s+"\n"));
-		sb.append("Other exisiting mappings:\n");
+		sb.append("Other existing mappings:\n");
 		if(other.isEmpty()) {
 			other.add("none");
 		}
 		other.forEach(s->sb.append("\t"+s+"\n"));
-		throw new MappingNotFoundException(sb.toString());
+		throw ExceptionBuilder.forType(MappingNotFoundException.class).message(sb.toString()).build();
 	}
 	private <T> Class<T> getEffectiveClass(T obj) {
 		Class<?> tmp = obj.getClass();
@@ -593,7 +667,7 @@ public class Mapper {
     		for(String name : fieldHolder.getAllNames()) {
 	    		if(result.put(name,fieldHolder)!=null) {
 	    			try {
-						throw new MappingException("Two Fields in "+type+" have the same name or alias \""+name+"\"");
+						throw ExceptionBuilder.forType(MappingException.class).message("Two Fields in "+type+" have the same name or alias \""+name+"\"").build();
 					} catch (MappingException e) {
 						e.printStackTrace();
 					}
@@ -608,7 +682,7 @@ public class Mapper {
 			return dest;
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				throw new MappingException("Destination class does not have a public empty constructor. Please provide a public empty contructor or a Supplier in the confuguration such that the mapping can be done.");
+				throw ExceptionBuilder.forType(MappingException.class).message("Destination class does not have a public empty constructor. Please provide a public empty constructor or a Supplier in the configuration such that the mapping can be done.").build();
 		}
     }
 
