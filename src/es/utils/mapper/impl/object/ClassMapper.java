@@ -14,7 +14,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import es.utils.doublekeymap.TwoKeyMap;
-import es.utils.mapper.exception.ExceptionBuilder;
+import es.utils.mapper.exception.CustomException;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.factory.CollectionFactory;
 import es.utils.mapper.factory.builder.EMBuilder;
@@ -66,7 +66,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 		try {
 			return mapValue(from,dest);
 		} catch (Exception e) {
-			throw ExceptionBuilder.forType(MappingException.class).cause(e).build();
+			throw CustomException.forType(MappingException.class).cause(e).build();
 		}
 	}
 	protected U mapValue(T from, U to) {

@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 import es.utils.mapper.Mapper;
 import es.utils.mapper.converter.AbstractConverter;
-import es.utils.mapper.exception.ExceptionBuilder;
+import es.utils.mapper.exception.CustomException;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.impl.element.ElementMapper;
 import es.utils.mapper.impl.element.Getter;
@@ -114,7 +114,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements From		<IN,OUT>,		
 		Objects.requireNonNull(converter);
 		DirectMapper<SETTER_IN,SETTER_IN_NEW> converterInstance = MapperUtil.createFromConverter(converter,mapper);
 		if(converterInstance==null) {
-			throw ExceptionBuilder.forType(MappingException.class).message("Converter of "+converter+" cannot be instantiate.").build();
+			throw CustomException.forType(MappingException.class).message("Converter of "+converter+" cannot be instantiate.").build();
 		}
 		return transform(converterInstance::mapOrNull);
 	}

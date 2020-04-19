@@ -10,6 +10,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import es.utils.mapper.exception.CustomException;
+import exception.ExampleException;
+import exception.EmptyExampleException;
 import org.junit.jupiter.api.Test;
 
 import es.utils.mapper.Mapper;
@@ -241,6 +244,7 @@ public class MapperTest {
 		assertThat(mappedTo).isNotNull().isEqualTo(to);
 		assertThat(mappedTo.getName()).isEqualTo("Pippo");
 	}
+
 	@Test
 	public void shouldThrowMappingExceptionWithNullDestination() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
@@ -303,6 +307,118 @@ public class MapperTest {
 				"\tclass java.time.temporal.ChronoUnit -> class java.util.concurrent.TimeUnit\n"
 				+ "");
 	}
+
+	@Test
+	public void shouldThrowCustomExceptionWithNullDestination() throws MappingException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		mapper.add(From.class, To.class);
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		To to = null;
+		ExampleException exception = assertThrows(ExampleException.class, ()->mapper.map(from, to, CustomException.forType(ExampleException.class)));
+		assertThat(exception.getMessage()).isEqualTo("es.utils.mapper.exception.MappingException: Destination object cannot be null");
+	}
+	@Test
+	public void shouldThrowCustomExceptionWithNotExistingMappingByClass() throws MappingException {
+		Mapper mapper = new Mapper();
+		mapper.add(ChronoUnit.class, TimeUnit.class);
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		ExampleException exception = assertThrows(ExampleException.class, ()->mapper.map(from, To.class, CustomException.forType(ExampleException.class)));
+		assertThat(exception.getMessage()).contains("es.utils.mapper.exception.MappingNotFoundException: WARNING - No mappings found in es.utils.mapper.Mapper for input class java.lang.Class and output class to.To\n" +
+				"Existing destination mappings from class from.From:\n" +
+				"\tnone\n" +
+				"Existing source mappings to class to.To:\n" +
+				"\tnone\n" +
+				"Other existing mappings:\n" +
+				"\tclass java.time.temporal.ChronoUnit -> class java.util.concurrent.TimeUnit\n"
+				+ "");
+	}
+	@Test
+	public void shouldThrowCustomExceptionWithNotExistingMappingByClass2() throws MappingException {
+		Mapper mapper = new Mapper();
+		mapper.add(From.class, TimeUnit.class,from->TimeUnit.DAYS);
+		mapper.add(ChronoUnit.class, To.class,$->new To());
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		ExampleException exception = assertThrows(ExampleException.class, ()->mapper.map(from, To.class, CustomException.forType(ExampleException.class)));
+		assertThat(exception.getMessage()).contains("es.utils.mapper.exception.MappingNotFoundException: WARNING - No mappings found in es.utils.mapper.Mapper for input class java.lang.Class and output class to.To\n" +
+				"Existing destination mappings from class from.From:\n" +
+				"\tclass java.util.concurrent.TimeUnit\n" +
+				"Existing source mappings to class to.To:\n" +
+				"\tclass java.time.temporal.ChronoUnit\n" +
+				"Other existing mappings:\n" +
+				"\tnone\n"
+				+ "");
+	}
+	@Test
+	public void shouldThrowCustomExceptionWithNotExistingMappingByObject() throws MappingException {
+		Mapper mapper = new Mapper();
+		mapper.add(ChronoUnit.class, TimeUnit.class);
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		ExampleException exception = assertThrows(ExampleException.class, ()->mapper.map(from, new To(), CustomException.forType(ExampleException.class).message("No mapping found")));
+		assertThat(exception.getMessage()).isEqualTo("No mapping found");
+		assertThat(exception.getCause().getMessage()).contains("WARNING - No mappings found in es.utils.mapper.Mapper for input class java.lang.Class and output class to.To\n" +
+				"Existing destination mappings from class from.From:\n" +
+				"\tnone\n" +
+				"Existing source mappings to class to.To:\n" +
+				"\tnone\n" +
+				"Other existing mappings:\n" +
+				"\tclass java.time.temporal.ChronoUnit -> class java.util.concurrent.TimeUnit\n"
+				+ "");
+	}
+
+	@Test
+	public void shouldThrowRuntimeExceptionWithNullDestination() throws MappingException, MappingNotFoundException {
+		Mapper mapper = new Mapper();
+		mapper.add(From.class, To.class);
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		To to = null;
+		RuntimeException exception = assertThrows(RuntimeException.class, ()->mapper.map(from, to, CustomException.forType(EmptyExampleException.class)));
+		assertThat(exception.getMessage()).isEqualTo("Custom Exception class exception.EmptyExampleException does not have a constructor taking only a Throwable instance");
+	}
+	@Test
+	public void shouldThrowRuntimeExceptionWithNotExistingMappingByClass() throws MappingException {
+		Mapper mapper = new Mapper();
+		mapper.add(ChronoUnit.class, TimeUnit.class);
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		RuntimeException exception = assertThrows(RuntimeException.class, ()->mapper.map(from, To.class, CustomException.forType(EmptyExampleException.class)));
+		assertThat(exception.getMessage()).contains("Custom Exception class exception.EmptyExampleException does not have a constructor taking only a Throwable instance");
+	}
+	@Test
+	public void shouldThrowRuntimeExceptionWithNotExistingMappingByClass2() throws MappingException {
+		Mapper mapper = new Mapper();
+		mapper.add(From.class, TimeUnit.class,from->TimeUnit.DAYS);
+		mapper.add(ChronoUnit.class, To.class,$->new To());
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		RuntimeException exception = assertThrows(RuntimeException.class, ()->mapper.map(from, To.class, CustomException.forType(EmptyExampleException.class)));
+		assertThat(exception.getMessage()).contains("Custom Exception class exception.EmptyExampleException does not have a constructor taking only a Throwable instance");
+	}
+	@Test
+	public void shouldThrowRuntimeExceptionWithNotExistingMappingByObject() throws MappingException {
+		Mapper mapper = new Mapper();
+		mapper.add(ChronoUnit.class, TimeUnit.class);
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		RuntimeException exception = assertThrows(RuntimeException.class, ()->mapper.map(from, new To(), CustomException.forType(EmptyExampleException.class).message("message")));
+		assertThat(exception.getMessage()).contains("Custom Exception class exception.EmptyExampleException does not have a constructor taking both String and Throwable instances");
+		assertThat(exception.getCause().toString()).contains("java.lang.NoSuchMethodException: exception.EmptyExampleException.<init>(java.lang.String, java.lang.Throwable)");
+	}
+
+	@Test
+	public void shouldThrowCustomExceptionWithNoExistingMappingFromInputOnly() throws MappingException {
+		Mapper mapper = new Mapper();
+//		mapper.add(ChronoUnit.class, TimeUnit.class);
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		ExampleException exception = assertThrows(ExampleException.class, ()->mapper.map(from, CustomException.forType(ExampleException.class)));
+		assertThat(exception.getMessage()).contains("es.utils.mapper.exception.MappingNotFoundException: Found 0 mapping(s) from class from.From. Cannot uniquely map the input.");
+	}
+	@Test
+	public void shouldThrowRuntimeExceptionWithNoExistingMappingFromInputOnly() throws MappingException {
+		Mapper mapper = new Mapper();
+//		mapper.add(ChronoUnit.class, TimeUnit.class);
+		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
+		RuntimeException exception = assertThrows(RuntimeException.class, ()->mapper.map(from, CustomException.forType(EmptyExampleException.class).message("message")));
+		assertThat(exception.getMessage()).contains("Custom Exception class exception.EmptyExampleException does not have a constructor taking both String and Throwable instances");
+		assertThat(exception.getCause().toString()).contains("java.lang.NoSuchMethodException: exception.EmptyExampleException.<init>(java.lang.String, java.lang.Throwable)");
+	}
+
 	@Test
 	public void shouldMapExistingDirectMappingBetweenClasses() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
@@ -550,7 +666,7 @@ public class MapperTest {
 		mapper.add(From.class, To.class);
 		assertThat(mapper.toString()).isEqualTo("Mapper[<class from.From,class to.To>]");
 	}
-	
+
 	/* Map method gerarchical types */
 	@Test
 	public void shouldMapSubClass() throws MappingException, MappingNotFoundException {
