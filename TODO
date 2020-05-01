@@ -7,3 +7,17 @@ Logger:
 
 Trovare un modo per poter condividere Configuration e Logger (variabili di Mapper) con tutte le altre classi
 senza dover passare "mapper" ovunque (ThreadLocal? Map<id,Config> e Map<id,Logger> statici?)
+
+
+DeepCopy:
+    - aggiungere la possibilità di specificare di fare un "deepClone" di un singolo field oppure di escluderne alcuni:
+        @DeepCopy { // senza niente implica che va applicato a tutti i field se messo a una classe, oppure il field se messo a un campo
+            ignore() default false;
+            ignoreFields() default [];
+            onlyFields() default [];
+        }
+        aggiungere di conseguenza un "deepCopyEnabled" dentro il FieldHolder da leggere poi in fase di mapping
+
+
+AliasName:
+    negli alias dell'annotazione, mettere la possibilità di specificare un campo annidato, come se ci si accedess con js

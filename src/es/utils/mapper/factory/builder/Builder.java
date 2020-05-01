@@ -30,5 +30,13 @@ public interface Builder<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @see ElementMapper
 	 */
 	public ClassMapper<IN,OUT> create();
+	/**
+	 * Invoque the {@code create()} method.
+	 * @return the result of the call to the {@code create()} method.
+	 * @see Builder#create()
+	 */
+	public default ClassMapper<IN,OUT> build() {
+		return create();
+	}
 	
 }
