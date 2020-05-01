@@ -19,7 +19,8 @@ import es.utils.mapper.utils.ThrowingFunction;
 public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<IN,GETTER_OUT,SETTER_IN,OUT> {
 
 	/**
-	 * Add a transformer between the getter and setter operations 
+	 * Add a transformer between the getter and setter operations.<br>
+	 * Be careful of {@code NullPointerException}, if the input of the transformer is {@code null} a {@code NullPointerException} will be thrown.
 	 * @param <SETTER_IN_NEW> the input type of the setter operation
 	 * @param transformer a function to map the result of the getter into the correct type for the setter
 	 * @return the next (optional) step of the builder: {@link Transformer}
@@ -27,7 +28,8 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	public <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformer);
 	
 	/**
-	 * Add a transformer between the getter and setter operations using the given converter class
+	 * Add a transformer between the getter and setter operations using the given converter class.<br>
+	 * Be careful of {@code NullPointerException}, if the input of the transformer is {@code null} a {@code NullPointerException} will be thrown.
 	 * @param <SETTER_IN_NEW> the input type of the setter operation
 	 * @param converter the class to instance to convert the the result of the getter into the correct type for the setter
 	 * @return the next (optional) step of the builder: {@link Transformer}
@@ -36,7 +38,8 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	public <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(Class<? extends AbstractConverter<SETTER_IN,SETTER_IN_NEW>> converter) throws MappingException;
 
 	/**
-	 * Add a transformer between the getter and setter operations casting the value to the given type.
+	 * Add a transformer between the getter and setter operations casting the value to the given type.<br>
+	 * Be careful of {@code NullPointerException}, if the input of the transformer is {@code null} a {@code NullPointerException} will be thrown.
 	 * @param <SETTER_IN_NEW> the input type of the setter operation
 	 * @param newType the class to cast the the result of the getter into the type for the setter
 	 * @return the next (optional) step of the builder: {@link Transformer}
