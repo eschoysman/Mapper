@@ -11,7 +11,7 @@ public enum DefaultValueStrategy {
 	
 	/**
 	 * Default behavior for the default value strategy to use.<br>
-	 * Equivalent to {@link #ALWAYS} and {@link #OUTPUT}.<br>
+	 * Equivalent to {@link #ALWAYS}, {@link #INPUT} and {@link #OUTPUT}.<br>
 	 * Cannot be combined with other {@link DefaultValueStrategy} values.
 	 */
 	DEFAULT,

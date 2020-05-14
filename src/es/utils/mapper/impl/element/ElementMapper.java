@@ -139,7 +139,7 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 	}
 	private GETTER_OUT defaultValueGetter(GETTER_OUT current) {
 		if(current==null) {
-			if(mapper.config().hasStrategy(DefaultValueStrategy.INPUT) && defaultOutput!=null) {
+			if(mapper.config().hasStrategy(DefaultValueStrategy.INPUT) && defaultInput!=null) {
 				current = defaultInput.get();
 			}
 		}

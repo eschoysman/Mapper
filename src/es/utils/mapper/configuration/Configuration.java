@@ -231,7 +231,7 @@ public class Configuration {
 			return this;
 		}
 		if(input.remove(DEFAULT)) {
-			this.defaultValuesStrategy = EnumSet.of(ALWAYS,OUTPUT);
+			this.defaultValuesStrategy = EnumSet.of(ALWAYS,INPUT,OUTPUT);
 			return this;
 		}
 		input.forEach(this.defaultValuesStrategy::add);
