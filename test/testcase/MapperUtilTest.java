@@ -1,14 +1,13 @@
 package testcase;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import es.utils.mapper.utils.MapperUtil;
+import from.SpecificTestCaseFrom;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
-import es.utils.mapper.utils.MapperUtil;
-import from.SpecificTestCaseFrom;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapperUtilTest {
 

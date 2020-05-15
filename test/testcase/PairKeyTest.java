@@ -1,10 +1,9 @@
 package testcase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import es.utils.doublekeymap.PairKey;
 import org.junit.jupiter.api.Test;
 
-import es.utils.doublekeymap.PairKey;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PairKeyTest {
 

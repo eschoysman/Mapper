@@ -1,11 +1,11 @@
 package es.utils.mapper.impl.element;
 
+import es.utils.mapper.Mapper;
+import es.utils.mapper.defaultvalue.DefaultValueStrategy;
+
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import es.utils.mapper.Mapper;
-import es.utils.mapper.defaultvalue.DefaultValueStrategy;
 
 /**
  * This class contains the informations and the logic needed the execute the mapping of an single element:

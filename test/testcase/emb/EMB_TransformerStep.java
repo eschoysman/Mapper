@@ -1,28 +1,22 @@
 package testcase.emb;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.sql.Timestamp;
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import converter.ConverterDateTimestamp;
 import converter.ConverterDateTimestamp2;
 import es.utils.mapper.Mapper;
 import es.utils.mapper.exception.MappingException;
-import es.utils.mapper.factory.builder.Consume;
-import es.utils.mapper.factory.builder.DefaultInput;
-import es.utils.mapper.factory.builder.DefaultOutput;
-import es.utils.mapper.factory.builder.EMBuilder;
-import es.utils.mapper.factory.builder.To;
-import es.utils.mapper.factory.builder.Transformer;
+import es.utils.mapper.factory.builder.*;
 import es.utils.mapper.impl.object.ClassMapper;
 import from.ClassMapperFromTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import to.ClassMapperToTest;
 import utils.AlternativeConsole;
+
+import java.sql.Timestamp;
+import java.util.Date;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EMB_TransformerStep {
 	

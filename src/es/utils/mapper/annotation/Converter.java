@@ -1,13 +1,13 @@
 package es.utils.mapper.annotation;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import es.utils.mapper.converter.AbstractConverter;
 
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import es.utils.mapper.converter.AbstractConverter;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * This annotation allows the mapper to map a field to another that doesn't have the same type using, if found, the most appropriate converter given.<br>

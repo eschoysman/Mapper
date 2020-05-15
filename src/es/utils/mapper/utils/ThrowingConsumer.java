@@ -1,8 +1,8 @@
 package es.utils.mapper.utils;
 
-import java.util.function.Function;
 import java.io.Serializable;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * A sub-class of {@link Consumer} that handle the exceptions.

@@ -1,18 +1,5 @@
 package es.utils.mapper.holder;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.function.Supplier;
-
 import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.annotation.CollectionType;
 import es.utils.mapper.annotation.Converter;
@@ -22,6 +9,14 @@ import es.utils.mapper.converter.AbstractConverter;
 import es.utils.mapper.defaultvalue.DefaultValueStrategy;
 import es.utils.mapper.impl.object.DirectMapper;
 import es.utils.mapper.utils.MapperUtil;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * A wrapper object to hold a Field and its information (name, aliases, type etc...).

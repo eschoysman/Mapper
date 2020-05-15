@@ -1,5 +1,11 @@
 package es.utils.mapper.configuration;
 
+import es.utils.mapper.Mapper;
+import es.utils.mapper.annotation.AliasNames;
+import es.utils.mapper.defaultvalue.DefaultValueStrategy;
+import es.utils.mapper.exception.CustomException;
+import es.utils.mapper.exception.MappingException;
+
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -8,14 +14,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-import es.utils.mapper.Mapper;
-import es.utils.mapper.annotation.AliasNames;
-import es.utils.mapper.defaultvalue.DefaultValueStrategy;
-
 import static es.utils.mapper.defaultvalue.DefaultValueStrategy.*;
-
-import es.utils.mapper.exception.CustomException;
-import es.utils.mapper.exception.MappingException;
 
 /**
  * This class handle the configuration at Mapper level.

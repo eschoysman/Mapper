@@ -1,8 +1,9 @@
 package converter;
-import java.sql.Timestamp;
-import java.util.Date;
 
 import es.utils.mapper.converter.AbstractConverter;
+
+import java.sql.Timestamp;
+import java.util.Date;
 
 public class ConverterDateTimestamp2 extends AbstractConverter<Date,Timestamp> {
 

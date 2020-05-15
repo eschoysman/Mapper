@@ -1,10 +1,5 @@
 package testcase.emb;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import es.utils.mapper.Mapper;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.factory.builder.Builder;
@@ -12,7 +7,11 @@ import es.utils.mapper.factory.builder.DefaultInput;
 import es.utils.mapper.factory.builder.EMBuilder;
 import es.utils.mapper.impl.object.ClassMapper;
 import from.ClassMapperFromTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import to.ClassMapperToTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class EMB_ConsumeStep {
 	

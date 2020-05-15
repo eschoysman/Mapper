@@ -1,14 +1,14 @@
 package es.utils.mapper.annotation;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import es.utils.mapper.configuration.Configuration;
+import es.utils.mapper.defaultvalue.DefaultValueFactory;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.function.Supplier;
 
-import es.utils.mapper.configuration.Configuration;
-import es.utils.mapper.defaultvalue.DefaultValueFactory;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * This annotation allows the mapper to supply a default value for the setters.<br>

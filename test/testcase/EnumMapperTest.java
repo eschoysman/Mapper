@@ -1,16 +1,15 @@
 package testcase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.time.temporal.ChronoUnit;
-import java.util.concurrent.TimeUnit;
-
-import org.junit.jupiter.api.Test;
-
 import es.utils.mapper.Mapper;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
 import es.utils.mapper.impl.object.EnumMapper;
+import org.junit.jupiter.api.Test;
+
+import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class EnumMapperTest {
 

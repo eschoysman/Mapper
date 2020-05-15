@@ -1,5 +1,11 @@
 package es.utils.mapper.utils;
 
+import es.utils.mapper.Mapper;
+import es.utils.mapper.annotation.AliasNames;
+import es.utils.mapper.converter.AbstractConverter;
+import es.utils.mapper.holder.FieldHolder;
+import es.utils.mapper.impl.object.DirectMapper;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
@@ -8,12 +14,6 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import es.utils.mapper.Mapper;
-import es.utils.mapper.annotation.AliasNames;
-import es.utils.mapper.converter.AbstractConverter;
-import es.utils.mapper.holder.FieldHolder;
-import es.utils.mapper.impl.object.DirectMapper;
 
 /**
  * This class contains a set of method used in the mapping creation.

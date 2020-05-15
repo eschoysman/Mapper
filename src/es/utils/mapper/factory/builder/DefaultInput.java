@@ -1,8 +1,8 @@
 package es.utils.mapper.factory.builder;
 
-import java.util.function.Supplier;
-
 import es.utils.mapper.configuration.Configuration;
+
+import java.util.function.Supplier;
 
 /**
  * Optional step of the EMBuilder that allow to specify a default value if the getter of the {@code From} step is null.<br>

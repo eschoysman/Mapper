@@ -1,11 +1,5 @@
 package testcase.emb;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Optional;
-
-import org.junit.jupiter.api.Test;
-
 import es.utils.mapper.Mapper;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.factory.builder.Builder;
@@ -14,6 +8,11 @@ import es.utils.mapper.impl.element.ElementMapper;
 import es.utils.mapper.impl.element.Getter;
 import es.utils.mapper.impl.element.Setter;
 import es.utils.mapper.impl.object.ClassMapper;
+import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class EMB_BuilderStep {
 

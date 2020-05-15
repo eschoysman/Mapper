@@ -1,12 +1,12 @@
 package es.utils.mapper.annotation;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import es.utils.mapper.converter.AbstractConverter;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import es.utils.mapper.converter.AbstractConverter;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * This annotation is used to make the {@code @Converter} annotation repeatable.

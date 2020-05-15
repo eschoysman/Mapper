@@ -1,8 +1,8 @@
 package from;
 
-import java.util.Map;
-
 import es.utils.mapper.annotation.AliasNames;
+
+import java.util.Map;
 
 public class SpecificTestCaseFrom<T> {
 	@SuppressWarnings("unused")

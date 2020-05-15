@@ -1,6 +1,15 @@
 package testcase;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import es.utils.mapper.Mapper;
+import es.utils.mapper.defaultvalue.DefaultValueStrategy;
+import es.utils.mapper.exception.MappingException;
+import es.utils.mapper.exception.MappingNotFoundException;
+import from.DefaultValuesFrom;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import to.DefaultValuesTo;
+import utils.AlternativeConsole;
 
 import java.nio.charset.Charset;
 import java.text.DateFormat;
@@ -10,17 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import es.utils.mapper.Mapper;
-import es.utils.mapper.defaultvalue.DefaultValueStrategy;
-import es.utils.mapper.exception.MappingException;
-import es.utils.mapper.exception.MappingNotFoundException;
-import from.DefaultValuesFrom;
-import to.DefaultValuesTo;
-import utils.AlternativeConsole;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultValueTest {
 	

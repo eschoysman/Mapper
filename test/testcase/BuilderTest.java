@@ -1,21 +1,20 @@
 package testcase;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-
-import org.junit.jupiter.api.Test;
-
 import es.utils.mapper.Mapper;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
 import es.utils.mapper.impl.object.ClassMapper;
 import from.ClassMapperFromTest;
+import org.junit.jupiter.api.Test;
 import to.ClassMapperToTest;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BuilderTest {
 

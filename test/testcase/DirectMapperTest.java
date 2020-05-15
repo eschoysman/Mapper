@@ -1,16 +1,15 @@
 package testcase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.jupiter.api.Test;
-
 import es.utils.mapper.Mapper;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
 import es.utils.mapper.impl.MapperObject;
 import es.utils.mapper.impl.object.DirectMapper;
 import from.From;
+import org.junit.jupiter.api.Test;
 import to.To;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DirectMapperTest {
 

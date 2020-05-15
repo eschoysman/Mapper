@@ -1,9 +1,9 @@
 package es.utils.mapper.impl.object;
 
+import es.utils.mapper.impl.MapperObject;
+
 import java.util.EnumMap;
 import java.util.EnumSet;
-
-import es.utils.mapper.impl.MapperObject;
 
 /**
  * This class customize the abstract class {@code MapperObject} creating a {@code MapperObject} that convert on enum type {@code T} into a enum {@code U}.

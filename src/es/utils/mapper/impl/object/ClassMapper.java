@@ -1,18 +1,5 @@
 package es.utils.mapper.impl.object;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-
 import es.utils.doublekeymap.TwoKeyMap;
 import es.utils.mapper.exception.CustomException;
 import es.utils.mapper.exception.MappingException;
@@ -23,6 +10,10 @@ import es.utils.mapper.holder.FieldHolder;
 import es.utils.mapper.impl.MapperObject;
 import es.utils.mapper.impl.element.ElementMapper;
 import es.utils.mapper.utils.MapperUtil;
+
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * This class customize the abstract class {@code MapperObject} creating a {@code MapperObject} that convert on object of type {@code T} into a {@code U}.

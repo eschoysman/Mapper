@@ -1,9 +1,9 @@
 package es.utils.mapper.defaultvalue;
 
-import java.util.function.Supplier;
-
 import es.utils.mapper.Mapper;
 import es.utils.mapper.annotation.Default;
+
+import java.util.function.Supplier;
 
 /**
  * This class is used to specify a supplier over a single field in a mapping inside the {@code Default} annotation.<br>

@@ -1,17 +1,11 @@
 package from;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
 import converter.ConverterDateTimestamp;
 import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.annotation.Converter;
 import es.utils.mapper.annotation.IgnoreField;
+
+import java.util.*;
 
 @IgnoreField({"ignoredField","ignoredField1"})
 public class From {

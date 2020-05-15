@@ -1,5 +1,7 @@
 package es.utils.mapper.exception;
 
+import java.text.MessageFormat;
+
 public class CustomException<E extends Exception> {
 
     private Class<E> type;
@@ -10,27 +12,50 @@ public class CustomException<E extends Exception> {
          this.type = exceptionType;
     }
 
+    /**
+     * Create a {@code CustomException} builder for custom exception.
+     * @param customException the type of the exception to throw
+     * @param <E> the class type of the exception to throw
+     * @return a {@code CustomException} instance that will be used to throw custom exception with optional message
+     * and optional cause
+     */
     public static <E extends Exception> CustomException<E> forType(Class<E> customException) {
         return new CustomException(customException);
     }
 
-    public CustomException<E> message(String message) {
-        this.message = message;
+    /**
+     * Set the message for the exception to throw. The {@code message} can be a pattern accepted by the
+     * {@code MessageFormat} class, in that case the {@code params} are used.
+     * @param message the string or format of the message
+     * @param params the parameters object(s) to format
+     * @return the current {@code CustomException} instance
+     */
+    public CustomException<E> message(CharSequence message, Object... params) {
+        this.message = MessageFormat.format(message.toString(),params);
         return this;
     }
 
+    /**
+     * Set the cause of the exception to throw
+     * @param cause the cause of the exception
+     * @return the current {@code CustomException} instance
+     */
     public CustomException<E> cause(Throwable cause) {
         this.cause = cause;
         return this;
     }
 
+    /**
+     * Create the custom exception to throw or throw a {@code RuntimeException} if any error occurs
+     * @return the custom exception to throw
+     */
     public E build() {
         int mask = 0;
         if(message!=null) {
-            mask+=2;
+            mask += 2;
         }
         if(cause!=null) {
-            mask+=1;
+            mask += 1;
         }
         try {
             switch (mask) {

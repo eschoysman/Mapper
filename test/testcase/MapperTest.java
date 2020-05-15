@@ -1,36 +1,32 @@
 package testcase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-import es.utils.mapper.exception.CustomException;
-import exception.ExampleException;
-import exception.EmptyExampleException;
-import org.junit.jupiter.api.Test;
-
 import es.utils.mapper.Mapper;
+import es.utils.mapper.exception.CustomException;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
 import es.utils.mapper.impl.MapperObject;
 import es.utils.mapper.impl.object.ClassMapper;
 import es.utils.mapper.impl.object.DirectMapper;
 import es.utils.mapper.impl.object.EnumMapper;
+import exception.EmptyExampleException;
+import exception.ExampleException;
 import from.ClassMapperFromTest;
 import from.From;
 import from.ImplFrom;
 import from.SubFrom;
-import to.ClassMapperToTest;
-import to.ImplTo;
-import to.SubTo;
-import to.To;
-import to.ToWithNoEmptyConstructor;
+import org.junit.jupiter.api.Test;
+import to.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.text.MessageFormat;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MapperTest {
 
@@ -40,6 +36,14 @@ public class MapperTest {
 		Mapper mapper = new Mapper();
 		assertThat(mapper.getAllMappings()).isNotNull();
 		assertThat(mapper.getAllMappings()).isEmpty();
+		assertThat(mapper.getMapperName()).isEqualTo("defaultMapper");
+	}
+	@Test
+	public void shouldCreateMapperWithName() {
+		Mapper mapper = new Mapper("CustomMapperName");
+		assertThat(mapper.getAllMappings()).isNotNull();
+		assertThat(mapper.getAllMappings()).isEmpty();
+		assertThat(mapper.getMapperName()).isEqualTo("CustomMapperName");
 	}
 	
 	/* Add Method */
@@ -212,7 +216,7 @@ public class MapperTest {
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		Class<?> myType = null;
 		MappingException exception = assertThrows(MappingException.class, ()->mapper.map(from, myType));
-		assertThat(exception.getMessage()).contains("Destination class cannot be null");
+		assertThat(exception.getMessage()).contains(MessageFormat.format("Error mapping {0}: Destination class cannot be null",from));
 	}
 	@Test
 	public void shouldMapFromToWithoutDefaultValues() throws MappingException, MappingNotFoundException {
@@ -252,7 +256,7 @@ public class MapperTest {
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		To to = null;
 		MappingException exception = assertThrows(MappingException.class, ()->mapper.map(from, to));
-		assertThat(exception.getMessage()).isEqualTo("Destination object cannot be null");
+		assertThat(exception.getMessage()).isEqualTo(MessageFormat.format("Error mapping {0}: Destination object cannot be null",from));
 	}
 	@Test
 	public void shouldThrowExceptionWithNullValues() throws MappingException, MappingNotFoundException {
@@ -315,7 +319,7 @@ public class MapperTest {
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		To to = null;
 		ExampleException exception = assertThrows(ExampleException.class, ()->mapper.map(from, to, CustomException.forType(ExampleException.class)));
-		assertThat(exception.getMessage()).isEqualTo("es.utils.mapper.exception.MappingException: Destination object cannot be null");
+		assertThat(exception.getMessage()).isEqualTo(MessageFormat.format("es.utils.mapper.exception.MappingException: Error mapping {0}: Destination object cannot be null",from));
 	}
 	@Test
 	public void shouldThrowCustomExceptionWithNotExistingMappingByClass() throws MappingException {
@@ -552,9 +556,10 @@ public class MapperTest {
 	public void shoulThrowMappingExceptionWithNullClassEnumDestination() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
+		ChronoUnit from = ChronoUnit.MINUTES;
 		Class<?> myType = null;
-		MappingException exception = assertThrows(MappingException.class, ()->mapper.map(ChronoUnit.MINUTES, myType));
-		assertThat(exception.getMessage()).contains("Destination class cannot be null");
+		MappingException exception = assertThrows(MappingException.class, ()->mapper.map(from, myType));
+		assertThat(exception.getMessage()).contains(MessageFormat.format("Error mapping {0}: Destination class cannot be null",from));
 	}
 	@Test
 	public void shouldNotMapWithNullInputEnum() throws MappingException, MappingNotFoundException {
@@ -578,9 +583,10 @@ public class MapperTest {
 	public void shouldThrowMappingExceptionWithNullDestinationEnum() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
+		ChronoUnit from = ChronoUnit.CENTURIES;
 		TimeUnit to = null;
-		MappingException exception = assertThrows(MappingException.class, ()->mapper.map(ChronoUnit.CENTURIES, to));
-		assertThat(exception.getMessage()).contains("Destination object cannot be null");
+		MappingException exception = assertThrows(MappingException.class, ()->mapper.map(from, to));
+		assertThat(exception.getMessage()).contains(MessageFormat.format("Error mapping {0}: Destination object cannot be null",from));
 	}
 	@Test
 	public void shouldNotMapWithNullInputEnumToEnumDefault() throws MappingException, MappingNotFoundException {
@@ -664,7 +670,13 @@ public class MapperTest {
 	public void shouldReturnStringRappresentation() throws MappingException {
 		Mapper mapper = new Mapper();
 		mapper.add(From.class, To.class);
-		assertThat(mapper.toString()).isEqualTo("Mapper[<class from.From,class to.To>]");
+		assertThat(mapper.toString()).isEqualTo("Mapper[defaultMapper][<class from.From,class to.To>]");
+	}
+	@Test
+	public void shouldReturnStringRappresentationPrettyPrint() throws MappingException {
+		Mapper mapper = new Mapper("PrettyPrint");
+		mapper.add(From.class, To.class);
+		assertThat(mapper.prettyPrint()).isEqualTo("Mapper \"PrettyPrint\"\n\tClassMapper[<class from.From,class to.To>]");
 	}
 
 	/* Map method gerarchical types */

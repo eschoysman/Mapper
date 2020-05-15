@@ -1,13 +1,5 @@
 package testcase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
-
-import org.junit.jupiter.api.Test;
-
 import annotation.TestAnnotation;
 import es.utils.mapper.Mapper;
 import es.utils.mapper.annotation.AliasNames;
@@ -16,8 +8,15 @@ import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
 import es.utils.mapper.impl.object.ClassMapper;
 import from.FromWithAnnotation;
+import org.junit.jupiter.api.Test;
 import to.ToWithAnnotation;
 import to.ToWithNoEmptyConstructor;
+
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ConfigurationTest {
 

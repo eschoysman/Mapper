@@ -1,14 +1,5 @@
 package testcase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.Optional;
-
-import org.junit.jupiter.api.Test;
-
 import es.utils.mapper.Mapper;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
@@ -17,9 +8,17 @@ import es.utils.mapper.impl.object.ClassMapper;
 import from.ClassMapperFromTest;
 import from.From;
 import from.SpecificTestCaseFrom;
+import org.junit.jupiter.api.Test;
 import to.ClassMapperToTest;
 import to.SpecificTestCaseTo;
 import to.To;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClassMapperTest {
 	
