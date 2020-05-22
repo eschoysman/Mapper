@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -44,11 +45,15 @@ public class Mapper {
 	private Configuration config;
 	
 	/**
-	 * Create an empty Mapper instance.
+	 * Create an empty Mapper instance with default name "defaultMapper".
 	 */
 	public Mapper() {
 		this("defaultMapper");
 	}
+	/**
+	 * Create an empty Mapper instance with the given name.
+	 * @param name the name of the Mapper instance
+	 */
 	public Mapper(String name) {
 		this.name = name;
 		this.mappings = new TwoKeyMap<>();
@@ -270,7 +275,7 @@ public class Mapper {
 			return null;
 		}
 		if(to == null) {
-			throw CustomException.forType(MappingException.class).message("Error mapping {0}: Destination class cannot be null",from).build();
+			throw CustomException.forType(MappingException.class).message(MessageFormat.format("Error mapping {0}: Destination class cannot be null",from)).build();
 		}
 		U map = null;
 		MapperObject<T,U> mapper = getMappingBetween(getEffectiveClass(from),to);
@@ -299,7 +304,7 @@ public class Mapper {
 			return to;
 		}
 		if(to == null) {
-			throw CustomException.forType(MappingException.class).message("Error mapping {0}: Destination object cannot be null",from).build();
+			throw CustomException.forType(MappingException.class).message(MessageFormat.format("Error mapping {0}: Destination object cannot be null",from)).build();
 		}
 		MapperObject<T,U> mapperBetween = getMappingBetween(getEffectiveClass(from),getEffectiveClass(to));
 		if(mapperBetween==null) {
@@ -329,7 +334,7 @@ public class Mapper {
 											.filter(m->from.getClass().isAssignableFrom(m.fromClass()))
 											.collect(Collectors.toList());
 		if(list.size()!=1) {
-			throw CustomException.forType(MappingNotFoundException.class).message("Found "+list.size()+" mapping(s) from "+from.getClass()+". Cannot uniquely map the input.").build();
+			throw CustomException.forType(MappingNotFoundException.class).message(MessageFormat.format("Found {0} mapping(s) from {1}. Cannot uniquely map the input.",list.size(),from.getClass())).build();
 		}
 		@SuppressWarnings("unchecked")
 		MapperObject<T,U> mapper = (MapperObject<T,U>)list.get(0);
@@ -545,6 +550,10 @@ public class Mapper {
 	public String toString() {
 		return "Mapper["+name+"]["+mappings.keySet().stream().map(PairKey::toString).collect(Collectors.joining(", "))+"]";
 	}
+	/**
+	 * Prints the same output as {@code toString} in a nicer way
+	 * @return a string representation of the mapper
+	 */
 	public String prettyPrint() {
 		return "Mapper \""+name+"\""+mappings.values().stream().map(MapperObject::toString).collect(Collectors.joining("\n\t","\n\t",""));
 	}
@@ -600,7 +609,11 @@ public class Mapper {
 		return supplier.get();
     }
 
-    public String getMapperName() {
+	/**
+	 * Returns the name of the current mapper
+	 * @return the name of the current mapper
+	 */
+	public String getMapperName() {
     	return this.name;
 	}
     
@@ -669,7 +682,7 @@ public class Mapper {
     		for(String name : fieldHolder.getAllNames()) {
 	    		if(result.put(name,fieldHolder)!=null) {
 	    			try {
-						throw CustomException.forType(MappingException.class).message("Two Fields in "+type+" have the same name or alias \""+name+"\"").build();
+						throw CustomException.forType(MappingException.class).message(MessageFormat.format("Two Fields in {0} have the same name or alias \"{1}\"",type,name)).build();
 					} catch (MappingException e) {
 						e.printStackTrace();
 					}

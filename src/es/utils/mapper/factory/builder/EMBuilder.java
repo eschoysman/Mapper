@@ -14,6 +14,7 @@ import es.utils.mapper.utils.ThrowingConsumer;
 import es.utils.mapper.utils.ThrowingFunction;
 
 import java.lang.reflect.Field;
+import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -114,7 +115,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements From		<IN,OUT>,		
 		Objects.requireNonNull(converter);
 		DirectMapper<SETTER_IN,SETTER_IN_NEW> converterInstance = MapperUtil.createFromConverter(converter,mapper);
 		if(converterInstance==null) {
-			throw CustomException.forType(MappingException.class).message("Converter of "+converter+" cannot be instantiate.").build();
+			throw CustomException.forType(MappingException.class).message(MessageFormat.format("Converter of {0} cannot be instantiate.",converter)).build();
 		}
 		return transform(converterInstance::mapOrNull);
 	}

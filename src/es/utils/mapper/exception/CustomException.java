@@ -27,11 +27,10 @@ public class CustomException<E extends Exception> {
      * Set the message for the exception to throw. The {@code message} can be a pattern accepted by the
      * {@code MessageFormat} class, in that case the {@code params} are used.
      * @param message the string or format of the message
-     * @param params the parameters object(s) to format
      * @return the current {@code CustomException} instance
      */
-    public CustomException<E> message(CharSequence message, Object... params) {
-        this.message = MessageFormat.format(message.toString(),params);
+    public CustomException<E> message(CharSequence message) {
+        this.message = message.toString();
         return this;
     }
 
