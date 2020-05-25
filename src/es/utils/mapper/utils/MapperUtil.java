@@ -10,9 +10,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -122,7 +120,23 @@ public class MapperUtil {
 		}
 		return result;
 	}
-	
+
+	private static Map<Class<?>,Class<?>> wrapConvert = new HashMap<Class<?>,Class<?>>() {{
+		put(byte.class,Byte.class);
+		put(short.class,Short.class);
+		put(int.class,Integer.class);
+		put(long.class,Long.class);
+		put(float.class,Float.class);
+		put(double.class,Double.class);
+		put(boolean.class,Boolean.class);
+		put(char.class,Character.class);
+	}};
+	public static <T> Class<T> getWrapType(Class<T> type) {
+		@SuppressWarnings("unchecked")
+		Class<T> wrapType = (Class<T>) wrapConvert.getOrDefault(type,type);
+		return wrapType;
+	}
+
 	private static <T> Field getDeclaredField(Class<T> type, String fieldName) {
 		try {
 			return type.getDeclaredField(fieldName);

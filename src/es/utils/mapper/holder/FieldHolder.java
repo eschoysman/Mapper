@@ -27,13 +27,14 @@ public class FieldHolder {
 
 	private static final String FIELD_NAME_REGEX = "[a-zA-Z_$][a-zA-Z_$0-9]*";
 	
-	private Field field;
-	private String fieldName;
-	private Set<String> aliases;
-	private Set<DirectMapper<?,?>> converters;
+	private final Field field;
+	private final String fieldName;
+	private final Set<String> aliases;
+	private final Set<DirectMapper<?,?>> converters;
 	private Supplier<?> defaultValue;
-	private Class<?> type;
-	private Type genericType;
+	private final Class<?> rawType;
+	private final Class<?> wrappedType;
+	private final Type genericType;
 	@SuppressWarnings("rawtypes")
 	private Class<? extends Collection> collectionType;
 	private boolean ignoreField;
@@ -46,7 +47,8 @@ public class FieldHolder {
 		this.field = Objects.requireNonNull(field);
 		Objects.requireNonNull(config);
 		this.fieldName = field.getName();
-		this.type = field.getType();
+		this.rawType = field.getType();
+		this.wrappedType = MapperUtil.getWrapType(field.getType());
 		this.genericType = field.getGenericType();
 		this.aliases = new TreeSet<>();
 		this.converters = new LinkedHashSet<>();
@@ -170,12 +172,12 @@ public class FieldHolder {
 		allNames.add(fieldName);
 		return allNames;
 	}
-	
+
 	/**
-	 * @return the type of the field
+	 * @return the type of the field. Only if the raw type is primitive, the type will be wrapped.
 	 */
 	public Class<?> getType() {
-		return type;
+		return wrappedType;
 	}
 
 	/**
