@@ -10,8 +10,9 @@
  * <li>{@code ElementMapperBuilder}: (mandatory) create the ElementMapper.</li>
  * </ol>
  * <br><br>
- * Here the flow chart of the builder:<br>
-// * <img src="./doc-files/stepBuilderFlow.png" alt="step builder flow" style="max-width:100%; min-width:450px">
+ * Here the flow chart of the builder:<br><br>
+ * <img src="./doc-files/stepBuilderFlow.svg" alt="step builder flow" style="max-width:100%; min-width:450px">
+ * <br><br>
  * @author eschoysman
  * @see es.utils.mapper.factory.builder.From
  * @see es.utils.mapper.factory.builder.DefaultInput

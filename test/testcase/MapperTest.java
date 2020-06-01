@@ -725,7 +725,7 @@ public class MapperTest {
 		Mapper mapper = new Mapper();
 		mapper.add(From.class, To.class);
 		mapper.build();
-		assertThat(mapper.getNames(From.class)).contains("innerCollection2", "ignoredField1", "surname", "classFrom", "fromCollection2", "ignoredField2", "name", "fromArray", "innerCollection", "innerArray", "fromCollection", "ignoredField");
+		assertThat(mapper.getNames(From.class)).contains("innerCollection2", "surname", "classFrom", "fromCollection2", "name", "fromArray", "innerCollection", "innerArray", "fromCollection");
 	}
 
 	@Test

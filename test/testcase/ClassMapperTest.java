@@ -250,7 +250,7 @@ public class ClassMapperTest {
     	err.close();
     	System.setErr(originalErr);
 
-		assertThat(errString).startsWith("es.utils.mapper.exception.MappingException: Two Fields in "+SpecificTestCaseFrom.class+" have the same name or alias \"string\"");
+		assertThat(errString).startsWith("es.utils.mapper.exception.MappingException: At least two fields in "+SpecificTestCaseFrom.class+" have the same name or alias \"string\"");
 	}
 
 	@Test

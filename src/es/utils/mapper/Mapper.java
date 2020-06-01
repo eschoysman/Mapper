@@ -683,7 +683,7 @@ public class Mapper {
 				for (String name : fieldHolder.getAllNames()) {
 					if (result.put(name, fieldHolder) != null) {
 						try {
-							throw CustomException.forType(MappingException.class).message(MessageFormat.format("Two Fields in {0} have the same name or alias \"{1}\"", type, name)).build();
+							throw CustomException.forType(MappingException.class).message(MessageFormat.format("At least two fields in {0} have the same name or alias \"{1}\"", type, name)).build();
 						} catch (MappingException e) {
 							e.printStackTrace();
 						}
