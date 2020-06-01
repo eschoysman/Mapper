@@ -51,7 +51,6 @@ public class EMB_FromStep {
 		 				.isInstanceOf(Transformer.class)
 		 				.isInstanceOf(DefaultOutput.class)
 		 				.isInstanceOf(To.class)
-		 				.isInstanceOf(Consume.class)
 		 				.isExactlyInstanceOf(EMBuilder.class)
 						.hasAllNullFieldsOrPropertiesExcept("mapper","mapping","getter");
 	}
@@ -65,7 +64,6 @@ public class EMB_FromStep {
 						.isInstanceOf(Transformer.class)
 						.isInstanceOf(DefaultOutput.class)
 						.isInstanceOf(To.class)
-						.isInstanceOf(Consume.class)
 						.isExactlyInstanceOf(EMBuilder.class)
 						.hasAllNullFieldsOrPropertiesExcept("mapper","mapping","getter");
 	}
@@ -81,7 +79,6 @@ public class EMB_FromStep {
 						.isInstanceOf(Transformer.class)
 						.isInstanceOf(DefaultOutput.class)
 						.isInstanceOf(To.class)
-						.isInstanceOf(Consume.class)
 						.isExactlyInstanceOf(EMBuilder.class)
 						.hasAllNullFieldsOrPropertiesExcept("mapper","mapping","getter");
 	}
@@ -93,7 +90,6 @@ public class EMB_FromStep {
 						.isInstanceOf(Transformer.class)
 						.isInstanceOf(DefaultOutput.class)
 						.isInstanceOf(To.class)
-						.isInstanceOf(Consume.class)
 						.isExactlyInstanceOf(EMBuilder.class)
 						.hasAllNullFieldsOrPropertiesExcept("mapper","mapping","getter");
 	}
@@ -106,7 +102,6 @@ public class EMB_FromStep {
 						.isInstanceOf(Transformer.class)
 						.isInstanceOf(DefaultOutput.class)
 						.isInstanceOf(To.class)
-						.isInstanceOf(Consume.class)
 						.isExactlyInstanceOf(EMBuilder.class)
 						.hasAllNullFieldsOrPropertiesExcept("mapper","mapping","getter");
 	}
@@ -118,7 +113,6 @@ public class EMB_FromStep {
 						.isInstanceOf(Transformer.class)
 						.isInstanceOf(DefaultOutput.class)
 						.isInstanceOf(To.class)
-						.isInstanceOf(Consume.class)
 						.isExactlyInstanceOf(EMBuilder.class)
 						.hasAllNullFieldsOrPropertiesExcept("mapper","mapping","getter");
 	}

@@ -12,6 +12,7 @@ import es.utils.mapper.impl.object.DirectMapper;
 import es.utils.mapper.utils.MapperUtil;
 import es.utils.mapper.utils.ThrowingConsumer;
 import es.utils.mapper.utils.ThrowingFunction;
+import es.utils.mapper.utils.ThrowingPredicate;
 
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
@@ -35,7 +36,6 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements From		<IN,OUT>,		
 															DefaultInput<IN,GETTER_OUT,SETTER_IN,OUT>,// Optional
 															Transformer	<IN,GETTER_OUT,SETTER_IN,OUT>,// Optional, Repeatable
 															DefaultOutput<IN,GETTER_OUT,SETTER_IN,OUT>,// Optional
-															Consume		<IN,GETTER_OUT,SETTER_IN,OUT>,// Optional
 															To			<IN,GETTER_OUT,SETTER_IN,OUT>,// Mandatory
 															Builder		<IN,GETTER_OUT,SETTER_IN,OUT> {// Mandatory
 
@@ -99,16 +99,12 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements From		<IN,OUT>,		
 	}
 
 	// TRANSFORM GETTER RESULT INTO SETTER INPUT (OPTIONAL,REPEATABLE)
-	public <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformer) {
+	public <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(ThrowingPredicate<SETTER_IN> condition, ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformerTrue, ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformerFalse) {
 		ThrowingFunction<GETTER_OUT,SETTER_IN_NEW> currentTransform = null;
 		if(this.transformer==null) {
-			@SuppressWarnings("unchecked")
-			ThrowingFunction<GETTER_OUT,SETTER_IN> tmp = obj->(SETTER_IN)obj;
-			currentTransform = tmp.andThen(transformer)::apply;
+			this.transformer = obj->(SETTER_IN)obj;
 		}
-		else {
-			currentTransform = this.transformer.andThen(transformer)::apply;
-		}
+		currentTransform = this.transformer.andThen(in->(condition.test(in)?transformerTrue:transformerFalse).apply(in))::apply;
 		return new EMBuilder<>(mapper,mapping,getter,defaultInput,currentTransform,null,null);
 	}
 	public <SETTER_IN_NEW> Transformer<IN, GETTER_OUT, SETTER_IN_NEW, OUT> transform(Class<? extends AbstractConverter<SETTER_IN, SETTER_IN_NEW>> converter) throws MappingException {
@@ -119,7 +115,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements From		<IN,OUT>,		
 		}
 		return transform(converterInstance::mapOrNull);
 	}
-	
+
 	// DEFAULT VALUE IN OUTPUT (OPTIONAL)
 	public To<IN,GETTER_OUT,SETTER_IN,OUT> defaultOutput(Supplier<SETTER_IN> defaultOutput) {
 		this.defaultOutput = defaultOutput;
@@ -150,21 +146,20 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements From		<IN,OUT>,		
 	
 	// BUILDER (MANDATORY)
 	public ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> getElementMapper() {
-		if(_elementMapper!=null) {
-			return _elementMapper;
+		if(_elementMapper==null) {
+			if (this.defaultInput == null) {
+				this.defaultInput = () -> null;
+			}
+			if (this.transformer == null) {
+				@SuppressWarnings("unchecked")
+				ThrowingFunction<GETTER_OUT, SETTER_IN> defaultTransform = obj -> (SETTER_IN)obj;
+				this.transformer = defaultTransform;
+			}
+			if (this.defaultOutput == null) {
+				this.defaultOutput = () -> null;
+			}
+			_elementMapper = new ElementMapper<>(mapper, getter, defaultInput, transformer, defaultOutput, setter);
 		}
-		if(this.defaultInput==null) {
-			this.defaultInput = ()->null;
-		}
-		if(this.transformer==null) {
-			@SuppressWarnings("unchecked")
-			ThrowingFunction<GETTER_OUT, SETTER_IN> defaultTransform = obj->(SETTER_IN)obj;
-			this.transformer = defaultTransform;
-		}
-		if(this.defaultOutput==null) {
-			this.defaultOutput = ()->null;
-		}
-		_elementMapper = new ElementMapper<>(mapper,getter,defaultInput,transformer,defaultOutput,setter);
 		return _elementMapper;
 	}
 	public ClassMapper<IN,OUT> create() {

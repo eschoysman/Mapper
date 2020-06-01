@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PrimitiveWrapTest {
 
-	/* Constructor Method */
 	@Test
 	public void shouldCreateMapper() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();

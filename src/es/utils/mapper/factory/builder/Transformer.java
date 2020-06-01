@@ -2,7 +2,14 @@ package es.utils.mapper.factory.builder;
 
 import es.utils.mapper.converter.AbstractConverter;
 import es.utils.mapper.exception.MappingException;
+import es.utils.mapper.utils.ExceptionHandle;
 import es.utils.mapper.utils.ThrowingFunction;
+import es.utils.mapper.utils.ThrowingPredicate;
+
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * Optional and repeatable step of the EMBuilder that allow to specify a transformer between the result of the getter and the input of the setter.<br>
@@ -25,7 +32,9 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	 * @param transformer a function to map the result of the getter into the correct type for the setter
 	 * @return the next (optional) step of the builder: {@link Transformer}
 	 */
-	public <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformer);
+	public default <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformer) {
+		return transform($->true,transformer,null);
+	}
 	
 	/**
 	 * Add a transformer between the getter and setter operations using the given converter class.<br>
@@ -47,5 +56,26 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	public default <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> cast(Class<SETTER_IN_NEW> newType) {
 		return transform(newType::cast);
 	}
-	
+
+	/**
+	 * If the condition on the input value is fulfilled, add a transformer between the getter and setter operations; otherwise does nothing.
+	 * Be careful of {@code NullPointerException}, if the input of the transformer is {@code null} a {@code NullPointerException} will be thrown.
+	 * @param condition the condition that must returns {@code true} in order to apply the given transformer
+	 * @param transformerTrue the transformer that is apply only if the condition is respected
+	 * @return the next (optional) step of the builder: {@link Transformer}
+	 */
+	public default Transformer<IN,GETTER_OUT,SETTER_IN,OUT> transform(ThrowingPredicate<SETTER_IN> condition, ThrowingFunction<SETTER_IN,SETTER_IN> transformerTrue) {
+		return transform(condition,transformerTrue,$->$);
+	}
+
+	/**
+	 * Add a transformer in depending of the result of the given condition
+	 * @param <SETTER_IN_NEW> the input type of the setter operation
+	 * @param condition the condition that directs the transformer to apply
+	 * @param transformerTrue the transformer that is apply if the condition returns {@code true}
+	 * @param transformerFalse the transformer that is apply if the condition returns {@code false}
+	 * @return the next (optional) step of the builder: {@link Transformer}
+	 */
+	public <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(ThrowingPredicate<SETTER_IN> condition, ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformerTrue, ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformerFalse);
+
 }

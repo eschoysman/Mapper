@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  * @param <OUT> the type of the destination object
  * @see <a href="package-summary.html">builder package</a>
  */
-public interface DefaultOutput<IN,GETTER_OUT,SETTER_IN,OUT> extends To<IN,GETTER_OUT,SETTER_IN,OUT>, Consume<IN,GETTER_OUT,SETTER_IN,OUT> {
+public interface DefaultOutput<IN,GETTER_OUT,SETTER_IN,OUT> extends To<IN,GETTER_OUT,SETTER_IN,OUT> {
 
 	/**
 	 * Allow to specify a default value using a {@link Supplier}.

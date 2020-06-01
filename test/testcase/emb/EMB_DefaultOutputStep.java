@@ -2,7 +2,6 @@ package testcase.emb;
 
 import es.utils.mapper.Mapper;
 import es.utils.mapper.exception.MappingException;
-import es.utils.mapper.factory.builder.Consume;
 import es.utils.mapper.factory.builder.DefaultOutput;
 import es.utils.mapper.factory.builder.EMBuilder;
 import es.utils.mapper.factory.builder.To;
@@ -32,7 +31,6 @@ public class EMB_DefaultOutputStep {
 		To<ClassMapperFromTest,String,String,ClassMapperToTest> step = prev.defaultOutput("No name");
 		assertThat(step).isNotNull()
 						.isInstanceOf(To.class)
-						.isInstanceOf(Consume.class)
 						.isExactlyInstanceOf(EMBuilder.class)
 						.hasAllNullFieldsOrPropertiesExcept("mapper","mapping","getter","defaultOutput");
 	}
@@ -42,7 +40,6 @@ public class EMB_DefaultOutputStep {
 		To<ClassMapperFromTest,String,String,ClassMapperToTest> step = prev.defaultOutputFor(String.class);
 		assertThat(step).isNotNull()
 						.isInstanceOf(To.class)
-						.isInstanceOf(Consume.class)
 						.isExactlyInstanceOf(EMBuilder.class)
 						.hasAllNullFieldsOrPropertiesExcept("mapper","mapping","getter","defaultOutput");
 	}

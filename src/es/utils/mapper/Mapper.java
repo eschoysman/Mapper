@@ -679,15 +679,17 @@ public class Mapper {
     	Map<String,FieldHolder> result = new HashMap<>();
     	for(Field field : MapperUtil.getAllFields(type)) {
     		FieldHolder fieldHolder = new FieldHolder(field,config());
-    		for(String name : fieldHolder.getAllNames()) {
-	    		if(result.put(name,fieldHolder)!=null) {
-	    			try {
-						throw CustomException.forType(MappingException.class).message(MessageFormat.format("Two Fields in {0} have the same name or alias \"{1}\"",type,name)).build();
-					} catch (MappingException e) {
-						e.printStackTrace();
+    		if(!fieldHolder.ignoreField()) {
+				for (String name : fieldHolder.getAllNames()) {
+					if (result.put(name, fieldHolder) != null) {
+						try {
+							throw CustomException.forType(MappingException.class).message(MessageFormat.format("Two Fields in {0} have the same name or alias \"{1}\"", type, name)).build();
+						} catch (MappingException e) {
+							e.printStackTrace();
+						}
 					}
-	    		}
-    		}
+				}
+			}
     	}
     	return result;
     }

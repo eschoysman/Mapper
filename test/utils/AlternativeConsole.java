@@ -20,7 +20,7 @@ public class AlternativeConsole {
 		// err
 		this.originalErr = System.err;
 		this.err = new ByteArrayOutputStream();
-		System.setErr( new PrintStream(err));
+		System.setErr(new PrintStream(err));
 		this.errClosed = false;
 	}
 	

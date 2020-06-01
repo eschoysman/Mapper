@@ -31,7 +31,6 @@ public class EMB_DefaultInputStep {
 						.isInstanceOf(Transformer.class)
 						.isInstanceOf(DefaultOutput.class)
 						.isInstanceOf(To.class)
-						.isInstanceOf(Consume.class)
 						.isExactlyInstanceOf(EMBuilder.class)
 						.hasAllNullFieldsOrPropertiesExcept("mapper","mapping","getter","defaultInput");
 	}
@@ -43,7 +42,6 @@ public class EMB_DefaultInputStep {
 						.isInstanceOf(Transformer.class)
 						.isInstanceOf(DefaultOutput.class)
 						.isInstanceOf(To.class)
-						.isInstanceOf(Consume.class)
 						.isExactlyInstanceOf(EMBuilder.class)
 						.hasAllNullFieldsOrPropertiesExcept("mapper","mapping","getter","defaultInput");
 	}
