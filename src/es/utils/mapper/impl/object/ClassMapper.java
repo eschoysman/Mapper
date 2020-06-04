@@ -57,12 +57,11 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 		try {
 			return mapValue(from,dest);
 		} catch (Exception e) {
-			throw CustomException.forType(MappingException.class).cause(e).build();
+			throw CustomException.forType(MappingException.class).message("Error mapping input value "+from).cause(e).build();
 		}
 	}
 	protected U mapValue(T from, U to) {
 		Objects.requireNonNull(to);
-//		getElementMappings().forEach(me->me.apply(from,to,mapper.config()));
 		getElementMappings().forEach(me->me.apply(from,to));
 		return to;
     }

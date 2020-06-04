@@ -192,7 +192,7 @@ public class MapperTest {
 		Mapper mapper = new Mapper();
 		mapper.add(From.class, To.class);
 		MappingNotFoundException exception = assertThrows(MappingNotFoundException.class, ()->mapper.map("ciao"));
-		assertThat(exception.getMessage()).contains("Found 0 mapping(s) from class java.lang.String. Cannot uniquely map the input.");
+		assertThat(exception.getMessage()).contains("Found 0 mapping(s) from class java.lang.String. Cannot uniquely map the input ciao.");
 	}
 	@Test
 	public void shouldThrowMappingNotFoundExceptionFromInputOnlyAndMultipleMappingPresent() throws MappingException, MappingNotFoundException {
@@ -201,7 +201,7 @@ public class MapperTest {
 		mapper.add(From.class, String.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		MappingNotFoundException exception = assertThrows(MappingNotFoundException.class, ()->mapper.map(from));
-		assertThat(exception.getMessage()).contains("Found 2 mapping(s) from class from.From. Cannot uniquely map the input.");
+		assertThat(exception.getMessage()).contains("Found 2 mapping(s) from class from.From. Cannot uniquely map the input "+from+".");
 	}
 	@Test
 	public void shouldNotMapWithNullInput() throws MappingException, MappingNotFoundException {
@@ -271,7 +271,7 @@ public class MapperTest {
 		mapper.add(ChronoUnit.class, TimeUnit.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		MappingNotFoundException exception = assertThrows(MappingNotFoundException.class, ()->mapper.map(from, To.class));
-		assertThat(exception.getMessage()).contains("WARNING - No mappings found in es.utils.mapper.Mapper for input class java.lang.Class and output class to.To\n" + 
+		assertThat(exception.getMessage()).contains("WARNING - No mappings found in "+mapper.getClass().getName()+"["+mapper.getMapperName()+"] for input class from.From and output class to.To\nInput instance: "+from+"\n" +
 				"Existing destination mappings from class from.From:\n" +
 				"\tnone\n" + 
 				"Existing source mappings to class to.To:\n" +
@@ -287,7 +287,7 @@ public class MapperTest {
 		mapper.add(ChronoUnit.class, To.class,$->new To());
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		MappingNotFoundException exception = assertThrows(MappingNotFoundException.class, ()->mapper.map(from, To.class));
-		assertThat(exception.getMessage()).contains("WARNING - No mappings found in es.utils.mapper.Mapper for input class java.lang.Class and output class to.To\n" + 
+		assertThat(exception.getMessage()).contains("WARNING - No mappings found in "+mapper.getClass().getName()+"["+mapper.getMapperName()+"] for input class from.From and output class to.To\nInput instance: "+from+"\n" +
 				"Existing destination mappings from class from.From:\n" +
 				"\tclass java.util.concurrent.TimeUnit\n" + 
 				"Existing source mappings to class to.To:\n" +
@@ -302,7 +302,7 @@ public class MapperTest {
 		mapper.add(ChronoUnit.class, TimeUnit.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		MappingNotFoundException exception = assertThrows(MappingNotFoundException.class, ()->mapper.map(from, new To()));
-		assertThat(exception.getMessage()).contains("WARNING - No mappings found in es.utils.mapper.Mapper for input class java.lang.Class and output class to.To\n" + 
+		assertThat(exception.getMessage()).contains("WARNING - No mappings found in "+mapper.getClass().getName()+"["+mapper.getMapperName()+"] for input class from.From and output class to.To\nInput instance: "+from+"\n" +
 				"Existing destination mappings from class from.From:\n" +
 				"\tnone\n" + 
 				"Existing source mappings to class to.To:\n" +
@@ -327,7 +327,7 @@ public class MapperTest {
 		mapper.add(ChronoUnit.class, TimeUnit.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		ExampleException exception = assertThrows(ExampleException.class, ()->mapper.map(from, To.class, CustomException.forType(ExampleException.class)));
-		assertThat(exception.getMessage()).contains("es.utils.mapper.exception.MappingNotFoundException: WARNING - No mappings found in es.utils.mapper.Mapper for input class java.lang.Class and output class to.To\n" +
+		assertThat(exception.getMessage()).contains("es.utils.mapper.exception.MappingNotFoundException: WARNING - No mappings found in "+mapper.getClass().getName()+"["+mapper.getMapperName()+"] for input class from.From and output class to.To\nInput instance: "+from+"\n" +
 				"Existing destination mappings from class from.From:\n" +
 				"\tnone\n" +
 				"Existing source mappings to class to.To:\n" +
@@ -343,7 +343,7 @@ public class MapperTest {
 		mapper.add(ChronoUnit.class, To.class,$->new To());
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		ExampleException exception = assertThrows(ExampleException.class, ()->mapper.map(from, To.class, CustomException.forType(ExampleException.class)));
-		assertThat(exception.getMessage()).contains("es.utils.mapper.exception.MappingNotFoundException: WARNING - No mappings found in es.utils.mapper.Mapper for input class java.lang.Class and output class to.To\n" +
+		assertThat(exception.getMessage()).contains("es.utils.mapper.exception.MappingNotFoundException: WARNING - No mappings found in "+mapper.getClass().getName()+"["+mapper.getMapperName()+"] for input class from.From and output class to.To\nInput instance: "+from+"\n" +
 				"Existing destination mappings from class from.From:\n" +
 				"\tclass java.util.concurrent.TimeUnit\n" +
 				"Existing source mappings to class to.To:\n" +
@@ -359,7 +359,7 @@ public class MapperTest {
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		ExampleException exception = assertThrows(ExampleException.class, ()->mapper.map(from, new To(), CustomException.forType(ExampleException.class).message("No mapping found")));
 		assertThat(exception.getMessage()).isEqualTo("No mapping found");
-		assertThat(exception.getCause().getMessage()).contains("WARNING - No mappings found in es.utils.mapper.Mapper for input class java.lang.Class and output class to.To\n" +
+		assertThat(exception.getCause().getMessage()).contains("WARNING - No mappings found in "+mapper.getClass().getName()+"["+mapper.getMapperName()+"] for input class from.From and output class to.To\nInput instance: "+from+"\n" +
 				"Existing destination mappings from class from.From:\n" +
 				"\tnone\n" +
 				"Existing source mappings to class to.To:\n" +
@@ -411,7 +411,7 @@ public class MapperTest {
 //		mapper.add(ChronoUnit.class, TimeUnit.class);
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		ExampleException exception = assertThrows(ExampleException.class, ()->mapper.map(from, CustomException.forType(ExampleException.class)));
-		assertThat(exception.getMessage()).contains("es.utils.mapper.exception.MappingNotFoundException: Found 0 mapping(s) from class from.From. Cannot uniquely map the input.");
+		assertThat(exception.getMessage()).contains("es.utils.mapper.exception.MappingNotFoundException: Found 0 mapping(s) from class from.From. Cannot uniquely map the input "+from+".");
 	}
 	@Test
 	public void shouldThrowRuntimeExceptionWithNoExistingMappingFromInputOnly() throws MappingException {
@@ -520,7 +520,7 @@ public class MapperTest {
 		out.close();
 		System.setErr(originalErr);
 		assertThat(result).isNull();
-		assertThat(outString).startsWith("es.utils.mapper.exception.MappingException: java.lang.RuntimeException: java.lang.RuntimeException: java.lang.NullPointerException");
+		assertThat(outString).startsWith("es.utils.mapper.exception.MappingException: Error mapping input value ClassMapperFromTest [nameFrom=null, surnameFrom=null]");
 	}
 	@SuppressWarnings("unchecked")
 	@Test

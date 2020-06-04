@@ -11,7 +11,7 @@
  * </ol>
  * <br><br>
  * Here the flow chart of the builder:<br><br>
- * <img src="./doc-files/stepBuilderFlow.svg" alt="step builder flow" style="max-width:100%; min-width:450px">
+ * <img src="./doc-files/stepBuilderFlow.png" alt="Flow: From -> [DefaultInput] -> [Transformer, repeatable] -> [DefaultOutput] -> To ">
  * <br><br>
  * @author eschoysman
  * @see es.utils.mapper.factory.builder.From
@@ -20,6 +20,6 @@
  * @see es.utils.mapper.factory.builder.DefaultOutput
  * @see es.utils.mapper.factory.builder.To
  * @see es.utils.mapper.factory.builder.EMBuilder
- * @see es.utils.mapper.factory.builder.EMBuilder#using(Mapper,ClassMapper)
+ * @see es.utils.mapper.factory.builder.EMBuilder#using(es.utils.mapper.Mapper,es.utils.mapper.impl.object.ClassMapper)
  */
 package es.utils.mapper.factory.builder;

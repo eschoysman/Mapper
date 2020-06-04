@@ -16,6 +16,7 @@ import es.utils.mapper.impl.object.EnumMapper;
 import es.utils.mapper.utils.MapperUtil;
 import org.springframework.stereotype.Component;
 
+import javax.management.Query;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -280,7 +281,7 @@ public class Mapper {
 		U map = null;
 		MapperObject<T,U> mapper = getMappingBetween(getEffectiveClass(from),to);
 		if(mapper==null) {
-			mappingNotFound(from.getClass(),to);
+			mappingNotFound(from,to);
 		}
 		else {
 			map = mapper.map(from);
@@ -308,7 +309,7 @@ public class Mapper {
 		}
 		MapperObject<T,U> mapperBetween = getMappingBetween(getEffectiveClass(from),getEffectiveClass(to));
 		if(mapperBetween==null) {
-			mappingNotFound(from.getClass(),to.getClass());
+			mappingNotFound(from,to.getClass());
 		}
 		else {
 			to = mapperBetween.map(from,to);
@@ -334,7 +335,7 @@ public class Mapper {
 											.filter(m->from.getClass().isAssignableFrom(m.fromClass()))
 											.collect(Collectors.toList());
 		if(list.size()!=1) {
-			throw CustomException.forType(MappingNotFoundException.class).message(MessageFormat.format("Found {0} mapping(s) from {1}. Cannot uniquely map the input.",list.size(),from.getClass())).build();
+			throw CustomException.forType(MappingNotFoundException.class).message(MessageFormat.format("Found {0} mapping(s) from {1}. Cannot uniquely map the input {2}.",list.size(),from.getClass(),from)).build();
 		}
 		@SuppressWarnings("unchecked")
 		MapperObject<T,U> mapper = (MapperObject<T,U>)list.get(0);
@@ -633,8 +634,19 @@ public class Mapper {
 		add(from,to,enumMapper);
 		return enumMapper;
 	}
-	private <T,U> void mappingNotFound(Class<T> fromClass, Class<U> toClass) throws MappingNotFoundException {
-		StringBuilder sb = new StringBuilder("WARNING - No mappings found in " + this.getClass().getName() + " for input " + fromClass.getClass() + " and output " + toClass + "\n");
+	private <T> Class<T> getEffectiveClass(T obj) {
+		Class<?> tmp = obj.getClass();
+		if(Enum.class.isInstance(obj)) {
+			tmp = ((Enum<?>)obj).getDeclaringClass();
+		}
+		@SuppressWarnings("unchecked")
+		Class<T> effectiveClass = (Class<T>)tmp;
+		return effectiveClass;
+	}
+	private <T,U> void mappingNotFound(T from, Class<U> toClass) throws MappingNotFoundException {
+		@SuppressWarnings("unchecked")
+		Class<T> fromClass = (Class<T>)from.getClass();
+		StringBuilder sb = new StringBuilder("WARNING - No mappings found in " + this.getClass().getName() + "["+getMapperName()+"] for input " + fromClass + " and output " + toClass + "\nInput instance: "+from+"\n");
 		ArrayList<String> dest  = new ArrayList<>();
 		ArrayList<String> src   = new ArrayList<>();
 		ArrayList<String> other = new ArrayList<>();
@@ -665,15 +677,6 @@ public class Mapper {
 		}
 		other.forEach(s->sb.append("\t"+s+"\n"));
 		throw CustomException.forType(MappingNotFoundException.class).message(sb).build();
-	}
-	private <T> Class<T> getEffectiveClass(T obj) {
-		Class<?> tmp = obj.getClass();
-		if(Enum.class.isInstance(obj)) {
-			tmp = ((Enum<?>)obj).getDeclaringClass();
-		}
-		@SuppressWarnings("unchecked")
-		Class<T> effectiveClass = (Class<T>)tmp;
-		return effectiveClass;
 	}
 	private Map<String,FieldHolder> getAllFields(Class<?> type) {
     	Map<String,FieldHolder> result = new HashMap<>();

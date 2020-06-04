@@ -99,29 +99,8 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 		SETTER_IN transformed = transform(getterResult);
 		transformed = defaultValueSetter(transformed);
 		setter(out,transformed);
-//		setter(out,defaultValueSetter(transform(defaultValueGetter(getter(in)))));
 	}
-//	public void apply(IN in, OUT out/*, Configuration config*/) {
-//		// System.out.println("Calling getter \""+getFromValue()+"\"...");
-//		GETTER_OUT getterResult = getter.apply(in);
-//		// System.out.println("getter \""+getFromValue()+"\" output: "+getterResult);
-//		// System.out.println("Copying value to map...");
-//		if(mapper.config().isDeepCopyEnabled() && mapper.config().getCloner()!=null) {
-//			this.transformer = this.transformer.compose(mapper.config().<GETTER_OUT>getCloner()::apply);
-//		}
-//		// System.out.println("Applying transformation...");
-//		SETTER_IN transformed = transformer.apply(getterResult);
-//		if(transformed==null) {
-//			// congif.defaultStrategy != NEVER => (ALWAYS || CUSTOM)+OUTPUT = !NEVER & OUTPUT
-//			if(mapper.config().getDefaultValuesStrategy()!=DefaultValueStrategy.NEVER && defaultOutput!=null) {
-//				// sysout("applying default value");
-//				transformed = defaultOutput.get();
-//			}
-//		}
-//		// System.out.println("Applying setter \""+getDestValue()+"\" with input: "+transformed);
-//		setter.apply(out,transformed);
-//	}
-	
+
 	/**
 	 * Returns a human readable string of the current {@code ElementMapper}
 	 */

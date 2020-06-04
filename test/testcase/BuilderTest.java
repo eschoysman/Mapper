@@ -86,7 +86,7 @@ public class BuilderTest {
 									 .consume(String::toString)
 									 .create();
     	MappingException exception = assertThrows(MappingException.class, ()->mapper.map(from));
-    	assertThat(exception.getMessage()).isNotNull().startsWith("java.lang.RuntimeException: java.lang.RuntimeException: java.lang.RuntimeException: java.lang.NullPointerException");
+    	assertThat(exception.getMessage()).isNotNull().startsWith("Error mapping input value ClassMapperFromTest [nameFrom=Pippo, surnameFrom=Sora]");
 	}
 	
 	@Test
