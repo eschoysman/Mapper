@@ -16,7 +16,6 @@ import es.utils.mapper.impl.object.EnumMapper;
 import es.utils.mapper.utils.MapperUtil;
 import org.springframework.stereotype.Component;
 
-import javax.management.Query;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

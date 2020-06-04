@@ -1,7 +1,5 @@
 package es.utils.mapper.exception;
 
-import java.text.MessageFormat;
-
 public class CustomException<E extends Exception> {
 
     private Class<E> type;
