@@ -33,15 +33,15 @@ public class EMB_FromStep {
 		assertThat(step).isNotNull()
 		 				.isInstanceOf(Builder.class)
 		 				.isExactlyInstanceOf(EMBuilder.class)
-						.hasNoNullFieldsOrPropertiesExcept("_elementMapper","defaultInput");
+						.hasNoNullFieldsOrPropertiesExcept("_elementMapper","defaultInput","defaultOutput");
 	}
 	@Test
 	public void shouldCreate_BuilderStep_EmptyFrom_DefaultOutputValue() {
-		To<ClassMapperFromTest,Void,String,ClassMapperToTest> step = prev.defaultOutputValue("pippo");
+		Transformer<ClassMapperFromTest,Void,String,ClassMapperToTest> step = prev.defaultValue("pippo");
 		assertThat(step).isNotNull()
-		 				.isInstanceOf(To.class)
+		 				.isInstanceOf(Transformer.class)
 		 				.isExactlyInstanceOf(EMBuilder.class)
-						.hasNoNullFieldsOrPropertiesExcept("_elementMapper","defaultInput","setter");
+						.hasNoNullFieldsOrPropertiesExcept("_elementMapper","defaultInput","defaultOutput","setter");
 	}
 	@Test
 	public void shouldCreate_BuilderStep_EmptyFrom_FromEmpty() {

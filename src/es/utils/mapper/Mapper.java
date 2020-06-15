@@ -14,6 +14,8 @@ import es.utils.mapper.impl.object.ClassMapper;
 import es.utils.mapper.impl.object.DirectMapper;
 import es.utils.mapper.impl.object.EnumMapper;
 import es.utils.mapper.utils.MapperUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Array;
@@ -37,6 +39,8 @@ import java.util.stream.Collectors;
  */
 @Component
 public class Mapper {
+
+	private static final Logger logger = LoggerFactory.getLogger(Mapper.class);
 
 	private String name;
 	private TwoKeyMap<Class<?>,Class<?>,MapperObject<?,?>> mappings;

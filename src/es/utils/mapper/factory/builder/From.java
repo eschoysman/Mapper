@@ -12,11 +12,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 /**
- * First step of the EMBuilder that manage the creation of the getter operation.<br>
- * This step is mandatory
- * Next step: {@link DefaultInput}
+ * First step of the builder that manage the creation of the getter operation.<br>
+ * This step is mandatory.<br>
+ * Next optional steps: {@link DefaultInput}, {@link Transformer}, {@link DefaultOutput}.<br>
+ * Next mandatory step: {@link To}.
  * @author eschoysman
- *
  * @param <IN> the type of the origin object
  * @param <OUT> the type of the destination object
  * @see ClassMapper#addMapping()
@@ -30,8 +30,11 @@ public interface From<IN,OUT> {
 	 * Create a {@code Getter} instance using the given getter object.
 	 * @param <GETTER_OUT_NEW> the resulting type of the getter operation.
 	 * @param getter the Getter instance to use.
-	 * @return the second step of the builder to add a transformer.
+	 * @return The next (optional) step of the builder: {@link DefaultInput}.
 	 * @see DefaultInput
+	 * @see Transformer
+	 * @see DefaultOutput
+	 * @see To
 	 */
 	public <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(Getter<IN,GETTER_OUT_NEW> getter);
 
@@ -40,45 +43,51 @@ public interface From<IN,OUT> {
 	 * @param <GETTER_OUT_NEW> the type of the value inside of {@code field}.
 	 * @param idName the name identifier of the {@code getter}.
 	 * @param fieldName the name of the field to retrieve from the {@code type} type.
-	 * @return the second step of the builder to add a transformer.
+	 * @return The next (optional) step of the builder: {@link DefaultInput}.
 	 * @throws NullPointerException if {@code idName}, {@code type} or {@code fieldName} is null.
 	 * @see DefaultInput
+	 * @see Transformer
+	 * @see DefaultOutput
+	 * @see To
 	 */
 	public <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String idName, String fieldName);
 	
 	
 	// EmptyFrom
 	/**
-	 * Create a empty {@code Getter} instance and manage the provide defaultValue as input of the setter.
+	 * Initialize the builder using the provided {@code defaultValue} as starting value.
 	 * @param <SETTER_IN_NEW> the input type of the setter operation.
-	 * @param defaultValue the value to be set.
-	 * @return the third step of the builder to add a setter.
+	 * @param defaultValue the value to start the builder with.
+	 * @return The third (optional) step of the builder: {@link Transformer}.
+	 * @see Transformer
+	 * @see DefaultOutput
 	 * @see To
 	 */
-	public default <SETTER_IN_NEW> To<IN,Void,SETTER_IN_NEW,OUT> defaultOutputValue(SETTER_IN_NEW defaultValue) {
-		@SuppressWarnings("unchecked")
-		ThrowingFunction<Void,SETTER_IN_NEW> transformer = obj->(SETTER_IN_NEW)obj;
-		return this.<Void>fromEmpty().<SETTER_IN_NEW>transform(transformer).defaultOutput(defaultValue);
+ 	public default <SETTER_IN_NEW> Transformer<IN,Void,SETTER_IN_NEW,OUT> defaultValue(SETTER_IN_NEW defaultValue) {
+		return this.<Void>fromEmpty().transform($->defaultValue);
 	}
-	
+
 	/**
 	 * Create a empty {@code Getter} instance and manage the provide setter.
 	 * @param <SETTER_IN_NEW> the input type of the setter operation.
 	 * @param idName the name identifier of the {@code setter}.
 	 * @param setter the setting operation of the setter.
-	 * @return a ElementMapper, result of the builder.
+	 * @return The last step of the builder: {@link Builder}.
 	 * @throws NullPointerException if {@code idName} or {@code setter} is null.
 	 * @see Builder
 	 */
 	public default <SETTER_IN_NEW> Builder<IN,Void,SETTER_IN_NEW,OUT> defaultOutput(String idName, BiConsumer<OUT,SETTER_IN_NEW> setter) {
-		return this.<SETTER_IN_NEW>defaultOutputValue(null).to(idName,setter);
+		return this.<SETTER_IN_NEW>defaultValue(null).to(idName,setter);
 	}
 	
 	/**
 	 * Create a empty {@code Getter} instance.
 	 * @param <GETTER_OUT_NEW> the resulting type of the getter operation.
-	 * @return the second step of the builder to add a transformer.
+	 * @return The next (optional) step of the builder: {@link DefaultInput}.
 	 * @see DefaultInput
+	 * @see Transformer
+	 * @see DefaultOutput
+	 * @see To
 	 */
 	public default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> fromEmpty() {
 		return from(Getter.empty());
@@ -91,9 +100,12 @@ public interface From<IN,OUT> {
 	 * @param <GETTER_OUT_NEW> the type of the value to be mapped.
 	 * @param idName the name identifier of the {@code getter}.
 	 * @param supplier a supplier for the value to retrieve.
-	 * @return the second step of the builder to add a transformer.
+	 * @return The next (optional) step of the builder: {@link DefaultInput}.
 	 * @throws NullPointerException if {@code name} or {@code supplier} is null.
 	 * @see DefaultInput
+	 * @see Transformer
+	 * @see DefaultOutput
+	 * @see To
 	 */
 	public default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String idName, Supplier<GETTER_OUT_NEW> supplier) {
 		Objects.requireNonNull(idName);
@@ -107,9 +119,12 @@ public interface From<IN,OUT> {
 	 * @param <GETTER_OUT_NEW> the type of the value to be mapped.
 	 * @param idName the name identifier of the {@code getter}.
 	 * @param getter a function that extract the value to get.
-	 * @return the second step of the builder to add a transformer.
+	 * @return The next (optional) step of the builder: {@link DefaultInput}.
 	 * @throws NullPointerException if {@code idName} or {@code getter} is null.
 	 * @see DefaultInput
+	 * @see Transformer
+	 * @see DefaultOutput
+	 * @see To
 	 */
 	public default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String idName, ThrowingFunction<IN,GETTER_OUT_NEW> getter) {
 		Objects.requireNonNull(idName);
@@ -122,9 +137,12 @@ public interface From<IN,OUT> {
 	 * Create a {@code Getter} instance using the field named {@code fieldName} inside the generic {@code IN} type.
 	 * @param <GETTER_OUT_NEW> the type of the value inside of {@code field}.
 	 * @param fieldName the name of the field to retrieve from the {@code type} type.
-	 * @return the second step of the builder to add a transformer.
+	 * @return The next (optional) step of the builder: {@link DefaultInput}.
 	 * @throws NullPointerException if {@code type} or {@code fieldName} is null.
 	 * @see DefaultInput
+	 * @see Transformer
+	 * @see DefaultOutput
+	 * @see To
 	 */
 	public default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String fieldName) {
 		return from(fieldName,fieldName);
@@ -134,9 +152,12 @@ public interface From<IN,OUT> {
 	 * Create a {@code Getter} instance using the field named {@code fieldName} inside the {@code type} type.
 	 * @param <GETTER_OUT_NEW> the type of the value inside of {@code field}.
 	 * @param fieldHolder a instance having all the information of a {@code field}.
-	 * @return the second step of the builder to add a transformer.
+	 * @return The next (optional) step of the builder: {@link DefaultInput}.
 	 * @throws NullPointerException if {@code fieldHolder} is null.
 	 * @see DefaultInput
+	 * @see Transformer
+	 * @see DefaultOutput
+	 * @see To
 	 */
 	public default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(FieldHolder fieldHolder) {
 		Objects.requireNonNull(fieldHolder);
@@ -148,9 +169,12 @@ public interface From<IN,OUT> {
 	 * @param <GETTER_OUT_NEW> the type of the value inside of {@code field}.
 	 * @param idName the name identifier of the {@code getter}.
 	 * @param fieldHolder a instance having all the information of a {@code field}.
-	 * @return the second step of the builder to add a transformer.
+	 * @return The next (optional) step of the builder: {@link DefaultInput}.
 	 * @throws NullPointerException if {@code idName} or {@code fieldHolder} is null.
 	 * @see DefaultInput
+	 * @see Transformer
+	 * @see DefaultOutput
+	 * @see To
 	 */
 	public default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String idName, FieldHolder fieldHolder) {
 		Objects.requireNonNull(idName);

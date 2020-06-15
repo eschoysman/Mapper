@@ -9,12 +9,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
- * Last step of the EMBuilder (before the building one) that manage the creation of the setter operation.<br>
- * This step is mandatory
- * Previous step: {@link DefaultOutput}<br>
- * Next step: {@link Builder}
+ * Last step of the builder (before the building one) that manage the creation of the setter operation.<br>
+ * This step is mandatory.<br>
+ * Previous mandatory step: {@link From}
+ * Previous optional step: {@link DefaultInput}, {@link Transformer}, {@link DefaultOutput}.<br>
+ * Next mandatory step: {@link Builder}
  * @author eschoysman
- *
  * @param <IN> the type of the origin object
  * @param <GETTER_OUT> the resulting type of the getter operation
  * @param <SETTER_IN> the input type of the setter operation

@@ -4,7 +4,7 @@ import es.utils.mapper.impl.element.ElementMapper;
 import es.utils.mapper.impl.object.ClassMapper;
 
 /**
- * Last step of the EMBuilder that manage the creation of the getter operation.<br>
+ * Last step of the builder that manage the creation of the getter operation.<br>
  * This step is mandatory
  * Previous step: {@link To}
  * @author eschoysman

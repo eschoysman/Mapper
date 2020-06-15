@@ -6,11 +6,12 @@ import es.utils.mapper.utils.ThrowingFunction;
 import es.utils.mapper.utils.ThrowingPredicate;
 
 /**
- * Optional and repeatable step of the EMBuilder that allow to specify a transformer between the result of the getter and the input of the setter.<br>
- * Previous step: {@link DefaultInput}<br>
- * Next step: {@link DefaultOutput}
+ * Optional and repeatable step of the builder that allow to specify a transformer between the result of the getter and the input of the setter.<br>
+ * Previous mandatory step: {@link From}.<br>
+ * Previous optional step: {@link DefaultInput}.<br>
+ * Next optional step: {@link DefaultOutput}.<br>
+ * Next mandatory step: {@link To}.
  * @author eschoysman
- *
  * @param <IN> the type of the origin object
  * @param <GETTER_OUT> the resulting type of the getter operation
  * @param <SETTER_IN> the input type of the setter operation
@@ -24,7 +25,9 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	 * Be careful of {@code NullPointerException}, if the input of the transformer is {@code null} a {@code NullPointerException} will be thrown.
 	 * @param <SETTER_IN_NEW> the input type of the setter operation
 	 * @param transformer a function to map the result of the getter into the correct type for the setter
-	 * @return the next (optional) step of the builder: {@link Transformer}
+	 * @return The next (optional) step of the builder: {@link DefaultOutput}.
+	 * @see DefaultOutput
+	 * @see To
 	 */
 	public default <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformer) {
 		return transform($->true,transformer,null);
@@ -35,8 +38,10 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	 * Be careful of {@code NullPointerException}, if the input of the transformer is {@code null} a {@code NullPointerException} will be thrown.
 	 * @param <SETTER_IN_NEW> the input type of the setter operation
 	 * @param converter the class to instance to convert the the result of the getter into the correct type for the setter
-	 * @return the next (optional) step of the builder: {@link Transformer}
-	 * @throws MappingException if the given converter cannot be instantiate 
+	 * @return The next (optional) step of the builder: {@link DefaultOutput}.
+	 * @throws MappingException if the given converter cannot be instantiate
+	 * @see DefaultOutput
+	 * @see To
 	 */
 	public <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(Class<? extends AbstractConverter<SETTER_IN,SETTER_IN_NEW>> converter) throws MappingException;
 
@@ -45,7 +50,9 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	 * Be careful of {@code NullPointerException}, if the input of the transformer is {@code null} a {@code NullPointerException} will be thrown.
 	 * @param <SETTER_IN_NEW> the input type of the setter operation
 	 * @param newType the class to cast the the result of the getter into the type for the setter
-	 * @return the next (optional) step of the builder: {@link Transformer}
+	 * @return The next (optional) step of the builder: {@link DefaultOutput}.
+	 * @see DefaultOutput
+	 * @see To
 	 */
 	public default <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> cast(Class<SETTER_IN_NEW> newType) {
 		return transform(newType::cast);
@@ -56,7 +63,9 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	 * Be careful of {@code NullPointerException}, if the input of the transformer is {@code null} a {@code NullPointerException} will be thrown.
 	 * @param condition the condition that must returns {@code true} in order to apply the given transformer
 	 * @param transformerTrue the transformer that is apply only if the condition is respected
-	 * @return the next (optional) step of the builder: {@link Transformer}
+	 * @return The next (optional) step of the builder: {@link DefaultOutput}.
+	 * @see DefaultOutput
+	 * @see To
 	 */
 	public default Transformer<IN,GETTER_OUT,SETTER_IN,OUT> transform(ThrowingPredicate<SETTER_IN> condition, ThrowingFunction<SETTER_IN,SETTER_IN> transformerTrue) {
 		return transform(condition,transformerTrue,$->$);
@@ -68,7 +77,9 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	 * @param condition the condition that directs the transformer to apply
 	 * @param transformerTrue the transformer that is apply if the condition returns {@code true}
 	 * @param transformerFalse the transformer that is apply if the condition returns {@code false}
-	 * @return the next (optional) step of the builder: {@link Transformer}
+	 * @return The next (optional) step of the builder: {@link DefaultOutput}.
+	 * @see DefaultOutput
+	 * @see To
 	 */
 	public <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(ThrowingPredicate<SETTER_IN> condition, ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformerTrue, ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformerFalse);
 

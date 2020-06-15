@@ -22,7 +22,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Step builder imlementation to help the use to create easily an {@link ElementMapper};
+ * Step builder implementation to help the use to create easily an {@link ElementMapper};
  * @author eschoysman
  *
  * @param <IN> the type of the origin object

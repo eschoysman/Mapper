@@ -1,0 +1,14 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+<!--            <pattern>%d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | LOGBACK | %thread | %5p | %logger{25} | %m%n</pattern>-->
+            <pattern>[%d{yy-MMM-dd HH:mm:ss:SSS}] [LOGBACK] [%-5p] [%c{1}:%L] - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="trace">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

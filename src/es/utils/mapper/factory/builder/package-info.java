@@ -11,7 +11,7 @@
  * </ol>
  * <br><br>
  * Here the flow chart of the builder:<br><br>
- * <img src="./doc-files/stepBuilderFlow.png" alt="Flow: From -> [DefaultInput] -> [Transformer, repeatable] -> [DefaultOutput] -> To ">
+ * <img src="./doc-files/stepBuilderFlow.png" alt="Flow: From -> [DefaultInput] -> [Transformer (repeatable)] -> [DefaultOutput] -> To ">
  * <br><br>
  * @author eschoysman
  * @see es.utils.mapper.factory.builder.From
