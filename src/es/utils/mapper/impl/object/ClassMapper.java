@@ -220,7 +220,7 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	}
 	private <GETTER_OUT, SETTER_IN> void collectionCase(FieldHolder srcField, FieldHolder destField, Class<?> destClass, Class<SETTER_IN> destGenericType) {
 		Function<Collection<GETTER_OUT>,Collection<SETTER_IN>> transformer =
-				in->mapper.mapCollection(in,
+				in->in==null ? null : mapper.mapCollection(in,
 										 CollectionFactory.<GETTER_OUT,SETTER_IN>create(in.getClass(),destField.getCollectionType()),
 										 destGenericType);
 		addElementMapper(addMapping().<Collection<GETTER_OUT>>from(srcField).<Collection<SETTER_IN>>transform(transformer::apply).to(destField).getElementMapper(),true);

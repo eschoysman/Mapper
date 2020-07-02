@@ -10,7 +10,7 @@ import java.util.function.Function;
  * As the {@code ThrowingFunction} is a sub-class of {@code Function}, is possible to pass to the
  * {@code handleException(ThrowingFunction)} method a Function ({@code handleException(Function)})
  * that normally want to explicitly catch an exception. The cast to @{@code ThrowingFunction} is automatically done and
- * if an exception is thrown, it will be wrapped in a {@code RuntimeException}.
+ * if an exception is thrown, it will be wrapped in a {@code RuntimeException}.<br><br>
  * Example:<br>
  * <ul>
  *     <li>Vanilla Java:<br>

@@ -490,12 +490,19 @@ public class MapperTest {
 	public void shouldMapCollectionOfElement() throws MappingException, MappingNotFoundException {
 		Mapper mapper = new Mapper();
 		mapper.add(ChronoUnit.class, TimeUnit.class);
-		List<ChronoUnit> origin = Arrays.asList(ChronoUnit.MINUTES,ChronoUnit.MINUTES,ChronoUnit.MINUTES);
-		Collection<TimeUnit> resultMapCollection = mapper.mapCollection(origin,new ArrayList<TimeUnit>(),TimeUnit.class);
-		assertThat(resultMapCollection).isNotNull()
+		List<ChronoUnit> originList = Arrays.asList(ChronoUnit.MINUTES,ChronoUnit.MINUTES,ChronoUnit.MINUTES);
+		Collection<TimeUnit> resultMapList = mapper.mapList(originList,TimeUnit.class);
+		assertThat(resultMapList).isNotNull()
 										.isInstanceOf(ArrayList.class)
 										.hasSize(3)
 										.containsSequence(TimeUnit.MINUTES,TimeUnit.MINUTES,TimeUnit.MINUTES);
+		Set<ChronoUnit> originSet = new HashSet<>();
+		originSet.addAll(originList);
+		Collection<TimeUnit> resultMapSet = mapper.mapSet(originSet,TimeUnit.class);
+		assertThat(resultMapSet).isNotNull()
+				.isInstanceOf(HashSet.class)
+				.hasSize(1)
+				.containsSequence(TimeUnit.MINUTES);
 		assertThat(mapper.mapCollection(null,new ArrayList<TimeUnit>(),TimeUnit.class)).isNull();
 	}
 	@Test

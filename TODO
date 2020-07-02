@@ -1,6 +1,11 @@
 Logger:
     - mettere i log a tappeto in tutte le classi con il livello adeguato (error, warn, info, debug o trace)
-
+        - throw Exception() -> error
+        - System.err -> error
+        - System.out + "Warning" -> warn
+        - System.out -> info
+        - metodi di operazioni (non quelli che delegano) -> debug
+        - metodi che delegano -> trace
 
 Trovare un modo per poter condividere Configuration e Logger (variabili di Mapper) con tutte le altre classi
 senza dover passare "mapper" ovunque (ThreadLocal? Map<id,Config> e Map<id,Logger> statici?)

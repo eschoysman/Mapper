@@ -457,6 +457,7 @@ public class Mapper {
 		U[] destination = (U[])Array.newInstance(destinationType,origin.length);
 		return mapArray(origin,destination);
 	}
+
 	/**
 	 * @param <T> the type of the source object
 	 * @param <U> the type of the destination object
@@ -476,18 +477,71 @@ public class Mapper {
 		Objects.requireNonNull(collectionType);
 		@SuppressWarnings("unchecked")
 		CU destination = (CU)CollectionFactory.create(null,collectionType);
-		
 		return mapCollection(origin, destination, resultElementType);
 	}
-	
+	/** Allow to map each element of a List.
+	 * @param origin the input list to map
+	 * @param resultElementType the class type of the result elements
+	 * @param <T> input type of the element of the input list
+	 * @param <U> output type of the element of the output ArrayList
+	 * @return return an {@code ArrayList&lt;U&gt;} containing the input elements mapped
+	 * @see #mapList(List,List,Class)
+	 * @see #mapCollection(Collection,Collection,Class)
+	 */
+	public <T,U> List<U> mapList(List<T> origin, Class<U> resultElementType) {
+		return mapList(origin, new ArrayList<U>(), resultElementType);
+	}
+	/** Allow to map each element of a List into a custom List implementation.
+	 * @param origin the input list to map
+	 * @param resultElementType the class type of the result elements
+	 * @param <T> input type of the element of the input list
+	 * @param <L> output type of the list to return
+	 * @param <U> output type of the element of the output ArrayList
+	 * @return return an {@code ArrayList&lt;U&gt;} containing the input elements mapped
+	 * @see #mapList(List,Class)
+	 * @see #mapCollection(Collection,Collection,Class)
+	 */
+	public <T,U,L extends List<U>> List<U> mapList(List<T> origin, L destination, Class<U> resultElementType) {
+		return mapCollection(origin, destination, resultElementType);
+	}
+	/** Allow to map each element of a Set.
+	 * @param origin the input set to map
+	 * @param resultElementType the class type of the result elements
+	 * @param <T> input type of the element of the input set
+	 * @param <U> output type of the element of the output HashSet
+	 * @return return an {@code HashSet&lt;U&gt;} containing the input elements mapped
+	 * @see #mapSet(Set,Set,Class)
+	 * @see #mapCollection(Collection,Collection,Class)
+	 */
+	public <T,U> Set<U> mapSet(Set<T> origin, Class<U> resultElementType) {
+		return mapSet(origin, new HashSet<U>(), resultElementType);
+	}
+	/** Allow to map each element of a Set.
+	 * @param origin the input set to map
+	 * @param resultElementType the class type of the result elements
+	 * @param <T> input type of the element of the input set
+	 * @param <S> output type of the set to return
+	 * @param <U> output type of the element of the output HashSet
+	 * @return return an {@code HashSet&lt;U&gt;} containing the input elements mapped
+	 * @see #mapSet(Set,Class)
+	 * @see #mapCollection(Collection,Collection,Class)
+	 */
+	public <T,U,S  extends Set<U>> Set<U> mapSet(Set<T> origin, S destination, Class<U> resultElementType) {
+		return mapCollection(origin, destination, resultElementType);
+	}
+
 	/**
 	 * @param <T> the type of the source object
 	 * @param <U> the type of the destination object
 	 * @param <CU> the type of the resulting collection
 	 * @param origin original collection to map
 	 * @param destination destination collection
-	 * @param resultElementType destination type of the mapping 
+	 * @param resultElementType destination type of the mapping
 	 * @return the mapped collection
+	 * @see #mapList(List,Class)
+	 * @see #mapList(List,List,Class)
+	 * @see #mapSet(Set,Class)
+	 * @see #mapSet(Set,Set,Class)
 	 */
 	public <T,U, CU extends Collection<U>> CU mapCollection(Collection<T> origin, CU destination, Class<U> resultElementType) {
 		if(origin==null) {
@@ -503,13 +557,13 @@ public class Mapper {
 		if(!origin.isEmpty() && srcGenericType!=null && resultElementType!=null) {
 			@SuppressWarnings("unchecked")
 			MapperObject<T,U> mapper = (MapperObject<T,U>)getMappingBetween(srcGenericType,resultElementType);
-			Optional.ofNullable(mapper)
-					.map(m->origin.stream().map(m::mapOrNull))
-					.get().forEach(destination::add);
+			if(mapper!=null) {
+				origin.stream().map(mapper::mapOrNull).forEach(destination::add);
+			}
 		}
 		return destination;
 	}
-	
+
 	/**
 	 * @param <T> the type of the source class
 	 * @param <U> the type of the destination class
@@ -520,7 +574,7 @@ public class Mapper {
 	public <T,U> boolean hasMappingBetween(Class<T> src, Class<U> dest) {
 		return mappings.containsKey(src,dest);
 	}
-	
+
 	/**
 	 * @param <T> the type of the source class
 	 * @param <U> the type of the destination class

@@ -107,7 +107,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements From		<IN,OUT>,		
 		currentTransform = this.transformer.andThen(in->(condition.test(in)?transformerTrue:transformerFalse).apply(in))::apply;
 		return new EMBuilder<>(mapper,mapping,getter,defaultInput,currentTransform,null,null);
 	}
-	public <SETTER_IN_NEW> Transformer<IN, GETTER_OUT, SETTER_IN_NEW, OUT> transform(Class<? extends AbstractConverter<SETTER_IN, SETTER_IN_NEW>> converter) throws MappingException {
+	public <SETTER_IN_NEW> Transformer<IN, GETTER_OUT,SETTER_IN_NEW, OUT> transform(Class<? extends AbstractConverter<SETTER_IN,SETTER_IN_NEW>> converter) throws MappingException {
 		Objects.requireNonNull(converter);
 		DirectMapper<SETTER_IN,SETTER_IN_NEW> converterInstance = MapperUtil.createFromConverter(converter,mapper);
 		if(converterInstance==null) {
