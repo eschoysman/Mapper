@@ -231,7 +231,7 @@ So far we only saw how to create default mapping, but rarely is the mapping we w
 
 ## Download
 
-With Maven:
+**With Maven:**
 
 First add a new repository inside your ```pom.xml```
 ```xml
@@ -242,7 +242,7 @@ First add a new repository inside your ```pom.xml```
     </repository>
 </repositories>
 ```
-Next add the dependency to the artifact:
+Next add the dependency to the artifact
 ```xml
 <dependency>
     <groupId>io.github.eschoysman</groupId>
@@ -251,7 +251,7 @@ Next add the dependency to the artifact:
 </dependency> 
 ```
 
-Without Maven:
+**Without Maven:**
 
 You can download the jar to include into you project [here][download_jar].
 
