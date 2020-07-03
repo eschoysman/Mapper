@@ -231,7 +231,30 @@ So far we only saw how to create default mapping, but rarely is the mapping we w
 
 ## Download
 
+With Maven:
+
+First add a new repository inside your ```pom.xml```
+```xml
+<repositories>
+    <repository>
+        <id>mvn-repo</id>
+        <url>https://github.com/eschoysman/repository/raw/mvn-repo</url>
+    </repository>
+</repositories>
+```
+Next add the dependency to the artifact:
+```xml
+<dependency>
+    <groupId>io.github.eschoysman</groupId>
+    <artifactId>mapper</artifactId>
+    <version>[1.0.0,)</version>
+</dependency> 
+```
+
+Without Maven:
+
 You can download the jar to include into you project [here][download_jar].
+
 
 ---
 <a href="javadoc"></a>
