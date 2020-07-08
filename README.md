@@ -30,7 +30,7 @@
 
 ## Prerequisites
 
-The library is written in [Java 8][Java_8_link] with no external dependencies!
+The library is written in [Java 8][Java_8_link] with no external dependencies needed!
 
 ---
 <a href="lets-code"></a>

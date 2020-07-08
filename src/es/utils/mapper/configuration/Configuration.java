@@ -41,6 +41,7 @@ public class Configuration {
 		this.suppliers = new HashMap<>();
 		this.annotations = new HashMap<>();
 		this.defaultValues = new HashMap<>();
+		this.defaultValuesStrategy = EnumSet.noneOf(DefaultValueStrategy.class);
 		initDefaultValues();
 	}
 
