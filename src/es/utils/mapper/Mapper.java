@@ -493,11 +493,12 @@ public class Mapper {
 	}
 	/** Allow to map each element of a List into a custom List implementation.
 	 * @param origin the input list to map
+	 * @param destination the List instance returned
 	 * @param resultElementType the class type of the result elements
 	 * @param <T> input type of the element of the input list
 	 * @param <L> output type of the list to return
 	 * @param <U> output type of the element of the output ArrayList
-	 * @return return an {@code ArrayList&lt;U&gt;} containing the input elements mapped
+	 * @return return the {@code destination} List after adding the input elements after mapping
 	 * @see #mapList(List,Class)
 	 * @see #mapCollection(Collection,Collection,Class)
 	 */
@@ -518,15 +519,16 @@ public class Mapper {
 	}
 	/** Allow to map each element of a Set.
 	 * @param origin the input set to map
+	 * @param destination the Set instance returned
 	 * @param resultElementType the class type of the result elements
 	 * @param <T> input type of the element of the input set
 	 * @param <S> output type of the set to return
 	 * @param <U> output type of the element of the output HashSet
-	 * @return return an {@code HashSet&lt;U&gt;} containing the input elements mapped
+	 * @return return the {@code destination} Set after adding the input elements after mapping
 	 * @see #mapSet(Set,Class)
 	 * @see #mapCollection(Collection,Collection,Class)
 	 */
-	public <T,U,S  extends Set<U>> Set<U> mapSet(Set<T> origin, S destination, Class<U> resultElementType) {
+	public <T,U,S extends Set<U>> Set<U> mapSet(Set<T> origin, S destination, Class<U> resultElementType) {
 		return mapCollection(origin, destination, resultElementType);
 	}
 
