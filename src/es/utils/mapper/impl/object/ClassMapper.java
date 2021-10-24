@@ -29,8 +29,8 @@ import java.util.function.Function;
  */
 public class ClassMapper<T,U> extends MapperObject<T,U> {
 	
-	private TwoKeyMap<String,String,ElementMapper<T,?,?,U>> fieldMappings;
-	private TwoKeyMap<String,String,ElementMapper<T,?,?,U>> customMappings;
+	private TwoKeyMap<Integer,Integer,ElementMapper<T,?,?,U>> fieldMappings;
+	private TwoKeyMap<Integer,Integer,ElementMapper<T,?,?,U>> customMappings;
 	private Set<String> inputsToIgnore;
 	private Set<String> outputsToIgnore;
 	
@@ -157,13 +157,13 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
     	if(inputsToIgnore.contains(idNameFrom) || outputsToIgnore.contains(idNameTo)) {
     		return Optional.empty();
     	}
-    	ElementMapper<T,?,?,U> elementMapper = fieldMappings.get(idNameFrom,idNameTo);
-    	if(elementMapper==null) {
-    		elementMapper = customMappings.get(idNameFrom,idNameTo);
-    	}
-    	@SuppressWarnings("unchecked")
-		ElementMapper<T,GETTER_OUT,SETTER_IN,U> result = (ElementMapper<T,GETTER_OUT,SETTER_IN,U>)elementMapper;
-    	return Optional.ofNullable(result);
+		LinkedList<ElementMapper<T,?,?,U>> mappings = new LinkedList<>();
+		mappings.addAll(fieldMappings.values());
+    	mappings.addAll(customMappings.values());
+		return mappings.stream()
+					   .filter(em->em.getFromName().equals(idNameFrom) && em.getDestName().equals(idNameTo))
+					   .map(em->(ElementMapper<T,GETTER_OUT,SETTER_IN,U>)em)
+					   .findAny();
     }
     
 	// private methods
@@ -236,10 +236,10 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
     
     private <GETTER_OUT,SETTER_IN> ClassMapper<T,U> addElementMapper(ElementMapper<T,GETTER_OUT,SETTER_IN,U> elementMapper, boolean isCalledDuringConstruction) {
     	if(isCalledDuringConstruction) {
-    		this.fieldMappings.put(elementMapper.getFromValue(), elementMapper.getDestValue(),elementMapper);
+    		this.fieldMappings.put(elementMapper.getFromId(), elementMapper.getDestId(),elementMapper);
     	}
     	else {
-    		this.customMappings.put(elementMapper.getFromValue(), elementMapper.getDestValue(),elementMapper);
+    		this.customMappings.put(elementMapper.getFromId(), elementMapper.getDestId(),elementMapper);
     	}
 		this.isDirty = true;
 		return this;
@@ -247,12 +247,12 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
     
     private List<ElementMapper<T,?,?,U>> getElementMappings() {
     	if(this.isDirty) {
-    		TwoKeyMap<String,String, ElementMapper<T,?,?,U>> tmpTwoKeyMap = new TwoKeyMap<>();
+    		TwoKeyMap<Integer,Integer, ElementMapper<T,?,?,U>> tmpTwoKeyMap = new TwoKeyMap<>();
     		tmpTwoKeyMap.putAll(fieldMappings);
     		tmpTwoKeyMap.putAll(customMappings);
     		Collection<ElementMapper<T,?,?,U>> tmpList = tmpTwoKeyMap.values();
-    		tmpList.removeIf(em->inputsToIgnore.contains(em.getFromValue()));
-    		tmpList.removeIf(em->outputsToIgnore.contains(em.getDestValue()));
+    		tmpList.removeIf(em->inputsToIgnore.contains(em.getFromName()));
+    		tmpList.removeIf(em->outputsToIgnore.contains(em.getDestName()));
     		elementMappings = new ArrayList<>(tmpList);
     		this.isDirty = false;
     	}

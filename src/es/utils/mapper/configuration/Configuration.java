@@ -191,13 +191,7 @@ public class Configuration {
 	 */
 	public <T> Configuration setCloner(UnaryOperator<T> cloner) {
 		this.cloner = cloner;
-		if(cloner==null) {
-			disableDeepCopy();
-		}
-		else {
-			enableDeepCopy();
-		}
-		return this;
+		return cloner==null ? disableDeepCopy() : enableDeepCopy();
 	}
 	/**
 	 * @param <T> Generic type of the cloner operation (just for not having Object)

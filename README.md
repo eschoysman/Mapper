@@ -5,7 +5,11 @@
 
 ---
 
-[![Travis (.org) branch][build_badge]][build_link] [![coverage][coverage_badge]][coverage_link] [![GitHub][license_badge]][license_link]  ![GitHub top language][top_language_badge] [![GitHub file size in bytes][code_size_badge]][download_jar]
+[//]: #[![coverage][coverage_badge]][coverage_link]
+[![Travis (.org) branch][build_badge]][build_link]
+[![GitHub][license_badge]][license_link] 
+![GitHub top language][top_language_badge]
+[![GitHub file size in bytes][code_size_badge]][download_jar]
 
 ---
 
@@ -20,6 +24,8 @@
 - [Mapping collections and arrays](#mapping-collections-and-arrays)
 - [Configuration](#configuration)
 - [Customize the mapping](#customize-the-mapping)
+- [Logging](#logging)
+- [Spring](#spring)
 - [In the future](#in-the-future)
 - [Download](#download)
 - [Javadoc](#javadoc)
@@ -215,7 +221,32 @@ For more customize mappings, see the "[Customize the mapping](#customize-the-map
 
 ## Customize the mapping
 
-So far we only saw how to create default mapping, but rarely is the mapping we want at the end!
+So far we only saw how to create default mapping, but rarely is the mapping we want at the end:
+this library allow using 12674 different ways to create a custom mapping!
+
+// TODO
+
+---
+<a href="logging"></a>
+
+## Logging
+
+The library used to log is `slf4j` (Simple Logging Facade for Java, http://www.slf4j.org/) and this allows you to use the logger library you prefer.
+
+The following libraries worked successfully:
+- SLF4J Simple
+- JUL (java.util.logging)
+- logback
+- log4j
+
+// TODO
+
+---
+<a href="spring"></a>
+
+## Spring
+
+The `Mapper` class is annotated with `@Component`, so you can create a bean to autowired a `Mapper` instance to use inside your Spring project.
 
 // TODO
 
@@ -284,3 +315,6 @@ The code in this project is licensed under [MIT License][license_link].
 [top_language_badge]: https://img.shields.io/github/languages/top/eschoysman/Mapper.svg?label=Java%208&style=popout-square&logo=java&logoColor=ff0000
 [code_size_badge]: https://img.shields.io/github/size/eschoysman/Mapper/jar/mapper.jar.svg?style=popout-square&logo=data:image/png;base64,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
 [code_size_badge_light]: https://img.shields.io/github/size/eschoysman/Mapper/jar/mapper.jar.svg?style=popout-square
+
+
+[]: #

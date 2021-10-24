@@ -2,6 +2,7 @@ package es.utils.mapper.impl.element;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * This class handle the logic of a generic {@code setter} operation.<br>
@@ -12,19 +13,30 @@ import java.util.function.BiConsumer;
  */
 public class Setter<U,SETTER_IN> {
 
+	private static int id_incr = 0;
+	private int id = ++id_incr;
+
 	private String name;
 	private BiConsumer<U,SETTER_IN> setter;
 
-	private static final Setter<?,?> EMPTY = new Setter<>("",(obj,$)->{});
+	private static final Setter<?,?> EMPTY = new Setter<>("setter_id_0",(obj,$)->{});
 
+	/**
+	 * Create a {@code Ssetter} instance with a identifier and a operation
+	 * @param setter the {@code setter} operation
+	 */
+	public Setter(BiConsumer<U,SETTER_IN> setter) {
+		setName("setter_id_"+id);
+		setSetter(setter);
+	}
 	/**
 	 * Create a {@code Setter} instance with a identifier and a operation
 	 * @param name the name identifier of the current {@code setter}
 	 * @param setter the {@code setter} operation
 	 */
 	public Setter(String name, BiConsumer<U,SETTER_IN> setter) {
-		this.name = Objects.requireNonNull(name);
-		this.setter = Objects.requireNonNull(setter);
+		setName(name);
+		setSetter(setter);
 	}
 	
 	/**
@@ -38,13 +50,28 @@ public class Setter<U,SETTER_IN> {
 		Setter<U,SETTER_IN> empty = (Setter<U,SETTER_IN>)EMPTY;
 		return empty;
 	}
-	
+
+	/**
+	 * The unique id identifier of the current {@code setter}
+	 * @return the unique id identifier of the current {@code setter}
+	 */
+	public int getId() {
+		return id;
+	}
+
 	/**
 	 * The name identifier of the current {@code setter}
 	 * @return the name identifier of the current {@code setter}
 	 */
 	public String getName() {
 		return name;
+	}
+
+	private void setName(String name) {
+		this.name = Objects.requireNonNull(name,"The name of the setter cannot be null");
+	}
+	private void setSetter(BiConsumer<U,SETTER_IN> setter) {
+		this.setter = Objects.requireNonNull(setter,"The setter operation cannot be null");
 	}
 
 	/**
@@ -61,8 +88,7 @@ public class Setter<U,SETTER_IN> {
 	 */
 	@Override
 	public String toString() {
-		return "Setter[name="+getName()+"]";
+		return "Setter[id="+id+",name="+getName()+"]";
 	}
-	
-	
+
 }

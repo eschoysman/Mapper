@@ -32,23 +32,27 @@ import java.util.function.Supplier;
  * @see es.utils.mapper.factory.builder
  * @see ElementMapper
  */
-public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements From		<IN,OUT>,					  // Mandatory
-															DefaultInput<IN,GETTER_OUT,SETTER_IN,OUT>,// Optional
-															Transformer	<IN,GETTER_OUT,SETTER_IN,OUT>,// Optional, Repeatable
-															DefaultOutput<IN,GETTER_OUT,SETTER_IN,OUT>,// Optional
-															To			<IN,GETTER_OUT,SETTER_IN,OUT>,// Mandatory
-															Builder		<IN,GETTER_OUT,SETTER_IN,OUT> {// Mandatory
+public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements  Name		<IN,OUT>,						// Mandatory
+																From		<IN,OUT>,						// Mandatory
+																DefaultInput<IN,GETTER_OUT,SETTER_IN,OUT>,	// Optional
+																Transformer	<IN,GETTER_OUT,SETTER_IN,OUT>,	// Optional, Repeatable
+																DefaultOutput<IN,GETTER_OUT,SETTER_IN,OUT>,	// Optional
+																To			<IN,GETTER_OUT,SETTER_IN,OUT>,	// Mandatory
+																Builder		<IN,GETTER_OUT,SETTER_IN,OUT> {	// Mandatory
 
 	private Mapper mapper;
 	private ClassMapper<IN,OUT> mapping;
+	private String name;
 	private Getter<IN,GETTER_OUT> getter;
 	private Supplier<GETTER_OUT> defaultInput;
 	private ThrowingFunction<GETTER_OUT,SETTER_IN> transformer;
 	private Supplier<SETTER_IN> defaultOutput;
 	private Setter<OUT,SETTER_IN> setter;
+
 	private ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> _elementMapper;
-	
+
 	private EMBuilder(Mapper mapper, ClassMapper<IN,OUT> mapping,
+					String name,
 					Getter<IN,GETTER_OUT> getter,
 					Supplier<GETTER_OUT> defaultInput,
 					ThrowingFunction<GETTER_OUT, SETTER_IN> transformer,
@@ -56,6 +60,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements From		<IN,OUT>,		
 					Setter<OUT,SETTER_IN> setter) {
 		this.mapper = mapper;
 		this.mapping = mapping;
+		this.name = name;
 		this.getter = getter;
 		this.defaultInput = defaultInput;
 		this.transformer = transformer;
@@ -72,14 +77,18 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements From		<IN,OUT>,		
 	 * @param <OUT> the type of the destination object
 	 * @return The first step of the builder.
 	 */
-	public static <IN,OUT> From<IN,OUT> using(Mapper mapper, ClassMapper<IN,OUT> mapping) {
-		return new EMBuilder<>(mapper,mapping,null,null,null,null,null);
+	public static <IN,OUT> Name<IN,OUT> using(Mapper mapper, ClassMapper<IN,OUT> mapping) {
+		return new EMBuilder<>(mapper,mapping,null,null,null,null,null,null);
 	}
-	
+
+	public From<IN,OUT> name(String name) {
+		return new EMBuilder<>(mapper,mapping,name,getter,null,null,null,null);
+	}
+
 	// GETTER (MANDATORY)
 	public <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(Getter<IN,GETTER_OUT_NEW> getter) {
 		Objects.requireNonNull(getter);
-		return new EMBuilder<>(mapper,mapping,getter,null,null,null,null);
+		return new EMBuilder<>(mapper,mapping,name,getter,null,null,null,null);
 	}
 	public <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String idName, String fieldName) {
 		Objects.requireNonNull(idName);
@@ -88,14 +97,14 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements From		<IN,OUT>,		
 		Getter<IN,GETTER_OUT_NEW> getter = new Getter<>(idName,EMBuilder.createGetterFunction(field));
 		return from(getter);
 	}
-	
+
 	// DEFAULT VALUE IN INPUT (OPTIONAL)
 	public Transformer<IN,GETTER_OUT,GETTER_OUT,OUT> defaultInput(Supplier<GETTER_OUT> defaultInput) {
-		return new EMBuilder<>(mapper,mapping,getter,defaultInput,null,null,null);
+		return new EMBuilder<>(mapper,mapping,name,getter,defaultInput,null,null,null);
 	}
 	public Transformer<IN,GETTER_OUT,GETTER_OUT,OUT> defaultInputFor(Class<GETTER_OUT> defaultValueType) {
 		this.defaultInput = mapper.config().getDefaultValueSupplier(defaultValueType);
-		return new EMBuilder<>(mapper,mapping,getter,defaultInput,null,null,null);
+		return new EMBuilder<>(mapper,mapping,name,getter,defaultInput,null,null,null);
 	}
 
 	// TRANSFORM GETTER RESULT INTO SETTER INPUT (OPTIONAL,REPEATABLE)
@@ -105,7 +114,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements From		<IN,OUT>,		
 			this.transformer = obj->(SETTER_IN)obj;
 		}
 		currentTransform = this.transformer.andThen(in->(condition.test(in)?transformerTrue:transformerFalse).apply(in))::apply;
-		return new EMBuilder<>(mapper,mapping,getter,defaultInput,currentTransform,null,null);
+		return new EMBuilder<>(mapper,mapping,name,getter,defaultInput,currentTransform,null,null);
 	}
 	public <SETTER_IN_NEW> Transformer<IN, GETTER_OUT,SETTER_IN_NEW, OUT> transform(Class<? extends AbstractConverter<SETTER_IN,SETTER_IN_NEW>> converter) throws MappingException {
 		Objects.requireNonNull(converter);
@@ -129,7 +138,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements From		<IN,OUT>,		
 	public Builder<IN,GETTER_OUT,Void,OUT> consume(ThrowingConsumer<SETTER_IN> consumer) {
 		return this.<Void>transform(obj->{consumer.accept(obj);return null;}).toEmpty();
 	}
-	
+
 	// SETTER (MANDATORY)
 	public Builder<IN, GETTER_OUT, SETTER_IN, OUT> to(Setter<OUT, SETTER_IN> setter) {
 		Objects.requireNonNull(setter);
@@ -143,7 +152,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements From		<IN,OUT>,		
 		Setter<OUT,SETTER_IN> setter = new Setter<>(idName,createSetterFunction(field));
 		return to(setter);
 	}
-	
+
 	// BUILDER (MANDATORY)
 	public ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> getElementMapper() {
 		if(_elementMapper==null) {
@@ -158,7 +167,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements From		<IN,OUT>,		
 			if (this.defaultOutput == null) {
 				this.defaultOutput = () -> null;
 			}
-			_elementMapper = new ElementMapper<>(mapper, getter, defaultInput, transformer, defaultOutput, setter);
+			_elementMapper = new ElementMapper<>(mapper, name, getter, defaultInput, transformer, defaultOutput, setter);
 		}
 		return _elementMapper;
 	}
@@ -166,7 +175,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements From		<IN,OUT>,		
 		mapping.addElementMapper(getElementMapper());
 		return mapping;
 	}
-	
+
 	// UTILITY METHODS
 	protected static <T,OUT> Function<T,OUT> createGetterFunction(Field field) {
 		Objects.requireNonNull(field);
