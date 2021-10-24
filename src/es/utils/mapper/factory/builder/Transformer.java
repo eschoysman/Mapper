@@ -8,7 +8,7 @@ import es.utils.mapper.utils.ThrowingPredicate;
 /**
  * Optional and repeatable step of the builder that allow to specify a transformer between the result of the getter and the input of the setter.<br>
  * Previous mandatory step: {@link From}.<br>
- * Previous optional step: {@link DefaultInput}.<br>
+ * Previous optional step: {@link Name}, {@link DefaultInput}.<br>
  * Next optional step: {@link DefaultOutput}.<br>
  * Next mandatory step: {@link To}.
  * @author eschoysman

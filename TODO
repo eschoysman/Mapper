@@ -19,7 +19,10 @@ DeepCopy:
             fields() default [];
         }
         aggiungere di conseguenza un "deepCopyEnabled" dentro il FieldHolder da leggere poi in fase di mapping
+    + attualmente viene fatto sempre o mai, è specificato dentro Configuration.java
 
 
 AliasName:
     negli alias dell'annotazione, mettere la possibilità di specificare un campo annidato, come se ci si accedesse con js
+
+

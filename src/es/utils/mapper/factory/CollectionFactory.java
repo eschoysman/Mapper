@@ -40,7 +40,7 @@ public class CollectionFactory {
 	/**
 	 * @param inputCollectionType
 	 * @param collectionType
-	 * @return
+	 * @return return the inner class type of the given collection
 	 */
 	@SuppressWarnings("rawtypes")
 	private static Class<? extends Collection> getClassType(Class<? extends Collection> inputCollectionType, Class<? extends Collection> collectionType) {

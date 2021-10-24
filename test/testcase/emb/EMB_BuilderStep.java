@@ -25,7 +25,7 @@ public class EMB_BuilderStep {
 		Builder<Object, String, String, Object> emb = EMBuilder.using(mapper,classMapper).from(getter).to(setter);
 		ElementMapper<Object,String,String,Object> em = emb.getElementMapper();
 		ElementMapper<Object,String,String,Object> em2 = emb.getElementMapper();
-		assertThat(em.toString()).isEqualTo("ElementMapper[Getter[name=getterName],Setter[name=setterName]]");
+		assertThat(em.toString()).isEqualTo("ElementMapper[elementMapper_id_110,Getter[id=112,name=getterName],Setter[id=108,name=setterName]]");
 		assertThat(em==em2).isTrue();
 	}
 	@Test
@@ -36,7 +36,7 @@ public class EMB_BuilderStep {
 		ClassMapper<Object,Object> classMapper = new ClassMapper<>(Object.class,Object.class);
 		Builder<Object, String, String, Object> emb = EMBuilder.using(mapper,classMapper).from(getter).defaultInput("no value").transform($->$).defaultOutput("no value").to(setter);
 		ElementMapper<Object,String,String,Object> em = emb.getElementMapper();
-		assertThat(em.toString()).isEqualTo("ElementMapper[Getter[name=getterName],Setter[name=setterName]]");
+		assertThat(em.toString()).isEqualTo("ElementMapper[elementMapper_id_111,Getter[id=113,name=getterName],Setter[id=109,name=setterName]]");
 	}
 	
 	@Test
@@ -48,7 +48,7 @@ public class EMB_BuilderStep {
 		ClassMapper<Object,Object> classMapper = EMBuilder.using(mapper,mapping).from(getter).to(setter).create();
 		Optional<ElementMapper<Object,String,String,Object>> em = classMapper.getMapping("getterName","setterName");
 		assertThat(em.isPresent()).isTrue();
-		assertThat(em.get().toString()).isEqualTo("ElementMapper[Getter[name=getterName],Setter[name=setterName]]");
+		assertThat(em.get().toString()).isEqualTo("ElementMapper[elementMapper_id_109,Getter[id=111,name=getterName],Setter[id=107,name=setterName]]");
 	}
 	
 }

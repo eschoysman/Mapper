@@ -12,7 +12,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 /**
- * First step of the builder that manage the creation of the getter operation.<br>
+ * First mandatory step of the builder that manage the creation of the getter operation.<br>
  * This step is mandatory.<br>
  * Next optional steps: {@link DefaultInput}, {@link Transformer}, {@link DefaultOutput}.<br>
  * Next mandatory step: {@link To}.
