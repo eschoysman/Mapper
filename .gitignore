@@ -33,3 +33,6 @@ Mapper 2.0.iml
 /target/
 Mapper.wiki/
 .vscode/
+/src/com/zaxxer/sparsebits/
+/src/main/
+/test/README.md

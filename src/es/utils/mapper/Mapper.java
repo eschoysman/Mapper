@@ -62,7 +62,7 @@ public class Mapper {
 		this.name = name;
 		this.mappings = new TwoKeyMap<>();
 		this.fieldHolderCache = new HashMap<>();
-		this.config = new Configuration(this);
+		this.config = new Configuration();
 		this.isDirty = false;
 	}
 
@@ -740,7 +740,7 @@ public class Mapper {
 	private Map<String,FieldHolder> getAllFields(Class<?> type) {
     	Map<String,FieldHolder> result = new HashMap<>();
     	for(Field field : MapperUtil.getAllFields(type)) {
-    		FieldHolder fieldHolder = new FieldHolder(field,config());
+    		FieldHolder fieldHolder = new FieldHolder(field,this);
     		if(!fieldHolder.ignoreField()) {
 				for (String name : fieldHolder.getAllNames()) {
 					if (result.put(name, fieldHolder) != null) {

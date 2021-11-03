@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
  * @author eschoysman
  */
 public class MapperUtil {
+
+	private static final Pattern PATTERN = Pattern.compile(".+? extends ");
     
 	/**
 	 * This method returns the specific field of input class. If no field is found,
@@ -83,8 +85,7 @@ public class MapperUtil {
 		    Type[] argTypes = paramType.getActualTypeArguments();
 		    if(argTypes.length==1) {
 		    	String typeName = argTypes[0].getTypeName();
-		    	Pattern pattern = Pattern.compile(".+? extends ");
-		    	if(pattern.matcher(typeName).find()) {
+		    	if(PATTERN.matcher(typeName).find()) {
 		    		int startIndex = typeName.indexOf("extends")+8;
 					int endIndex = typeName.indexOf("<");
 					typeName = typeName.substring(startIndex,endIndex==-1? typeName.length() : endIndex);

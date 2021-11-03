@@ -23,7 +23,6 @@ import static es.utils.mapper.defaultvalue.DefaultValueStrategy.*;
  */
 public class Configuration {
 
-	private Mapper mapper;
 	private Map<Class<?>,Supplier<?>> suppliers;
 	private Map<Class<?>,Supplier<?>> defaultValues;
 	private Map<Class<? extends Annotation>,String> annotations;
@@ -32,12 +31,10 @@ public class Configuration {
 	private EnumSet<DefaultValueStrategy> defaultValuesStrategy;
 
 	/**
-	 * Create a configuration associated to the given {@code Mapper} instance.
-	 * @param mapper the {@code Mapper} instance associated to this configuration.
+	 * Create a configuration associated to set to a {@code Mapper} instance.
 	 * @see Mapper
 	 */
-	public Configuration(Mapper mapper) {
-		this.mapper = mapper.setConfig(this);
+	public Configuration() {
 		this.suppliers = new HashMap<>();
 		this.annotations = new HashMap<>();
 		this.defaultValues = new HashMap<>();
@@ -45,19 +42,12 @@ public class Configuration {
 		initDefaultValues();
 	}
 
-	private void initDefaultValues() {
+	private final void initDefaultValues() {
 		try {
 			useAnnotation(AliasNames.class);
 		} catch (MappingException e) {}
 		setCloner(null);
 		setDefaultValueStrategy(DEFAULT);
-	}
-	
-	/**
-	 * @return Returns the {@code Mapper} instance associated to this {@code Configuration} instance
-	 */
-	public Mapper getMapper() {
-		return this.mapper;
 	}
 	
 	/**

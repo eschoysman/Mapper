@@ -1,5 +1,6 @@
 package es.utils.mapper.holder;
 
+import es.utils.mapper.Mapper;
 import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.annotation.CollectionType;
 import es.utils.mapper.annotation.Converter;
@@ -41,11 +42,11 @@ public class FieldHolder {
 	
 	/**
 	 * @param field the field used to hold
-	 * @param config the configuration of the belonging Mapper
+	 * @param mapper the {@code Mapper} instance of belonging configuration used
 	 */
-	public FieldHolder(Field field, Configuration config) {
+	public FieldHolder(Field field, Mapper mapper) {
 		this.field = Objects.requireNonNull(field);
-		Objects.requireNonNull(config);
+		Objects.requireNonNull(mapper);
 		this.fieldName = field.getName();
 		this.rawType = field.getType();
 		this.wrappedType = MapperUtil.getWrapType(field.getType());
@@ -53,15 +54,15 @@ public class FieldHolder {
 		this.aliases = new TreeSet<>();
 		this.converters = new LinkedHashSet<>();
 		this.defaultValue = ()->null;
-		processAnnotations(config);
+		processAnnotations(mapper);
 	}
 	
-	private void processAnnotations(Configuration config) {
+	private void processAnnotations(Mapper mapper) {
 		processIgnoreField();
 		if(!this.ignoreField) {
-			processAliases(config);
-			processConverters(config);
-			processDefaultValue(config);
+			processAliases(mapper.config());
+			processConverters(mapper);
+			processDefaultValue(mapper);
 			processCollectionType();
 		}
 	}
@@ -97,18 +98,18 @@ public class FieldHolder {
 			}
 		}
 	}
-	private void processConverters(Configuration config) {
+	private void processConverters(Mapper mapper) {
 		Converter[] converter = this.field.getAnnotationsByType(Converter.class);
 		for(Converter conv : converter) {
 			@SuppressWarnings("unchecked")
 			Class<? extends AbstractConverter<Object,Object>> converterCasted = (Class<? extends AbstractConverter<Object,Object>>)conv.value();
-			DirectMapper<?,?> converterInstance = MapperUtil.createFromConverter(converterCasted,config.getMapper());
+			DirectMapper<?,?> converterInstance = MapperUtil.createFromConverter(converterCasted,mapper);
 			if(converterInstance!=null)
 				converters.add(converterInstance);
 		}
 	}
-	private void processDefaultValue(Configuration config) {
-		this.defaultValue = new DefaultValueManager(config,this).getSupplier();
+	private void processDefaultValue(Mapper mapper) {
+		this.defaultValue = new DefaultValueManager(mapper,this).getSupplier();
 	}
 	private void processCollectionType() {
 		CollectionType annotationCollectionType = this.field.getAnnotation(CollectionType.class);

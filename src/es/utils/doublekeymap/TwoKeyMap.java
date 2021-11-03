@@ -15,13 +15,6 @@ public class TwoKeyMap<K1,K2,V> extends LinkedHashMap<PairKey<K1,K2>,V> {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Create an empty map.
-	 */
-	public TwoKeyMap() {
-		super();
-	}
-
-	/**
 	 * Add to the map a value associated to booth the keys
 	 * @param key1 first key
 	 * @param key2 second key
