@@ -23,6 +23,6 @@ DeepCopy:
 
 
 AliasName:
-    negli alias dell'annotazione, mettere la possibilità di specificare un campo annidato, come se ci si accedesse con js
+    negli alias dell'annotazione, mettere la possibilità di specificare un campo annidato, come ci si accederebbe in js
 
 

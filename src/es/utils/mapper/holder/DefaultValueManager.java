@@ -33,23 +33,23 @@ class DefaultValueManager {
 		put(Class.class,	DefaultAnnotationSupplier::getClassSupplier);
 	}};
 	
-	public DefaultValueManager(Configuration config, FieldHolder fieldHolder) {
+	public DefaultValueManager(Mapper mapper, FieldHolder fieldHolder) {
 		this.fieldHolder = fieldHolder;
-		process(config);
+		process(mapper);
 	}
 	
-	private void process(Configuration config) {
+	private void process(Mapper mapper) {
 		Field field = fieldHolder.getField();
 		Class<?> fieldType = fieldHolder.getType();
 		Default[] fieldDefault = field.getAnnotationsByType(Default.class);
 		for(Default annotation : fieldDefault) {
-			extractDefaultValueSupplier(fieldType,new DefaultAnnotationSupplier(config.getMapper(),annotation));
+			extractDefaultValueSupplier(fieldType,new DefaultAnnotationSupplier(mapper,annotation));
 			if(this.supplier!=null) {
 				break;
 			}
 		}
 		if(this.supplier==null) {
-			this.supplier = config.getDefaultValueSupplier(fieldType);
+			this.supplier = mapper.config().getDefaultValueSupplier(fieldType);
 		}
 		if(this.supplier==null) {
 			this.supplier = ()->null;
