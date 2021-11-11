@@ -1,4 +1,4 @@
-package es.utils.mapper.utils;
+package es.utils.functionalinterfaces.throwing;
 
 import java.io.Serializable;
 import java.util.function.Function;
@@ -10,7 +10,7 @@ import java.util.function.Predicate;
  * @author eschoysman
  * @param <T> type of the input argument
  */
-public interface ThrowingPredicate<T> extends Predicate<T>, Serializable {
+public interface PredicateX<T> extends Predicate<T>, Serializable {
     /**
      * Try to call the {@code #testThrows(Object)} method. If any error occurs, throws a {@code RuntimeException}.
      * @return the result of the predicate
@@ -35,7 +35,7 @@ public interface ThrowingPredicate<T> extends Predicate<T>, Serializable {
         }
     }
     /**
-     * The body of the {@code ThrowingPredicate} instance
+     * The body of the {@code PredicateX} instance
      * @param elem the object to test
      * @return the result of the predicate
      * @throws Exception allow the implementation to throw any kind of exception

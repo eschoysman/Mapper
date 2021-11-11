@@ -53,7 +53,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * </ul>
  * @author eschoysman
  */
-//@Repeatable(Defaults.class)
 @Retention(RUNTIME)
 @Target(FIELD)
 public @interface Default {
@@ -66,13 +65,10 @@ public @interface Default {
 	char character() default 0;
 	Class<?> type() default Object.class;
 
-	@SuppressWarnings("rawtypes")
 	Class<? extends Enum> enumType() default Enum.class;
 
-	@SuppressWarnings("rawtypes")
 	Class<? extends Supplier> supplier() default Supplier.class;
 	
-	@SuppressWarnings("rawtypes")
 	Class<? extends DefaultValueFactory> factory() default DefaultValueFactory.class;
 	String[] parameters() default {};
 	

@@ -2,8 +2,11 @@ package es.utils.mapper.factory.builder;
 
 import es.utils.mapper.converter.AbstractConverter;
 import es.utils.mapper.exception.MappingException;
-import es.utils.mapper.utils.ThrowingFunction;
-import es.utils.mapper.utils.ThrowingPredicate;
+import es.utils.functionalinterfaces.throwing.SupplierX;
+import es.utils.functionalinterfaces.throwing.FunctionX;
+import es.utils.functionalinterfaces.throwing.PredicateX;
+
+import java.util.Objects;
 
 /**
  * Optional and repeatable step of the builder that allow to specify a transformer between the result of the getter and the input of the setter.<br>
@@ -29,7 +32,7 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public default <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformer) {
+	public default <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(FunctionX<SETTER_IN,SETTER_IN_NEW> transformer) {
 		return transform($->true,transformer,null);
 	}
 	
@@ -67,7 +70,7 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public default Transformer<IN,GETTER_OUT,SETTER_IN,OUT> transform(ThrowingPredicate<SETTER_IN> condition, ThrowingFunction<SETTER_IN,SETTER_IN> transformerTrue) {
+	public default Transformer<IN,GETTER_OUT,SETTER_IN,OUT> transform(PredicateX<SETTER_IN> condition, FunctionX<SETTER_IN,SETTER_IN> transformerTrue) {
 		return transform(condition,transformerTrue,$->$);
 	}
 
@@ -81,6 +84,15 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(ThrowingPredicate<SETTER_IN> condition, ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformerTrue, ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformerFalse);
+	public <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(PredicateX<SETTER_IN> condition, FunctionX<SETTER_IN,SETTER_IN_NEW> transformerTrue, FunctionX<SETTER_IN,SETTER_IN_NEW> transformerFalse);
+
+
+	public default Transformer<IN,GETTER_OUT,SETTER_IN,OUT> defaultValue(SupplierX<SETTER_IN> supplier) {
+		return this.transform(Objects::isNull, in->supplier.get(), in->in);
+	}
+	public default Transformer<IN,GETTER_OUT,SETTER_IN,OUT> defaultValue(SETTER_IN defaultValue) {
+		return this.transform(Objects::isNull, in->defaultValue, in->in);
+	}
+	public Transformer<IN,GETTER_OUT,SETTER_IN,OUT> defaultValue(Class<SETTER_IN> defaultValueType);
 
 }

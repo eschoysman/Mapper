@@ -124,9 +124,8 @@ class DefaultValueManager {
 			}
 			if(annotation.supplier() != Supplier.class) {
 				try {
-					Supplier<?> supplierInstance = annotation.supplier().newInstance();
-					this.supplier = supplierInstance;
-				} catch (InstantiationException | IllegalAccessException e) {
+					this.supplier = (Supplier<?>)annotation.supplier().newInstance();
+				} catch (InstantiationException | IllegalAccessException ignored) {
 				}
 			}
 			if(annotation.factory() != DefaultValueFactory.class) {

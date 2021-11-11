@@ -2,7 +2,7 @@ package es.utils.mapper.impl.object;
 
 import es.utils.mapper.converter.AbstractConverter;
 import es.utils.mapper.impl.MapperObject;
-import es.utils.mapper.utils.ThrowingFunction;
+import es.utils.functionalinterfaces.throwing.FunctionX;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -32,7 +32,7 @@ public class DirectMapper<T,U> extends MapperObject<T,U> {
 		super(from,to);
 		this.transformer = transformer;
 		if(transformer==null && this instanceof AbstractConverter) {
-			ThrowingFunction<T,U> convert = ((AbstractConverter<T,U>)this)::convert;
+			FunctionX<T,U> convert = ((AbstractConverter<T,U>)this)::convert;
 			this.transformer = convert;
 		}
 	}

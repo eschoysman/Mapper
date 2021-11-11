@@ -36,8 +36,8 @@ public class EMB_FromStep {
 						.hasNoNullFieldsOrPropertiesExcept("name","_elementMapper","defaultInput","defaultOutput");
 	}
 	@Test
-	public void shouldCreate_BuilderStep_EmptyFrom_DefaultOutputValue() {
-		Transformer<ClassMapperFromTest,Void,String,ClassMapperToTest> step = prev.defaultValue("pippo");
+	public void shouldCreate_BuilderStep_EmptyFrom_DefaultInputValue() {
+		Transformer<ClassMapperFromTest,Void,String,ClassMapperToTest> step = prev.input("pippo");
 		assertThat(step).isNotNull()
 		 				.isInstanceOf(Transformer.class)
 		 				.isExactlyInstanceOf(EMBuilder.class)

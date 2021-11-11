@@ -1,4 +1,4 @@
-package es.utils.mapper.utils;
+package es.utils.functionalinterfaces.throwing;
 
 import java.io.Serializable;
 import java.util.function.Consumer;
@@ -10,7 +10,7 @@ import java.util.function.Function;
  * @param <T> type of the element to consume
  */
 @FunctionalInterface
-public interface ThrowingConsumer<T> extends Consumer<T>, Serializable {
+public interface ConsumerX<T> extends Consumer<T>, Serializable {
 	/**
 	 * Try to call the {@code acceptThrows(elem)} method. If any error occurs, throws a {@code RuntimeException}.
 	 */
@@ -33,7 +33,7 @@ public interface ThrowingConsumer<T> extends Consumer<T>, Serializable {
         }
     }
     /**
-     * The body of the {@code ThrowingConsumer} instance
+     * The body of the {@code ConsumerX} instance
      * @param elem the object to be consumed
      * @throws Exception allow the implementation to throw any kind of exception
      */

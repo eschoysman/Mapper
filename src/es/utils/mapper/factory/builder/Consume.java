@@ -2,7 +2,7 @@ package es.utils.mapper.factory.builder;
 
 import java.util.function.Consumer;
 
-import es.utils.mapper.utils.ThrowingConsumer;
+import es.utils.functionalinterfaces.throwing.ConsumerX;
 
 /**
  * Last step of the EMBuilder (before the building one) that manage the consumer the value and does not set any value.<br>
@@ -24,6 +24,6 @@ public interface Consume<IN, GETTER_OUT, SETTER_IN, OUT> {
 	 * @param consumer the consumer of the {@code SETTER_IN} value
 	 * @return a ElementMapper, result of the builder
 	 */
-	public Builder<IN,GETTER_OUT,Void,OUT> consume(ThrowingConsumer<SETTER_IN> consumer);
+	public Builder<IN,GETTER_OUT,Void,OUT> consume(ConsumerX<SETTER_IN> consumer);
 	
 }
