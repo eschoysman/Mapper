@@ -10,9 +10,9 @@ import es.utils.mapper.impl.element.Setter;
 import es.utils.mapper.impl.object.ClassMapper;
 import es.utils.mapper.impl.object.DirectMapper;
 import es.utils.mapper.utils.MapperUtil;
-import es.utils.mapper.utils.ThrowingConsumer;
-import es.utils.mapper.utils.ThrowingFunction;
-import es.utils.mapper.utils.ThrowingPredicate;
+import es.utils.functionalinterfaces.throwing.ConsumerX;
+import es.utils.functionalinterfaces.throwing.FunctionX;
+import es.utils.functionalinterfaces.throwing.PredicateX;
 
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
@@ -45,7 +45,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements  Name		<IN,OUT>,	
 	private String name;
 	private Getter<IN,GETTER_OUT> getter;
 	private Supplier<GETTER_OUT> defaultInput;
-	private ThrowingFunction<GETTER_OUT,SETTER_IN> transformer;
+	private FunctionX<GETTER_OUT,SETTER_IN> transformer;
 	private Supplier<SETTER_IN> defaultOutput;
 	private Setter<OUT,SETTER_IN> setter;
 
@@ -55,7 +55,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements  Name		<IN,OUT>,	
 					String name,
 					Getter<IN,GETTER_OUT> getter,
 					Supplier<GETTER_OUT> defaultInput,
-					ThrowingFunction<GETTER_OUT, SETTER_IN> transformer,
+					FunctionX<GETTER_OUT, SETTER_IN> transformer,
 					Supplier<SETTER_IN> defaultOutput,
 					Setter<OUT,SETTER_IN> setter) {
 		this.mapper = mapper;
@@ -97,6 +97,10 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements  Name		<IN,OUT>,	
 		Getter<IN,GETTER_OUT_NEW> getter = new Getter<>(idName,EMBuilder.createGetterFunction(field));
 		return from(getter);
 	}
+	public <SETTER_IN_NEW> Transformer<IN,Void,SETTER_IN_NEW,OUT> input(Class<SETTER_IN_NEW> defaultValueType) {
+		Supplier<SETTER_IN_NEW> supplierByType = mapper.config().getDefaultValueSupplier(defaultValueType);
+		return input(supplierByType::get);
+	}
 
 	// DEFAULT VALUE IN INPUT (OPTIONAL)
 	public Transformer<IN,GETTER_OUT,GETTER_OUT,OUT> defaultInput(Supplier<GETTER_OUT> defaultInput) {
@@ -108,8 +112,8 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements  Name		<IN,OUT>,	
 	}
 
 	// TRANSFORM GETTER RESULT INTO SETTER INPUT (OPTIONAL,REPEATABLE)
-	public <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(ThrowingPredicate<SETTER_IN> condition, ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformerTrue, ThrowingFunction<SETTER_IN,SETTER_IN_NEW> transformerFalse) {
-		ThrowingFunction<GETTER_OUT,SETTER_IN_NEW> currentTransform = null;
+	public <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(PredicateX<SETTER_IN> condition, FunctionX<SETTER_IN,SETTER_IN_NEW> transformerTrue, FunctionX<SETTER_IN,SETTER_IN_NEW> transformerFalse) {
+		FunctionX<GETTER_OUT,SETTER_IN_NEW> currentTransform = null;
 		if(this.transformer==null) {
 			this.transformer = obj->(SETTER_IN)obj;
 		}
@@ -124,6 +128,10 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements  Name		<IN,OUT>,	
 		}
 		return transform(converterInstance::mapOrNull);
 	}
+	public Transformer<IN,GETTER_OUT,SETTER_IN,OUT> defaultValue(Class<SETTER_IN> defaultValueType) {
+		Supplier<SETTER_IN> supplierByType = mapper.config().getDefaultValueSupplier(defaultValueType);
+		return defaultValue(supplierByType::get);
+	}
 
 	// DEFAULT VALUE IN OUTPUT (OPTIONAL)
 	public To<IN,GETTER_OUT,SETTER_IN,OUT> defaultOutput(Supplier<SETTER_IN> defaultOutput) {
@@ -135,7 +143,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements  Name		<IN,OUT>,	
 	}
 
 	// CONSUME (OPTIONAL)
-	public Builder<IN,GETTER_OUT,Void,OUT> consume(ThrowingConsumer<SETTER_IN> consumer) {
+	public Builder<IN,GETTER_OUT,Void,OUT> consume(ConsumerX<SETTER_IN> consumer) {
 		return this.<Void>transform(obj->{consumer.accept(obj);return null;}).toEmpty();
 	}
 
@@ -161,7 +169,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements  Name		<IN,OUT>,	
 			}
 			if (this.transformer == null) {
 				@SuppressWarnings("unchecked")
-				ThrowingFunction<GETTER_OUT, SETTER_IN> defaultTransform = obj -> (SETTER_IN)obj;
+				FunctionX<GETTER_OUT, SETTER_IN> defaultTransform = obj -> (SETTER_IN)obj;
 				this.transformer = defaultTransform;
 			}
 			if (this.defaultOutput == null) {

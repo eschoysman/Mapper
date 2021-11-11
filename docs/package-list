@@ -1,4 +1,5 @@
 es.utils.doublekeymap
+es.utils.functionalinterfaces.throwing
 es.utils.mapper
 es.utils.mapper.annotation
 es.utils.mapper.configuration

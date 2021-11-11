@@ -14,13 +14,14 @@ public class DateFactory extends DefaultValueFactory<Date> {
 	public DateFactory(Mapper mapper) {
 		super(mapper);
 	}
+
 	@Override
 	public Supplier<Date> getSupplier(String input, String... parameters) {
 		DateFormat format = new SimpleDateFormat(parameters[0]);
 		return ()->{
 			try {
 				return format.parse(input);
-			} catch (ParseException e) {
+			} catch(ParseException e) {
 				throw new RuntimeException(e);
 			}
 		};

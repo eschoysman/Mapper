@@ -18,6 +18,7 @@ public class CountBuilderWays {
             Transformer.class,
             DefaultOutput.class,
             To.class,
+            Consume.class,
             Builder.class
     };
 
@@ -26,9 +27,7 @@ public class CountBuilderWays {
     private static int[] ways;
 
     public static void main(String[] args) {
-
         countWays();
-
         printMatrix();
         printUsedMethod();
         printWays();

@@ -222,7 +222,7 @@ For more customize mappings, see the "[Customize the mapping](#customize-the-map
 ## Customize the mapping
 
 So far we only saw how to create default mapping, but rarely is the mapping we want at the end:
-this library allow using 12674 different ways to create a custom mapping!
+this library allow using 20.162 different ways to create a custom mapping!
 
 // TODO
 

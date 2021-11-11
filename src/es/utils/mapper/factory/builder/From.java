@@ -5,7 +5,8 @@ import es.utils.mapper.holder.FieldHolder;
 import es.utils.mapper.impl.element.ElementMapper;
 import es.utils.mapper.impl.element.Getter;
 import es.utils.mapper.impl.object.ClassMapper;
-import es.utils.mapper.utils.ThrowingFunction;
+import es.utils.functionalinterfaces.throwing.SupplierX;
+import es.utils.functionalinterfaces.throwing.FunctionX;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -63,9 +64,14 @@ public interface From<IN,OUT> {
 	 * @see DefaultOutput
 	 * @see To
 	 */
- 	public default <SETTER_IN_NEW> Transformer<IN,Void,SETTER_IN_NEW,OUT> defaultValue(SETTER_IN_NEW defaultValue) {
+	public default <SETTER_IN_NEW> Transformer<IN,Void,SETTER_IN_NEW,OUT> input(SETTER_IN_NEW defaultValue) {
 		return this.<Void>fromEmpty().transform($->defaultValue);
 	}
+	public default <SETTER_IN_NEW> Transformer<IN,Void,SETTER_IN_NEW,OUT> input(SupplierX<SETTER_IN_NEW> defaultValueSupplier) {
+		return this.<Void>fromEmpty().transform($->defaultValueSupplier.get());
+	}
+	public <SETTER_IN_NEW> Transformer<IN,Void,SETTER_IN_NEW,OUT> input(Class<SETTER_IN_NEW> defaultValueType);
+
 
 	/**
 	 * Create a empty {@code Getter} instance and manage the provide setter.
@@ -77,7 +83,7 @@ public interface From<IN,OUT> {
 	 * @see Builder
 	 */
 	public default <SETTER_IN_NEW> Builder<IN,Void,SETTER_IN_NEW,OUT> defaultOutput(String idName, BiConsumer<OUT,SETTER_IN_NEW> setter) {
-		return this.<SETTER_IN_NEW>defaultValue(null).to(idName,setter);
+		return this.input((SETTER_IN_NEW)null).to(idName,setter);
 	}
 	
 	/**
@@ -126,7 +132,7 @@ public interface From<IN,OUT> {
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String idName, ThrowingFunction<IN,GETTER_OUT_NEW> getter) {
+	public default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String idName, FunctionX<IN,GETTER_OUT_NEW> getter) {
 		Objects.requireNonNull(idName);
 		Objects.requireNonNull(getter);
 		Getter<IN,GETTER_OUT_NEW> resultGetter = new Getter<IN,GETTER_OUT_NEW>(idName,getter);

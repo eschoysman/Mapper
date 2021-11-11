@@ -1,4 +1,4 @@
-package es.utils.mapper.utils;
+package es.utils.functionalinterfaces.throwing;
 
 import java.io.Serializable;
 import java.util.function.Function;
@@ -10,7 +10,7 @@ import java.util.function.Function;
  * @param <T> type of the element in input
  * @param <U> type of the element in output
  */
-public interface ThrowingFunction<T,U> extends Function<T,U>, Serializable {
+public interface FunctionX<T,U> extends Function<T,U>, Serializable {
 	/**
 	 * Try to call the {@code #applyThrows(Object)} method. If any error occurs, throws a {@code RuntimeException}.
 	 * @return the result of the function
@@ -34,7 +34,7 @@ public interface ThrowingFunction<T,U> extends Function<T,U>, Serializable {
 		}
 	}
     /**
-     * The body of the {@code ThrowingFunction} instance
+     * The body of the {@code FunctionX} instance
      * @param elem the object in input
      * @return the result of the function
      * @throws Exception allow the implementation to throw any kind of exception

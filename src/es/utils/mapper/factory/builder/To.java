@@ -2,11 +2,9 @@ package es.utils.mapper.factory.builder;
 
 import es.utils.mapper.holder.FieldHolder;
 import es.utils.mapper.impl.element.Setter;
-import es.utils.mapper.utils.ThrowingConsumer;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  * Last step of the builder (before the building one) that manage the creation of the setter operation.<br>
@@ -21,7 +19,7 @@ import java.util.function.Consumer;
  * @param <OUT> the type of the destination object
  * @see <a href="package-summary.html">builder package</a>
  */
-public interface To<IN,GETTER_OUT,SETTER_IN,OUT> {
+public interface To<IN,GETTER_OUT,SETTER_IN,OUT> extends Consume<IN,GETTER_OUT,SETTER_IN,OUT> {
 
 	/**
 	 * Create a {@code Getter} instance using the given getter object
@@ -102,13 +100,5 @@ public interface To<IN,GETTER_OUT,SETTER_IN,OUT> {
 		Setter<OUT,SETTER_IN> setter = new Setter<>(idName,EMBuilder.createSetterFunction(fieldHolder.getField()));
 		return to(setter);
 	}
-
-	/**
-	 * Set a {@link Consumer} for the {@code SETTER_IN} value and set a empty setter
-	 * @param consumer the consumer of the {@code SETTER_IN} value
-	 * @return a ElementMapper, result of the builder
-	 */
-	public Builder<IN,GETTER_OUT,Void,OUT> consume(ThrowingConsumer<SETTER_IN> consumer);
-
 
 }
