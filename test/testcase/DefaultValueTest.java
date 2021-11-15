@@ -4,14 +4,18 @@ import es.utils.mapper.Mapper;
 import es.utils.mapper.defaultvalue.DefaultValueStrategy;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
+import es.utils.mapper.logger.LogConstant;
+import es.utils.mapper.logger.MapperLogger;
 import from.DefaultValuesFrom;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import to.DefaultValuesTo;
 import utils.AlternativeConsole;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,6 +31,7 @@ public class DefaultValueTest {
 
 	@BeforeEach
 	public void beforeEach() {
+		MapperLogger.enabled.put(LogConstant.TYPE.CREATION, LogConstant.LEVEL.MAPPER);
 		console = new AlternativeConsole();
 	}
 	@AfterEach
@@ -56,12 +61,12 @@ public class DefaultValueTest {
 	@Test
 	public void shouldCreateEmptyObjectWithDefaultValuesAlways() throws MappingException, MappingNotFoundException, ParseException {
 		Mapper mapper = new Mapper();
-		mapper.add(DefaultValuesFrom.class,DefaultValuesTo.class);
 		mapper.config().setDefaultValueStrategy(DefaultValueStrategy.ALWAYS);
+		mapper.add(DefaultValuesFrom.class,DefaultValuesTo.class);
 		DefaultValuesFrom from = new DefaultValuesFrom();
 		DefaultValuesTo to = mapper.map(from,DefaultValuesTo.class);
 		assertThat(to.getString()).isEqualTo("string di default");
-		assertThat(to.getString2()).isEqualTo(new String("charset".getBytes(Charset.forName("UTF-8"))));
+		assertThat(to.getString2()).isEqualTo(new String("charset".getBytes(StandardCharsets.UTF_8)));
 		assertThat(to.getNumByte()).isEqualTo((byte)42);
 		assertThat(to.getNumShort()).isEqualTo((short)42);
 		assertThat(to.getNumInteger()).isEqualTo((int)42);
@@ -80,17 +85,31 @@ public class DefaultValueTest {
 		Date parsedDate = format.parse("24/12/2019");
 		assertThat(to.getDateF()).isEqualTo(parsedDate);
 	}
-	
+
 	@Test
-	public void shouldCreateEmptyObjectWithDefaultValuesAlwaysWarningForFactory() throws MappingException, MappingNotFoundException, ParseException {
+	public void shouldCreateEmptyObjectWithDefaultValuesWithWarningNotLoggedForFactory() throws MappingException, MappingNotFoundException, ParseException {
 		Mapper mapper = new Mapper();
+		mapper.config().setDefaultValueStrategy(DefaultValueStrategy.ALWAYS);
+		mapper.add(DefaultValuesFrom.class,DefaultValuesTo.class);
+		DefaultValuesFrom from = new DefaultValuesFrom();
+		DefaultValuesTo to = mapper.map(from,DefaultValuesTo.class);
+		String out = console.getOutString();
+		assertThat(out.trim()).isEqualTo("");
+		assertThat(to.getDateF2()).isNull();
+	}
+
+	@Test
+	public void shouldCreateEmptyObjectWithDefaultValuesWithWarningLoggedForFactory() throws MappingException, MappingNotFoundException, ParseException {
+		Mapper mapper = new Mapper();
+		mapper.config().setLoggerLevel(LogConstant.CREATION_LEVEL_FIELD);
 		mapper.add(DefaultValuesFrom.class,DefaultValuesTo.class);
 		mapper.config().setDefaultValueStrategy(DefaultValueStrategy.ALWAYS);
 		DefaultValuesFrom from = new DefaultValuesFrom();
 		DefaultValuesTo to = mapper.map(from,DefaultValuesTo.class);
 		String out = console.getOutString();
-		assertThat(out.trim()).isEqualTo("WARNING - The factory for class defaultvalue.DateFactory2 does not have a constructor accepting a Mapper instance; the factory is ignored.");
+		assertThat(out.trim()).endsWith("[main] WARN es.utils.mapper.holder.DefaultValueManager - WARNING - The factory for class defaultvalue.DateFactory2 does not have a constructor accepting a Mapper instance; the factory is ignored.");
 		assertThat(to.getDateF2()).isNull();
+		mapper.config().setLoggerLevel(LogConstant.CREATION_LEVEL_MAPPER);
 	}
 
 	@Test

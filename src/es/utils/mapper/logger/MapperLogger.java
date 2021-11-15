@@ -1,96 +1,86 @@
-//package es.utils.mapper.logger;
-//
-//import java.text.MessageFormat;
-//import java.util.EnumSet;
-//
-//public class MapperLogger {
-//
-//	public enum Level { WARNING, CREATION, MAPPER, TYPE, FIELD };
-//	
-//	private EnumSet<Level> enabled;
-//
-//	public MapperLogger() {
-//		disableAll();
-//		enableWarning();
-//	}
-//	
-//	public MapperLogger enableAll() {
-//		this.enabled = EnumSet.allOf(Level.class);
-//		return this;
-//	}
-//	public MapperLogger disableAll() {
-//		this.enabled = EnumSet.noneOf(Level.class);
-//		return this;
-//	}
-//
-//	public MapperLogger enableWarning() {
-//		this.enabled.add(Level.WARNING);
-//		return this;
-//	}
-//	public MapperLogger disableWarning() {
-//		this.enabled.remove(Level.WARNING);
-//		return this;
-//	}
-//
-//	public MapperLogger enableCreation() {
-//		this.enabled.add(Level.CREATION);
-//		return this;
-//	}
-//	public MapperLogger disableCreation() {
-//		this.enabled.remove(Level.CREATION);
-//		return this;
-//	}
-//
-//	public MapperLogger enableMapper() {
-//		this.enabled.add(Level.MAPPER);
-//		return this;
-//	}
-//	public MapperLogger disableMapper() {
-//		this.enabled.remove(Level.MAPPER);
-//		return this;
-//	}
-//
-//	public MapperLogger enableType() {
-//		this.enabled.add(Level.TYPE);
-//		return this;
-//	}
-//	public MapperLogger disableType() {
-//		this.enabled.remove(Level.TYPE);
-//		return this;
-//	}
-//
-//	public MapperLogger enableField() {
-//		this.enabled.add(Level.FIELD);
-//		return this;
-//	}
-//	public MapperLogger disableField() {
-//		this.enabled.remove(Level.FIELD);
-//		return this;
-//	}
-//
-//	public void logCreation(String format, Object...arguments) {
-//		log(Level.CREATION,format,arguments);
-//	}
-//	public void logMapper(String format, Object...arguments) {
-//		log(Level.MAPPER,format,arguments);
-//	}
-//	public void logType(String format, Object...arguments) {
-//		log(Level.TYPE,format,arguments);
-//	}
-//	public void logField(String format, Object...arguments) {
-//		log(Level.FIELD,format,arguments);
-//	}
-//
-//	public void log(Level level, String format, Object...arguments) {
-//		if(enabled.contains(level)) {
-//			System.out.println(MessageFormat.format(format,arguments));
-//		}
-//	}
-//
-//	public void warning(String format, Object...arguments) {
-//		if(enabled.contains(Level.WARNING)) {
-//			System.out.println(MessageFormat.format(format,arguments));
-//		}
-//	}
-//	
-//}
+package es.utils.mapper.logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static es.utils.mapper.logger.LogConstant.LEVEL;
+import static es.utils.mapper.logger.LogConstant.TYPE;
+
+public class MapperLogger {
+
+    private Logger log;
+
+    public static Map<TYPE,LEVEL> enabled = new HashMap<>();
+
+    public static <T> MapperLogger forType(Class<T> type) {
+        return new MapperLogger(type);
+    }
+
+	private MapperLogger(Class<?> type) {
+	    this.log = LoggerFactory.getLogger(type);
+	}
+
+    public void error(LogConstant logType, String format, Object... arguments) {
+        if(check(logType)) {
+            log.error(format, arguments);
+        }
+    }
+    public void error(LogConstant logType, String format, Throwable throwable) {
+        if(check(logType)) {
+            log.error(format, throwable);
+        }
+    }
+
+    public void warning(LogConstant logType, String format, Object... arguments) {
+        if(check(logType)) {
+            log.warn(format, arguments);
+        }
+    }
+    public void warning(LogConstant logType, String format, Throwable throwable) {
+        if(check(logType)) {
+            log.warn(format, throwable);
+        }
+    }
+
+    public void info(LogConstant logType, String format, Object... arguments) {
+        if(check(logType)) {
+            log.info(format, arguments);
+        }
+    }
+    public void info(LogConstant logType, String format, Throwable throwable) {
+        if(check(logType)) {
+            log.info(format, throwable);
+        }
+    }
+
+    public void debug(LogConstant logType, String format, Object... arguments) {
+        if(check(logType)) {
+            log.debug(format, arguments);
+        }
+    }
+    public void debug(LogConstant logType, String format, Throwable throwable) {
+        if(check(logType)) {
+            log.debug(format, throwable);
+        }
+    }
+
+    public void trace(LogConstant logType, String format, Object... arguments) {
+        if(check(logType)) {
+            log.trace(format, arguments);
+        }
+    }
+    public void trace(LogConstant logType, String format, Throwable throwable) {
+        if(check(logType)) {
+            log.trace(format, throwable);
+        }
+    }
+    
+    private boolean check(LogConstant logConstant) {
+        return enabled.containsKey(logConstant.getType())
+                && enabled.get(logConstant.getType()).getPrority() >= logConstant.getLevel().getPrority();
+    }
+
+}

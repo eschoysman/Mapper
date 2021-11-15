@@ -38,7 +38,9 @@ AliasName:
     negli alias dell'annotazione, mettere la possibilità di specificare un campo annidato, come ci si accederebbe in js
 
 
+
 per il campo "Class<? extends DefaultValueFactory> factory()" dell'annotazione @Default:
     creare un DateFactory già incluso dentro la libreria in quanto potrebbe essere frequentemente usato
 
-    ne deriva che si potrebbe creare un package (mapper.implementations? es.utils.implementations?) dedicato alle implementazioni "utili" che non riguardano il mapping ma solamente la personalizzazione da parte dell'utilizatore
+    ne deriva che si potrebbe creare un package (mapper.implementations? es.utils.implementations?) dedicato alle
+    implementazioni "utili" che non riguardano il mapping ma solamente la personalizzazione da parte dell'utilizatore
