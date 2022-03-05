@@ -102,7 +102,7 @@ public class DefaultValueTest {
 		DefaultValuesFrom from = new DefaultValuesFrom();
 		DefaultValuesTo to = mapper.map(from,DefaultValuesTo.class);
 		String out = console.getOutString();
-		assertThat(out.trim()).contains("[WARN ] [e.u.m.h.DefaultValueManager:142] - WARNING - The factory for class defaultvalue.DateFactory2 does not have a constructor accepting a Mapper instance; the factory is ignored.");
+		assertThat(out.trim()).contains("[main] WARN es.utils.mapper.holder.DefaultValueManager - WARNING - The factory for class defaultvalue.DateFactory2 does not have a constructor accepting a Mapper instance; the factory is ignored.");
 		assertThat(to.getDateF2()).isNull();
 	}
 
