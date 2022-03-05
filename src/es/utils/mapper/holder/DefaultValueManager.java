@@ -3,8 +3,7 @@ package es.utils.mapper.holder;
 import es.utils.mapper.Mapper;
 import es.utils.mapper.annotation.Default;
 import es.utils.mapper.defaultvalue.DefaultValueFactory;
-import es.utils.mapper.logger.LogConstant;
-import es.utils.mapper.logger.MapperLogger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -15,9 +14,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@Slf4j
 class DefaultValueManager {
-
-	private static MapperLogger logger = MapperLogger.forType(DefaultValueManager.class);
 
 	private FieldHolder fieldHolder;
 	private Supplier<?> supplier;
@@ -141,7 +139,7 @@ class DefaultValueManager {
 					this.factorySupplier = factoryInstance.getSupplier(stringSupplier.get(),parametersSupplier.get());
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 						| InvocationTargetException | NoSuchMethodException | SecurityException e1) {
-					logger.warning(LogConstant.CREATION_LEVEL_FIELD,"WARNING - The factory for {} does not have a constructor accepting a Mapper instance; the factory is ignored.",annotation.factory());
+					log.warn("WARNING - The factory for {} does not have a constructor accepting a Mapper instance; the factory is ignored.",annotation.factory());
 				}
 			}
 		}

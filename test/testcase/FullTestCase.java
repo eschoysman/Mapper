@@ -3,15 +3,7 @@ package testcase;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-
-import testcase.emb.EMB_BuilderStep;
-import testcase.emb.EMB_ConsumeStep;
-import testcase.emb.EMB_DefaultInputStep;
-import testcase.emb.EMB_DefaultOutputStep;
-import testcase.emb.EMB_FromStep;
-import testcase.emb.EMB_Step0;
-import testcase.emb.EMB_ToStep;
-import testcase.emb.EMB_TransformerStep;
+import testcase.emb.*;
 
 @RunWith(JUnitPlatform.class)
 @SelectClasses({

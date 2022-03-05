@@ -14,12 +14,12 @@ import es.utils.mapper.impl.object.ClassMapper;
 import es.utils.mapper.impl.object.DirectMapper;
 import es.utils.mapper.impl.object.EnumMapper;
 import es.utils.mapper.utils.MapperUtil;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.*;
@@ -99,20 +99,23 @@ public class Mapper {
 	 * @see #add(Class, Class, Function)
 	 */
 	public <T,U> Mapper add(Class<T> from, Class<U> to) throws MappingException {
-		try {
-			Objects.requireNonNull(from);
-			Objects.requireNonNull(to);
-			if(from.isInterface() || to.isInterface()) {
-				throw CustomException.forType(MappingException.class).message("From class or To class is an interface. Please provide a concrete class.").build();
-			}
-			if(from.isEnum() && to.isEnum()) {
-				createEnumMapper(from,to);
-			}
-			if(!from.isEnum() && !to.isEnum()) {
-				addForClass(from,to);
-			}
-		} catch (NullPointerException npe) {
-			throw CustomException.forType(MappingException.class).message("From class or To class is null").cause(npe).build();
+		if(from==null && to==null) {
+			throw CustomException.forType(MappingException.class).message("From class and To class are null").build();
+		}
+		if(from==null) {
+			throw CustomException.forType(MappingException.class).message("From class is null").build();
+		}
+		if(to==null) {
+			throw CustomException.forType(MappingException.class).message("To class is null").build();
+		}
+		if(from.isInterface() || to.isInterface()) {
+			throw CustomException.forType(MappingException.class).message("From class or To class is an interface. Please provide a concrete class.").build();
+		}
+		if(from.isEnum() && to.isEnum()) {
+			createEnumMapper(from,to);
+		}
+		if(!from.isEnum() && !to.isEnum()) {
+			addForClass(from,to);
 		}
 		return this;
 	}
@@ -739,20 +742,33 @@ public class Mapper {
 	}
 	private Map<String,FieldHolder> getAllFields(Class<?> type) {
     	Map<String,FieldHolder> result = new HashMap<>();
-    	for(Field field : MapperUtil.getAllFields(type)) {
-    		FieldHolder fieldHolder = new FieldHolder(field,this);
-    		if(!fieldHolder.ignoreField()) {
-				for (String name : fieldHolder.getAllNames()) {
-					if (result.put(name, fieldHolder) != null) {
-						try {
-							throw CustomException.forType(MappingException.class).message(MessageFormat.format("At least two fields in {0} have the same name or alias \"{1}\"", type, name)).build();
-						} catch (MappingException e) {
-							e.printStackTrace();
-						}
+		MapperUtil.getAllFields(type).stream()
+				.map(field->new FieldHolder(field, this))
+				.filter(fieldHolder -> !fieldHolder.ignoreField())
+				.flatMap(fieldHolder -> fieldHolder.getAllNames().stream().map(name -> new PairBox(name,fieldHolder)))
+				.filter(pair -> result.put(pair.name,pair.fieldHolder)!=null)
+				.map(pair->pair.name)
+				.forEachOrdered(name -> {
+					try {
+						throw CustomException.forType(MappingException.class).message(MessageFormat.format("At least two fields in {0} have the same name or alias \"{1}\"", type, name)).build();
+					} catch (MappingException e) {
+						e.printStackTrace();
 					}
-				}
-			}
-    	}
+				});
+//    	for(Field field : MapperUtil.getAllFields(type)) {
+//    		FieldHolder fieldHolder = new FieldHolder(field,this);
+//    		if(!fieldHolder.ignoreField()) {
+//				for (String name : fieldHolder.getAllNames()) {
+//					if (result.put(name, fieldHolder) != null) {
+//						try {
+//							throw CustomException.forType(MappingException.class).message(MessageFormat.format("At least two fields in {0} have the same name or alias \"{1}\"", type, name)).build();
+//						} catch (MappingException e) {
+//							e.printStackTrace();
+//						}
+//					}
+//				}
+//			}
+//    	}
     	return result;
     }
     private <T> T newInstance(Class<T> type) throws MappingException {
@@ -764,5 +780,12 @@ public class Mapper {
 				throw CustomException.forType(MappingException.class).message("Destination class does not have a public empty constructor. Please provide a public empty constructor or a Supplier in the configuration such that the mapping can be done.").build();
 		}
     }
+
+
+	@AllArgsConstructor
+	private static class PairBox {
+		public String name;
+		public FieldHolder fieldHolder;
+	}
 
 }

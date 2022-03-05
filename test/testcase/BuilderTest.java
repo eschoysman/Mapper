@@ -49,7 +49,7 @@ public class BuilderTest {
     	out.flush();
     	out.close();
     	System.setOut(originalOut);
-    	assertThat(outString).isNotNull().isEqualTo(from.getNameFrom());
+    	assertThat(outString).isNotNull().contains(from.getNameFrom());
     	assertThat(to).isNotNull().hasFieldOrPropertyWithValue("nameTo","Pippo")
 								  .hasFieldOrPropertyWithValue("surnameTo","Sora")
 								  .hasFieldOrPropertyWithValue("age",0);
@@ -71,7 +71,7 @@ public class BuilderTest {
     	out.flush();
     	out.close();
     	System.setOut(originalOut);
-    	assertThat(outString).isNotNull().isEqualTo(from.getNameFrom().toUpperCase());
+    	assertThat(outString).isNotNull().contains(from.getNameFrom().toUpperCase());
     	assertThat(to).isNotNull().hasFieldOrPropertyWithValue("nameTo","Pippo")
 								  .hasFieldOrPropertyWithValue("surnameTo","Sora")
 								  .hasFieldOrPropertyWithValue("age",0);

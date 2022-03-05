@@ -4,17 +4,13 @@ import es.utils.mapper.Mapper;
 import es.utils.mapper.defaultvalue.DefaultValueStrategy;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
-import es.utils.mapper.logger.LogConstant;
-import es.utils.mapper.logger.MapperLogger;
 import from.DefaultValuesFrom;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import to.DefaultValuesTo;
 import utils.AlternativeConsole;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -31,7 +27,7 @@ public class DefaultValueTest {
 
 	@BeforeEach
 	public void beforeEach() {
-		MapperLogger.enabled.put(LogConstant.TYPE.CREATION, LogConstant.LEVEL.MAPPER);
+//		MapperLogger.enabled.put(LogConstant.TYPE.CREATION, LogConstant.LEVEL.MAPPER);
 		console = new AlternativeConsole();
 	}
 	@AfterEach
@@ -94,22 +90,20 @@ public class DefaultValueTest {
 		DefaultValuesFrom from = new DefaultValuesFrom();
 		DefaultValuesTo to = mapper.map(from,DefaultValuesTo.class);
 		String out = console.getOutString();
-		assertThat(out.trim()).isEqualTo("");
+		assertThat(out.trim()).contains("");
 		assertThat(to.getDateF2()).isNull();
 	}
 
 	@Test
 	public void shouldCreateEmptyObjectWithDefaultValuesWithWarningLoggedForFactory() throws MappingException, MappingNotFoundException, ParseException {
 		Mapper mapper = new Mapper();
-		mapper.config().setLoggerLevel(LogConstant.CREATION_LEVEL_FIELD);
 		mapper.add(DefaultValuesFrom.class,DefaultValuesTo.class);
 		mapper.config().setDefaultValueStrategy(DefaultValueStrategy.ALWAYS);
 		DefaultValuesFrom from = new DefaultValuesFrom();
 		DefaultValuesTo to = mapper.map(from,DefaultValuesTo.class);
 		String out = console.getOutString();
-		assertThat(out.trim()).endsWith("[main] WARN es.utils.mapper.holder.DefaultValueManager - WARNING - The factory for class defaultvalue.DateFactory2 does not have a constructor accepting a Mapper instance; the factory is ignored.");
+		assertThat(out.trim()).contains("[WARN ] [e.u.m.h.DefaultValueManager:142] - WARNING - The factory for class defaultvalue.DateFactory2 does not have a constructor accepting a Mapper instance; the factory is ignored.");
 		assertThat(to.getDateF2()).isNull();
-		mapper.config().setLoggerLevel(LogConstant.CREATION_LEVEL_MAPPER);
 	}
 
 	@Test

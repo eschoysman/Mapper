@@ -1,8 +1,8 @@
 package es.utils.mapper.factory.builder;
 
-import java.util.function.Consumer;
-
 import es.utils.functionalinterfaces.throwing.ConsumerX;
+
+import java.util.function.Consumer;
 
 /**
  * Last step of the EMBuilder (before the building one) that manage the consumer the value and does not set any value.<br>

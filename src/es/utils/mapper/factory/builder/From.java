@@ -1,12 +1,12 @@
 package es.utils.mapper.factory.builder;
 
+import es.utils.functionalinterfaces.throwing.FunctionX;
+import es.utils.functionalinterfaces.throwing.SupplierX;
 import es.utils.mapper.Mapper;
 import es.utils.mapper.holder.FieldHolder;
 import es.utils.mapper.impl.element.ElementMapper;
 import es.utils.mapper.impl.element.Getter;
 import es.utils.mapper.impl.object.ClassMapper;
-import es.utils.functionalinterfaces.throwing.SupplierX;
-import es.utils.functionalinterfaces.throwing.FunctionX;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;

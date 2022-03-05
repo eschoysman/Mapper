@@ -65,8 +65,6 @@ public class CustomException<E extends Exception> {
                 case 3:
                     return buildMessageCause();
             }
-        } catch(RuntimeException e) {
-            throw e;
         } catch(Exception e) {
             throw new RuntimeException(e);
         }

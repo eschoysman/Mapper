@@ -5,6 +5,7 @@ import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.converter.AbstractConverter;
 import es.utils.mapper.holder.FieldHolder;
 import es.utils.mapper.impl.object.DirectMapper;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
  * This class contains a set of method used in the mapping creation.
  * @author eschoysman
  */
+@Slf4j
 public class MapperUtil {
 
 	private static final Pattern PATTERN = Pattern.compile(".+? extends ");
@@ -116,7 +118,7 @@ public class MapperUtil {
 			try {
 				result = (DirectMapper<FROM,TO>)converter.getConstructor(Mapper.class).newInstance(mapper);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
-				System.out.println("WARNING - The converter for "+converter+" does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored.");
+				log.warn("WARNING - The converter for "+converter+" does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored.");
 			}
 		}
 		return result;

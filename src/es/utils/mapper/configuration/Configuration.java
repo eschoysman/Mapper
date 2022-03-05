@@ -5,8 +5,6 @@ import es.utils.mapper.annotation.AliasNames;
 import es.utils.mapper.defaultvalue.DefaultValueStrategy;
 import es.utils.mapper.exception.CustomException;
 import es.utils.mapper.exception.MappingException;
-import es.utils.mapper.logger.LogConstant;
-import es.utils.mapper.logger.MapperLogger;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
@@ -50,8 +48,6 @@ public class Configuration {
 		} catch (MappingException e) {}
 		setCloner(null);
 		setDefaultValueStrategy(DEFAULT);
-		setLoggerLevel(LogConstant.CREATION_LEVEL_MAPPER);
-		setLoggerLevel(LogConstant.MAPPING_LEVEL_MAPPER);
 	}
 	
 	/**
@@ -241,13 +237,6 @@ public class Configuration {
 	 */
 	public boolean hasStrategy(DefaultValueStrategy strategy) {
 		return this.defaultValuesStrategy.contains(strategy);
-	}
-
-	public Configuration setLoggerLevel(LogConstant logType) {
-        LogConstant.TYPE type = logType.getType();
-        LogConstant.LEVEL priority = logType.getLevel();
-        MapperLogger.enabled.compute(type, (k, v)->(v==null || v.getPrority()<priority.getPrority() ? priority : v));
-        return this;
 	}
 
 }

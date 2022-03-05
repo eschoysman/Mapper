@@ -8,19 +8,17 @@ Logger:
         - metodi che delegano -> trace
 
 
-Trovare un modo per poter condividere Configuration e Logger (variabili di Mapper) con tutte le altre classi
+Trovare un modo per poter condividere Configuration (variabile di Mapper) con tutte le altre classi
 senza dover passare "mapper" ovunque:
-    ThreadLocal?
-    Map<id,Config|Logger> statico?
-    Mapper.Manager con Map<id,Config|Logger> statico e ci si accede tramite metodo Mapper.Manager.config(idMapper)
+    • ThreadLocal?
+    • Map<id,Config> statico?
+    • Mapper.Manager con Map<id,Config> statico e ci si accede tramite metodo Mapper.Manager.config(idMapper)
         con questa soluzione non si passa Mapper a ogni classe che lo usa, ma si passa idMapper unico per ogni istanza di Mapper
         idMapper: da creare e alla creazione di un Mapper, viene inserita nel Manager la coppia {idMapper,mapper}
         metodi nel Manager:
             - addMapper(Mapper mapper) { MANAGER.put(mapper.getId(),mapper); }
             - getMapper(int idMapper) { return MANAGER.get(idMapper); }
             - getConfig(int idMapper) { return getMapper(idMapper).config(); }
-            - getLoggerConfig(int idMapper) { return getMapper(idMapper).config().loggerConfig(); }
-                // per poter poi ottenere la configurazione del logger da usare, Manager.getLoggerConfig(id).info(/*...*/);
 
 
 DeepCopy:
