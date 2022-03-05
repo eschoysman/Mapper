@@ -41,9 +41,10 @@ public abstract class AbstractConverter<IN,OUT> extends DirectMapper<IN,OUT> {
 	/**
 	 * The conversion implementation for the current {@code DirectMapper} implementation
 	 * @param input input object
+	 * @param <E> type of Exception
 	 * @return the input object converted
-	 * @throws Exception allow the implementation to throw any kind of exception 
+	 * @throws E allow the implementation to throw any kind of exception
 	 */
-	public abstract OUT convert(IN input) throws Exception;
+	public abstract <E extends Exception> OUT convert(IN input) throws E;
 	
 }

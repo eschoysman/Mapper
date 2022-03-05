@@ -1,8 +1,8 @@
 package es.utils.mapper.impl.object;
 
+import es.utils.functionalinterfaces.throwing.FunctionX;
 import es.utils.mapper.converter.AbstractConverter;
 import es.utils.mapper.impl.MapperObject;
-import es.utils.functionalinterfaces.throwing.FunctionX;
 
 import java.util.Optional;
 import java.util.function.Function;

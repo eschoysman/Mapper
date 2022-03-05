@@ -2,7 +2,6 @@ package es.utils.mapper.impl.element;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 /**
  * This class handle the logic of a generic {@code setter} operation.<br>
@@ -19,7 +18,7 @@ public class Setter<U,SETTER_IN> {
 	private String name;
 	private BiConsumer<U,SETTER_IN> setter;
 
-	private static final Setter<?,?> EMPTY = new Setter<>("setter_id_0",(obj,$)->{});
+	private static final Setter<?,?> EMPTY = new Setter<>("setter_id_0",(obj,setter)->{});
 
 	/**
 	 * Create a {@code Ssetter} instance with a identifier and a operation

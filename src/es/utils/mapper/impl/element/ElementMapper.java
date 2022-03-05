@@ -2,6 +2,7 @@ package es.utils.mapper.impl.element;
 
 import es.utils.mapper.Mapper;
 import es.utils.mapper.defaultvalue.DefaultValueStrategy;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -25,6 +26,7 @@ import java.util.function.Supplier;
  * @see Getter
  * @see Setter
  */
+@Slf4j
 public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 
 	private static int id_incr = 0;
@@ -167,7 +169,7 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 		return current;
 	}
 	private void setter(OUT out, SETTER_IN transformed) {
-		// System.out.println("Applying setter \""+getDestValue()+"\" with input: "+transformed);
+		//log.trace("Applying setter \""+getDestName()+"\" with input: "+transformed);
 		setter.apply(out,transformed);
 	}
 

@@ -54,7 +54,7 @@ public class ConverterTest {
 		System.setOut(originalOut);
 
 		assertThat(to.getName()).isNull();
-		assertThat(outString).isEqualTo("WARNING - The converter for "+ConverterDateTimestamp2.class+" does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored."+System.lineSeparator());
+		assertThat(outString).contains("WARNING - The converter for "+ConverterDateTimestamp2.class+" does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored."+System.lineSeparator());
 	}
 	@Test
 	public void shouldThrowExceptioForNoEmptyConstructorConverter() throws MappingNotFoundException, MappingException, IOException {

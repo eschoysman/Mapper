@@ -7,7 +7,6 @@ import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
 import es.utils.mapper.factory.builder.*;
 import es.utils.mapper.impl.object.ClassMapper;
-import exception.ExampleException;
 import from.ClassMapperFromTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -62,7 +61,7 @@ public class EMB_TransformerStep {
 		assertThrows(MappingException.class,()->prev.transform(s->new Date()).transform(ConverterDateTimestamp2.class));
 		String message = console.getOutString();
 		console.reset();
-		assertThat(message.trim()).isEqualTo("WARNING - The converter for class converter.ConverterDateTimestamp2 does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored.");
+		assertThat(message.trim()).contains("WARNING - The converter for class converter.ConverterDateTimestamp2 does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored.");
 	}
 	@Test
 	public void shouldCreate_TransformerStep_Transform_Predicate_Function() throws MappingException, MappingNotFoundException {

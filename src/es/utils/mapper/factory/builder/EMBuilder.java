@@ -1,5 +1,8 @@
 package es.utils.mapper.factory.builder;
 
+import es.utils.functionalinterfaces.throwing.ConsumerX;
+import es.utils.functionalinterfaces.throwing.FunctionX;
+import es.utils.functionalinterfaces.throwing.PredicateX;
 import es.utils.mapper.Mapper;
 import es.utils.mapper.converter.AbstractConverter;
 import es.utils.mapper.exception.CustomException;
@@ -10,9 +13,6 @@ import es.utils.mapper.impl.element.Setter;
 import es.utils.mapper.impl.object.ClassMapper;
 import es.utils.mapper.impl.object.DirectMapper;
 import es.utils.mapper.utils.MapperUtil;
-import es.utils.functionalinterfaces.throwing.ConsumerX;
-import es.utils.functionalinterfaces.throwing.FunctionX;
-import es.utils.functionalinterfaces.throwing.PredicateX;
 
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
