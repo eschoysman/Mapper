@@ -56,20 +56,16 @@ public class CustomException<E extends Exception> {
         if(cause!=null) {
             mask += 1;
         }
-        try {
-            switch (mask) {
-                case 1:
-                    return buildCause();
-                case 2:
-                    return buildMessage();
-                case 3:
-                    return buildMessageCause();
-                case 0:
-                default:
-                    return buildEmpty();
-            }
-        } catch(Exception e) {
-            throw new RuntimeException(e);
+        switch (mask) {
+            case 1:
+                return buildCause();
+            case 2:
+                return buildMessage();
+            case 3:
+                return buildMessageCause();
+            case 0:
+            default:
+                return buildEmpty();
         }
     }
 
@@ -77,28 +73,28 @@ public class CustomException<E extends Exception> {
         try {
             return type.getDeclaredConstructor().newInstance();
         } catch(NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Custom Exception "+type+" does not have a empty constructor",e);
+            throw new RuntimeException("Custom Exception "+type+" does not have a empty constructor. Please provide a message and/or a cause error.",e);
         }
     }
     private E buildMessage() {
         try {
             return type.getDeclaredConstructor(String.class).newInstance(message);
         } catch(NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Custom Exception "+type+" does not have a constructor taking only a String instance",e);
+            throw new RuntimeException("Custom Exception "+type+" does not have a constructor taking only a String instance. Please provide a cause error or don't pass any message.",e);
         }
     }
     private E buildCause() {
         try {
             return type.getDeclaredConstructor(Throwable.class).newInstance(cause);
         } catch(NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Custom Exception "+type+" does not have a constructor taking only a Throwable instance",e);
+            throw new RuntimeException("Custom Exception "+type+" does not have a constructor taking only a Throwable instance. Please provide a message error or don't pass any cause.",e);
         }
     }
     private E buildMessageCause() {
         try {
             return type.getDeclaredConstructor(String.class, Throwable.class).newInstance(message,cause);
         } catch(NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Custom Exception "+type+" does not have a constructor taking both String and Throwable instances",e);
+            throw new RuntimeException("Custom Exception "+type+" does not have a constructor taking both String and Throwable instances. Please provide only a message ora cause error or none of them.",e);
         }
     }
 

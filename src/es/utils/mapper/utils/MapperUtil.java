@@ -36,7 +36,9 @@ public class MapperUtil {
 		Objects.requireNonNull(type);
 		Objects.requireNonNull(fieldName);
 		Field result = getDeclaredField(type,fieldName);
-		if(result==null) result = getFieldOfClass(type,fieldName);
+		if(result==null) {
+			result = getFieldOfClass(type,fieldName);
+		}
 		return result;
 	}
 	/**
@@ -96,7 +98,7 @@ public class MapperUtil {
 			    	@SuppressWarnings("unchecked")
 					Class<TYPE> resultClass = (Class<TYPE>)Class.forName(typeName);
 					return resultClass;
-		    	} catch (Exception e) {}
+		    	} catch (ClassNotFoundException e) {}
 		    }
 		}
 		return null;

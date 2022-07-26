@@ -58,6 +58,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface Default {
 
 	String value() default "";
+	String charset() default "UTF-8";
 
 	long number() default 0;
 	double decimal() default 0;

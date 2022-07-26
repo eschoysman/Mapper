@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -98,7 +100,7 @@ class DefaultValueManager {
 				Charset charset = Charset.forName(annotation.charset());
 				this.charsetSupplier = ()->charset;
 			}
-			catch(Exception e) {
+			catch(IllegalArgumentException e) {
 				Charset charset = Charset.defaultCharset();
 				this.charsetSupplier = ()->charset;
 			}
