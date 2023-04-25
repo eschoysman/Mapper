@@ -26,7 +26,7 @@ public interface DefaultInput<IN,GETTER_OUT,SETTER_IN,OUT> extends Transformer<I
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public Transformer<IN,GETTER_OUT,GETTER_OUT,OUT> defaultInput(Supplier<GETTER_OUT> defaultInput);
+	Transformer<IN,GETTER_OUT,GETTER_OUT,OUT> defaultInput(Supplier<GETTER_OUT> defaultInput);
 
 	/**
 	 * Allow to specify a default value using a {@link Class} and the related supplier setted in the {@link Configuration}.
@@ -37,7 +37,7 @@ public interface DefaultInput<IN,GETTER_OUT,SETTER_IN,OUT> extends Transformer<I
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public Transformer<IN,GETTER_OUT,GETTER_OUT,OUT> defaultInputFor(Class<GETTER_OUT> defaultValueType);
+	Transformer<IN,GETTER_OUT,GETTER_OUT,OUT> defaultInputForType(Class<GETTER_OUT> defaultValueType);
 
 	/**
 	 * Allow to specify a default value.
@@ -47,7 +47,7 @@ public interface DefaultInput<IN,GETTER_OUT,SETTER_IN,OUT> extends Transformer<I
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public default Transformer<IN,GETTER_OUT,GETTER_OUT,OUT> defaultInput(GETTER_OUT defaultInput) {
+	default Transformer<IN,GETTER_OUT,GETTER_OUT,OUT> defaultInput(GETTER_OUT defaultInput) {
 		return defaultInput(()->defaultInput);
 	}
 

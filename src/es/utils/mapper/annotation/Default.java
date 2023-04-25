@@ -73,6 +73,4 @@ public @interface Default {
 	Class<? extends DefaultValueFactory> factory() default DefaultValueFactory.class;
 	String[] parameters() default {};
 	
-	String charset() default "";
-	
 }

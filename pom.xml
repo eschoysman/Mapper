@@ -41,7 +41,7 @@
 		<maven.jar.plugin>3.1.2</maven.jar.plugin>
 		<maven.source.plugin>3.1.0</maven.source.plugin>
 		<maven.javadoc.plugin>3.1.1</maven.javadoc.plugin>
-		<spring.context.version>[2.5,)</spring.context.version>
+		<spring.context.version>[2.5,6)</spring.context.version>
 		<lombok.version>[1.18.22,)</lombok.version>
 		<maven-site-plugin.version>3.8.2</maven-site-plugin.version>
 		<github.global.server>github</github.global.server>
@@ -197,7 +197,7 @@
 				<artifactId>site-maven-plugin</artifactId>
 				<version>${site-maven-plugin.version}</version>
 				<configuration>
-					<message>Maven artifacts for ${project.version}</message> <!-- git commit message -->
+					<message>Maven artifacts for ${project.artifactId}-${project.version}</message> <!-- git commit message -->
 					<noJekyll>true</noJekyll>  <!-- disable webpage processing -->
 					<outputDirectory>${project.build.directory}/mvn-repo</outputDirectory> <!-- matches distribution management repository url above -->
 					<branch>refs/heads/mvn-repo</branch> <!-- remote branch name -->

@@ -1,6 +1,7 @@
 package es.utils.mapper.exception;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.MessageFormat;
 
 public class CustomException<E extends Exception> {
 
@@ -23,14 +24,25 @@ public class CustomException<E extends Exception> {
         return new CustomException(customException);
     }
 
+//    /**
+//     * Set the message for the exception to throw. The {@code message} can be a pattern accepted by the
+//     * {@code MessageFormat} class, in that case the {@code params} are used.
+//     * @param message the string or format of the message
+//     * @return the current {@code CustomException} instance
+//     */
+//    public CustomException<E> message(CharSequence message) {
+//        this.message = message.toString();
+//        return this;
+//    }
     /**
      * Set the message for the exception to throw. The {@code message} can be a pattern accepted by the
      * {@code MessageFormat} class, in that case the {@code params} are used.
      * @param message the string or format of the message
+     * @param params the arguments in the case the message is used as a pattern of a MessageFormat string
      * @return the current {@code CustomException} instance
      */
-    public CustomException<E> message(CharSequence message) {
-        this.message = message.toString();
+    public CustomException<E> message(CharSequence message, Object... params) {
+        this.message = MessageFormat.format(message.toString(), params);
         return this;
     }
 

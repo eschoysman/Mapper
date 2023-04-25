@@ -231,7 +231,7 @@ public class Configuration {
 	}
 	/**
 	 * @param strategy the strategy to use
-	 * @return Returns {@code true} if the diven defaultValue strategy is set in the configurations, {@code false} otherwise
+	 * @return Returns {@code true} if the given defaultValue strategy is set in the configurations, {@code false} otherwise
 	 * @see #setDefaultValueStrategy(DefaultValueStrategy...)
 	 * @see DefaultValueStrategy
 	 */

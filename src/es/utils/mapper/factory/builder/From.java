@@ -37,7 +37,7 @@ public interface From<IN,OUT> {
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(Getter<IN,GETTER_OUT_NEW> getter);
+	<GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(Getter<IN, GETTER_OUT_NEW> getter);
 
 	/**
 	 * Create a {@code Getter} instance using the field named {@code fieldName} inside the generic {@code IN} type.
@@ -51,7 +51,7 @@ public interface From<IN,OUT> {
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String idName, String fieldName);
+	<GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String idName, String fieldName);
 	
 	
 	// EmptyFrom
@@ -64,13 +64,13 @@ public interface From<IN,OUT> {
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public default <SETTER_IN_NEW> Transformer<IN,Void,SETTER_IN_NEW,OUT> input(SETTER_IN_NEW defaultValue) {
+	default <SETTER_IN_NEW> Transformer<IN,Void,SETTER_IN_NEW,OUT> input(SETTER_IN_NEW defaultValue) {
 		return this.<Void>fromEmpty().transform($->defaultValue);
 	}
-	public default <SETTER_IN_NEW> Transformer<IN,Void,SETTER_IN_NEW,OUT> input(SupplierX<SETTER_IN_NEW> defaultValueSupplier) {
+	default <SETTER_IN_NEW> Transformer<IN,Void,SETTER_IN_NEW,OUT> input(SupplierX<SETTER_IN_NEW> defaultValueSupplier) {
 		return this.<Void>fromEmpty().transform($->defaultValueSupplier.get());
 	}
-	public <SETTER_IN_NEW> Transformer<IN,Void,SETTER_IN_NEW,OUT> input(Class<SETTER_IN_NEW> defaultValueType);
+	<SETTER_IN_NEW> Transformer<IN,Void,SETTER_IN_NEW,OUT> input(Class<SETTER_IN_NEW> defaultValueType);
 
 
 	/**
@@ -82,7 +82,7 @@ public interface From<IN,OUT> {
 	 * @throws NullPointerException if {@code idName} or {@code setter} is null.
 	 * @see Builder
 	 */
-	public default <SETTER_IN_NEW> Builder<IN,Void,SETTER_IN_NEW,OUT> defaultOutput(String idName, BiConsumer<OUT,SETTER_IN_NEW> setter) {
+	default <SETTER_IN_NEW> Builder<IN,Void,SETTER_IN_NEW,OUT> defaultOutput(String idName, BiConsumer<OUT, SETTER_IN_NEW> setter) {
 		return this.input((SETTER_IN_NEW)null).to(idName,setter);
 	}
 	
@@ -95,7 +95,7 @@ public interface From<IN,OUT> {
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> fromEmpty() {
+	default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> fromEmpty() {
 		return from(Getter.empty());
 	}
 	
@@ -113,7 +113,7 @@ public interface From<IN,OUT> {
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String idName, Supplier<GETTER_OUT_NEW> supplier) {
+	default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String idName, Supplier<GETTER_OUT_NEW> supplier) {
 		Objects.requireNonNull(idName);
 		Objects.requireNonNull(supplier);
 		Getter<IN,GETTER_OUT_NEW> getter = new Getter<IN,GETTER_OUT_NEW>(idName,$->supplier.get());
@@ -132,7 +132,7 @@ public interface From<IN,OUT> {
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String idName, FunctionX<IN,GETTER_OUT_NEW> getter) {
+	default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String idName, FunctionX<IN, GETTER_OUT_NEW> getter) {
 		Objects.requireNonNull(idName);
 		Objects.requireNonNull(getter);
 		Getter<IN,GETTER_OUT_NEW> resultGetter = new Getter<IN,GETTER_OUT_NEW>(idName,getter);
@@ -150,7 +150,7 @@ public interface From<IN,OUT> {
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String fieldName) {
+	default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String fieldName) {
 		return from(fieldName,fieldName);
 	}
 	
@@ -165,7 +165,7 @@ public interface From<IN,OUT> {
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(FieldHolder fieldHolder) {
+	default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(FieldHolder fieldHolder) {
 		Objects.requireNonNull(fieldHolder);
 		return from(fieldHolder.getFieldName(),fieldHolder);
 	}
@@ -182,7 +182,7 @@ public interface From<IN,OUT> {
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String idName, FieldHolder fieldHolder) {
+	default <GETTER_OUT_NEW> DefaultInput<IN,GETTER_OUT_NEW,GETTER_OUT_NEW,OUT> from(String idName, FieldHolder fieldHolder) {
 		Objects.requireNonNull(idName);
 		Objects.requireNonNull(fieldHolder);
 		Getter<IN,GETTER_OUT_NEW> getter = new Getter<>(fieldHolder.getFieldName(),EMBuilder.createGetterFunction(fieldHolder.getField()));

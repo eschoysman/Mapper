@@ -24,7 +24,7 @@ public interface DefaultOutput<IN,GETTER_OUT,SETTER_IN,OUT> extends To<IN,GETTER
 	 * @return The next (mandatory) step of the builder: {@link To}.
 	 * @see To
 	 */
-	public To<IN,GETTER_OUT,SETTER_IN,OUT> defaultOutput(Supplier<SETTER_IN> defaultOutput);
+	To<IN,GETTER_OUT,SETTER_IN,OUT> defaultOutput(Supplier<SETTER_IN> defaultOutput);
 
 	/**
 	 * Allow to specify a default value using a {@link Class} and the related supplier setted in the {@link Configuration}.
@@ -33,7 +33,7 @@ public interface DefaultOutput<IN,GETTER_OUT,SETTER_IN,OUT> extends To<IN,GETTER
 	 * @see Configuration#addDefaultValueSupplier(Class,Supplier)
 	 * @see To
 	 */
-	public To<IN,GETTER_OUT,SETTER_IN,OUT> defaultOutputFor(Class<SETTER_IN> defaultValueType);
+	To<IN,GETTER_OUT,SETTER_IN,OUT> defaultOutputForType(Class<SETTER_IN> defaultValueType);
 
 	/**
 	 * Allow to specify a default value.
@@ -41,7 +41,7 @@ public interface DefaultOutput<IN,GETTER_OUT,SETTER_IN,OUT> extends To<IN,GETTER
 	 * @return The next (mandatory) step of the builder: {@link To}.
 	 * @see To
 	 */
-	public default To<IN,GETTER_OUT,SETTER_IN,OUT> defaultOutput(SETTER_IN defaultOutput) {
+	default To<IN,GETTER_OUT,SETTER_IN,OUT> defaultOutput(SETTER_IN defaultOutput) {
 		return defaultOutput(()->defaultOutput);
 	}
 	

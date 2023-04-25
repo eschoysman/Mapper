@@ -28,7 +28,7 @@ public interface To<IN,GETTER_OUT,SETTER_IN,OUT> extends Consume<IN,GETTER_OUT,S
 	 * @throws NullPointerException if {@code setter} is null
 	 * @see Builder
 	 */
-	public Builder<IN,GETTER_OUT,SETTER_IN,OUT> to(Setter<OUT,SETTER_IN> setter);
+	Builder<IN,GETTER_OUT,SETTER_IN,OUT> to(Setter<OUT, SETTER_IN> setter);
 	
 	/**
 	 * Create a Default with the data passed to the builder
@@ -38,14 +38,14 @@ public interface To<IN,GETTER_OUT,SETTER_IN,OUT> extends Consume<IN,GETTER_OUT,S
 	 * @throws NullPointerException if {@code idName} or {@code fieldName} is null
 	 * @see Builder
 	 */
-	public Builder<IN,GETTER_OUT,SETTER_IN,OUT> to(String idName, String fieldName);
+	Builder<IN,GETTER_OUT,SETTER_IN,OUT> to(String idName, String fieldName);
 	
 	/**
 	 * Create a empty {@code Setter} instance
 	 * @return the second step of the builder to add a transformer
 	 * @see Builder
 	 */
-	public default Builder<IN,GETTER_OUT,SETTER_IN,OUT> toEmpty() {
+	default Builder<IN,GETTER_OUT,SETTER_IN,OUT> toEmpty() {
 		return this.to(Setter.empty());
 	}
 	
@@ -57,7 +57,7 @@ public interface To<IN,GETTER_OUT,SETTER_IN,OUT> extends Consume<IN,GETTER_OUT,S
 	 * @throws NullPointerException if {@code idName} or {@code setter} is null
 	 * @see Builder
 	 */
-	public default Builder<IN,GETTER_OUT,SETTER_IN,OUT> to(String idName, BiConsumer<OUT,SETTER_IN> setter) {
+	default Builder<IN,GETTER_OUT,SETTER_IN,OUT> to(String idName, BiConsumer<OUT, SETTER_IN> setter) {
 		Objects.requireNonNull(idName);
 		Objects.requireNonNull(setter);
 		Setter<OUT,SETTER_IN> resultSetter = new Setter<OUT,SETTER_IN>(idName,setter);
@@ -71,7 +71,7 @@ public interface To<IN,GETTER_OUT,SETTER_IN,OUT> extends Consume<IN,GETTER_OUT,S
 	 * @throws NullPointerException if {@code fieldName} is null
 	 * @see Builder
 	 */
-	public default Builder<IN,GETTER_OUT,SETTER_IN,OUT> to(String fieldName) {
+	default Builder<IN,GETTER_OUT,SETTER_IN,OUT> to(String fieldName) {
 		return to(fieldName,fieldName);
 	}
 	
@@ -82,7 +82,7 @@ public interface To<IN,GETTER_OUT,SETTER_IN,OUT> extends Consume<IN,GETTER_OUT,S
 	 * @throws NullPointerException if {@code fieldHolder} is null
 	 * @see Builder
 	 */
-	public default Builder<IN,GETTER_OUT,SETTER_IN,OUT> to(FieldHolder fieldHolder) {
+	default Builder<IN,GETTER_OUT,SETTER_IN,OUT> to(FieldHolder fieldHolder) {
 		return to(fieldHolder.getFieldName(),fieldHolder);
 	}
 	
@@ -94,7 +94,7 @@ public interface To<IN,GETTER_OUT,SETTER_IN,OUT> extends Consume<IN,GETTER_OUT,S
 	 * @throws NullPointerException if {@code idName} or {@code fieldHolder} is null
 	 * @see Builder
 	 */
-	public default Builder<IN,GETTER_OUT,SETTER_IN,OUT> to(String idName, FieldHolder fieldHolder) {
+	default Builder<IN,GETTER_OUT,SETTER_IN,OUT> to(String idName, FieldHolder fieldHolder) {
 		Objects.requireNonNull(idName);
 		Objects.requireNonNull(fieldHolder);
 		Setter<OUT,SETTER_IN> setter = new Setter<>(idName,EMBuilder.createSetterFunction(fieldHolder.getField()));

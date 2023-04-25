@@ -32,7 +32,7 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public default <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(FunctionX<SETTER_IN,SETTER_IN_NEW> transformer) {
+	default <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(FunctionX<SETTER_IN, SETTER_IN_NEW> transformer) {
 		return transform($->true,transformer,null);
 	}
 	
@@ -46,7 +46,7 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(Class<? extends AbstractConverter<SETTER_IN,SETTER_IN_NEW>> converter) throws MappingException;
+	<SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(Class<? extends AbstractConverter<SETTER_IN, SETTER_IN_NEW>> converter) throws MappingException;
 
 	/**
 	 * Add a transformer between the getter and setter operations casting the value to the given type.<br>
@@ -57,7 +57,7 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public default <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> cast(Class<SETTER_IN_NEW> newType) {
+	default <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> cast(Class<SETTER_IN_NEW> newType) {
 		return transform(newType::cast);
 	}
 
@@ -70,7 +70,7 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public default Transformer<IN,GETTER_OUT,SETTER_IN,OUT> transform(PredicateX<SETTER_IN> condition, FunctionX<SETTER_IN,SETTER_IN> transformerTrue) {
+	default Transformer<IN,GETTER_OUT,SETTER_IN,OUT> transform(PredicateX<SETTER_IN> condition, FunctionX<SETTER_IN, SETTER_IN> transformerTrue) {
 		return transform(condition,transformerTrue,$->$);
 	}
 
@@ -84,15 +84,15 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public <SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(PredicateX<SETTER_IN> condition, FunctionX<SETTER_IN,SETTER_IN_NEW> transformerTrue, FunctionX<SETTER_IN,SETTER_IN_NEW> transformerFalse);
+	<SETTER_IN_NEW> Transformer<IN,GETTER_OUT,SETTER_IN_NEW,OUT> transform(PredicateX<SETTER_IN> condition, FunctionX<SETTER_IN, SETTER_IN_NEW> transformerTrue, FunctionX<SETTER_IN, SETTER_IN_NEW> transformerFalse);
 
 
-	public default Transformer<IN,GETTER_OUT,SETTER_IN,OUT> defaultValue(SupplierX<SETTER_IN> supplier) {
+	default Transformer<IN,GETTER_OUT,SETTER_IN,OUT> defaultValue(SupplierX<SETTER_IN> supplier) {
 		return this.transform(Objects::isNull, in->supplier.get(), in->in);
 	}
-	public default Transformer<IN,GETTER_OUT,SETTER_IN,OUT> defaultValue(SETTER_IN defaultValue) {
+	default Transformer<IN,GETTER_OUT,SETTER_IN,OUT> defaultValue(SETTER_IN defaultValue) {
 		return this.transform(Objects::isNull, in->defaultValue, in->in);
 	}
-	public Transformer<IN,GETTER_OUT,SETTER_IN,OUT> defaultValue(Class<SETTER_IN> defaultValueType);
+	Transformer<IN,GETTER_OUT,SETTER_IN,OUT> defaultValueForType(Class<SETTER_IN> defaultValueType);
 
 }

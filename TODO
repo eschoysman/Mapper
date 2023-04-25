@@ -34,6 +34,7 @@ DeepCopy:
 
 AliasName:
     negli alias dell'annotazione, mettere la possibilità di specificare un campo annidato, come ci si accederebbe in js
+        - contro: se è presente un array, la logica diventa incasinatissima, limitare solamente agli oggetti "singoli"?
 
 
 
@@ -42,3 +43,10 @@ per il campo "Class<? extends DefaultValueFactory> factory()" dell'annotazione @
 
     ne deriva che si potrebbe creare un package (mapper.implementations? es.utils.implementations?) dedicato alle
     implementazioni "utili" che non riguardano il mapping ma solamente la personalizzazione da parte dell'utilizatore
+
+
+Rimuovere gli step opzionali DefaultInput e DefaultOutput che diventano ripetitivi rispetto a defaultValue() presente
+in Transformer? Riduce notevolmente il numero di combinazioni possibili per il Builder (da 20.162 a 1.586), ma aggiunge flessibilità di
+utilizzo:
+    contro: sembra che in tal caso vada rivista anche la logica dentro ElementMapper.defaultValueGetter() e ElementMapper.defaultValueSetter
+            perché il test case DefaultValueTest.shouldCreateEmptyObjectWithDefaultValuesCustom() non viene superato (unico test che non viene superato)

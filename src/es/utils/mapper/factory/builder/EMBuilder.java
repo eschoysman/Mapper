@@ -106,7 +106,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements  Name		<IN,OUT>,	
 	public Transformer<IN,GETTER_OUT,GETTER_OUT,OUT> defaultInput(Supplier<GETTER_OUT> defaultInput) {
 		return new EMBuilder<>(mapper,mapping,name,getter,defaultInput,null,null,null);
 	}
-	public Transformer<IN,GETTER_OUT,GETTER_OUT,OUT> defaultInputFor(Class<GETTER_OUT> defaultValueType) {
+	public Transformer<IN,GETTER_OUT,GETTER_OUT,OUT> defaultInputForType(Class<GETTER_OUT> defaultValueType) {
 		this.defaultInput = mapper.config().getDefaultValueSupplier(defaultValueType);
 		return new EMBuilder<>(mapper,mapping,name,getter,defaultInput,null,null,null);
 	}
@@ -128,7 +128,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements  Name		<IN,OUT>,	
 		}
 		return transform(converterInstance::mapOrNull);
 	}
-	public Transformer<IN,GETTER_OUT,SETTER_IN,OUT> defaultValue(Class<SETTER_IN> defaultValueType) {
+	public Transformer<IN,GETTER_OUT,SETTER_IN,OUT> defaultValueForType(Class<SETTER_IN> defaultValueType) {
 		Supplier<SETTER_IN> supplierByType = mapper.config().getDefaultValueSupplier(defaultValueType);
 		return defaultValue(supplierByType::get);
 	}
@@ -138,7 +138,7 @@ public class EMBuilder<IN,GETTER_OUT,SETTER_IN,OUT> implements  Name		<IN,OUT>,	
 		this.defaultOutput = defaultOutput;
 		return this;
 	}
-	public To<IN,GETTER_OUT,SETTER_IN,OUT> defaultOutputFor(Class<SETTER_IN> defaultValueType) {
+	public To<IN,GETTER_OUT,SETTER_IN,OUT> defaultOutputForType(Class<SETTER_IN> defaultValueType) {
 		return defaultOutput(mapper.config().getDefaultValueSupplier(defaultValueType));
 	}
 
