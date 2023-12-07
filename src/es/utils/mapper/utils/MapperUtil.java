@@ -120,7 +120,8 @@ public class MapperUtil {
 			try {
 				result = converter.getConstructor(Mapper.class).newInstance(mapper);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
-				log.warn("WARNING - The converter for "+converter+" does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored.");
+				String message = "WARNING - The converter for "+converter+" does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored.";
+				log.warn(message);
 			}
 		}
 		return result;

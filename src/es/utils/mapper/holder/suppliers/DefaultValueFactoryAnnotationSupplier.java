@@ -7,6 +7,7 @@
 //
 //import java.lang.reflect.InvocationTargetException;
 //import java.nio.charset.Charset;
+//import java.text.MessageFormat;
 //import java.util.Arrays;
 //import java.util.function.Supplier;
 //
@@ -32,7 +33,10 @@
 //                this.factorySupplier = (Supplier<Object>)factoryInstance.getSupplier(value,parametersSupplier.get());
 //            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 //                    | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
-//                log.warn("WARNING - The factory for {} does not have a constructor accepting a Mapper instance; the factory is ignored.",annotation.factory());
+//	            String message = "WARNING - The factory for {} does not have a constructor accepting a Mapper instance; the factory is ignored.";
+//	            // TODO $$$ togliere qeusto sout, ma due test case vanno in errore dato che guardano quello che viene scritto in console
+//	            System.out.println(MessageFormat.format(message,annotation.factory()));
+//	            log.warn(message,annotation.factory());
 //            }
 //        }
 //    }

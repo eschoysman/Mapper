@@ -96,7 +96,7 @@ public class BuilderTest {
 		ClassMapperFromTest from = new ClassMapperFromTest();
     	mapping.addMapping().from("name",ClassMapperFromTest::getNameFrom)
 							.<Integer>transform(n->null)
-							.defaultOutput(42)
+							.defaultValue(42)
 							.to("age",ClassMapperToTest::setAge)
 							.create()
 				.addMapping().from("name",ClassMapperFromTest::getNameFrom)

@@ -1,15 +1,22 @@
 package testcase;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 import es.utils.mapper.Mapper;
 import es.utils.mapper.defaultvalue.DefaultValueStrategy;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
+import es.utils.mapper.holder.DefaultValueManager;
+import es.utils.mapper.holder.suppliers.DefaultAnnotationSupplier2;
 import from.DefaultValuesFrom;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 import to.DefaultValuesTo;
 import utils.AlternativeConsole;
+import utils.MemoryAppender;
 
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
@@ -96,22 +103,28 @@ public class DefaultValueTest {
 
 	@Test
 	public void shouldCreateEmptyObjectWithDefaultValuesWithWarningLoggedForFactory() throws MappingException, MappingNotFoundException, ParseException {
+		MemoryAppender memoryAppender = new MemoryAppender();
+		memoryAppender.init(DefaultValueManager.class);
+
 		Mapper mapper = new Mapper();
 		mapper.add(DefaultValuesFrom.class,DefaultValuesTo.class);
 		mapper.config().setDefaultValueStrategy(DefaultValueStrategy.ALWAYS);
 		DefaultValuesFrom from = new DefaultValuesFrom();
 		DefaultValuesTo to = mapper.map(from,DefaultValuesTo.class);
-		String out = console.getOutString();
-		assertThat(out.trim()).contains("The factory for class defaultvalue.DateFactory2 does not have a constructor accepting a Mapper instance; the factory is ignored.");
+
+		String logMessage = "WARNING - The factory for class defaultvalue.DateFactory2 does not have a constructor accepting a Mapper instance; the factory is ignored.";
+		assertThat(memoryAppender.contains(logMessage, Level.WARN)).isTrue();
+		memoryAppender.end();
+
 		assertThat(to.getDateF2()).isNull();
 	}
 
 	@Test
 	public void shouldCreateEmptyObjectWithDefaultValuesCustom() throws MappingException, MappingNotFoundException, ParseException {
 		Mapper mapper = new Mapper();
-		mapper.add(DefaultValuesFrom.class,DefaultValuesTo.class);
 //		mapper.config().setDefaultValueStrategy(DefaultValueStrategy.CUSTOM);
 		mapper.config().setDefaultValueStrategy(DefaultValueStrategy.INPUT,DefaultValueStrategy.OUTPUT);
+		mapper.add(DefaultValuesFrom.class,DefaultValuesTo.class);
 		DefaultValuesFrom from = new DefaultValuesFrom();
 		DefaultValuesTo to = mapper.map(from,DefaultValuesTo.class);
 		assertThat(to.getString()).isEqualTo("string di default");

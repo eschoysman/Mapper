@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@Slf4j
 public class DefaultAnnotationSupplier2 {
 
     private static class Prova {
@@ -119,7 +120,6 @@ public class DefaultAnnotationSupplier2 {
             this.supplier = annotation::type;
         }
     }
-    @Slf4j
     private static class DefaultValueFactoryAnnotationSupplier extends DefaultAnnotationSupplier<Object> {
         public DefaultValueFactoryAnnotationSupplier(Mapper mapper, Default annotation) {
             if(annotation.factory() != DefaultValueFactory.class) {

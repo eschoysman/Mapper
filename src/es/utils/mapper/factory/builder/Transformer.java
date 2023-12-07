@@ -88,7 +88,11 @@ public interface Transformer<IN,GETTER_OUT,SETTER_IN,OUT> extends DefaultOutput<
 
 
 	default Transformer<IN,GETTER_OUT,SETTER_IN,OUT> defaultValue(SupplierX<SETTER_IN> supplier) {
-		return this.transform(Objects::isNull, in->supplier.get(), in->in);
+		return this.transform(Objects::isNull, in->{
+			SETTER_IN tmp = supplier.get();
+			System.out.println("DEBUG - defaultValue(Supplier): "+tmp);
+			return tmp;
+		}, in->in);
 	}
 	default Transformer<IN,GETTER_OUT,SETTER_IN,OUT> defaultValue(SETTER_IN defaultValue) {
 		return this.transform(Objects::isNull, in->defaultValue, in->in);
