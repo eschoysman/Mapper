@@ -1,0 +1,16 @@
+es.utils.doublekeymap
+es.utils.functionalinterfaces.throwing
+es.utils.mapper
+es.utils.mapper.annotation
+es.utils.mapper.configuration
+es.utils.mapper.converter
+es.utils.mapper.defaultvalue
+es.utils.mapper.exception
+es.utils.mapper.factory
+es.utils.mapper.factory.builder
+es.utils.mapper.holder
+es.utils.mapper.holder.suppliers
+es.utils.mapper.impl
+es.utils.mapper.impl.element
+es.utils.mapper.impl.object
+es.utils.mapper.utils
