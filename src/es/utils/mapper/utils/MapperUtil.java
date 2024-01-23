@@ -36,7 +36,9 @@ public class MapperUtil {
 		Objects.requireNonNull(type);
 		Objects.requireNonNull(fieldName);
 		Field result = getDeclaredField(type,fieldName);
-		if(result==null) result = getFieldOfClass(type,fieldName);
+		if(result==null) {
+			result = getFieldOfClass(type,fieldName);
+		}
 		return result;
 	}
 	/**
@@ -69,8 +71,8 @@ public class MapperUtil {
 		Field[] fields1 = type.getFields();
 		Field[] fields2 = type.getDeclaredFields();
 		Set<Field> fields = new LinkedHashSet<>(fields1.length+fields2.length);
-		for(Field f : fields1) fields.add(f);
-		for(Field f : fields2) fields.add(f);
+		fields.addAll(Arrays.asList(fields1));
+		fields.addAll(Arrays.asList(fields2));
 		return fields;
 	}
 	
@@ -82,7 +84,7 @@ public class MapperUtil {
 	 * @return the Class of the given Type. If no generic type is defined, null is returned.
 	 */
 	public static <TYPE> Class<TYPE> getGenericType(Type input) {
-		if(input!=null && input instanceof ParameterizedType) {
+		if(input instanceof ParameterizedType) {
 		    ParameterizedType paramType = (ParameterizedType)input;
 		    Type[] argTypes = paramType.getActualTypeArguments();
 		    if(argTypes.length==1) {
@@ -96,7 +98,7 @@ public class MapperUtil {
 			    	@SuppressWarnings("unchecked")
 					Class<TYPE> resultClass = (Class<TYPE>)Class.forName(typeName);
 					return resultClass;
-		    	} catch (Exception e) {}
+		    	} catch (ClassNotFoundException e) {}
 		    }
 		}
 		return null;
@@ -113,18 +115,19 @@ public class MapperUtil {
 	public static <FROM,TO> DirectMapper<FROM,TO> createFromConverter(Class<? extends AbstractConverter<FROM,TO>> converter, Mapper mapper) {
 		DirectMapper<FROM,TO> result = null;
 		try {
-			result = (DirectMapper<FROM,TO>)converter.newInstance();
+			result = converter.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			try {
-				result = (DirectMapper<FROM,TO>)converter.getConstructor(Mapper.class).newInstance(mapper);
+				result = converter.getConstructor(Mapper.class).newInstance(mapper);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
-				log.warn("WARNING - The converter for "+converter+" does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored.");
+				String message = "WARNING - The converter for "+converter+" does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored.";
+				log.warn(message);
 			}
 		}
 		return result;
 	}
 
-	private static Map<Class<?>,Class<?>> wrapConvert = new HashMap<Class<?>,Class<?>>() {{
+	private static final Map<Class<?>,Class<?>> wrapConvert = new HashMap<Class<?>,Class<?>>() {{
 		put(byte.class,Byte.class);
 		put(short.class,Short.class);
 		put(int.class,Integer.class);

@@ -1,6 +1,7 @@
 package es.utils.mapper.exception;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.MessageFormat;
 
 public class CustomException<E extends Exception> {
 
@@ -23,14 +24,25 @@ public class CustomException<E extends Exception> {
         return new CustomException(customException);
     }
 
+//    /**
+//     * Set the message for the exception to throw. The {@code message} can be a pattern accepted by the
+//     * {@code MessageFormat} class, in that case the {@code params} are used.
+//     * @param message the string or format of the message
+//     * @return the current {@code CustomException} instance
+//     */
+//    public CustomException<E> message(CharSequence message) {
+//        this.message = message.toString();
+//        return this;
+//    }
     /**
      * Set the message for the exception to throw. The {@code message} can be a pattern accepted by the
      * {@code MessageFormat} class, in that case the {@code params} are used.
      * @param message the string or format of the message
+     * @param params the arguments in the case the message is used as a pattern of a MessageFormat string
      * @return the current {@code CustomException} instance
      */
-    public CustomException<E> message(CharSequence message) {
-        this.message = message.toString();
+    public CustomException<E> message(CharSequence message, Object... params) {
+        this.message = MessageFormat.format(message.toString(), params);
         return this;
     }
 
@@ -56,20 +68,16 @@ public class CustomException<E extends Exception> {
         if(cause!=null) {
             mask += 1;
         }
-        try {
-            switch (mask) {
-                case 1:
-                    return buildCause();
-                case 2:
-                    return buildMessage();
-                case 3:
-                    return buildMessageCause();
-                case 0:
-                default:
-                    return buildEmpty();
-            }
-        } catch(Exception e) {
-            throw new RuntimeException(e);
+        switch (mask) {
+            case 1:
+                return buildCause();
+            case 2:
+                return buildMessage();
+            case 3:
+                return buildMessageCause();
+            case 0:
+            default:
+                return buildEmpty();
         }
     }
 
@@ -77,28 +85,28 @@ public class CustomException<E extends Exception> {
         try {
             return type.getDeclaredConstructor().newInstance();
         } catch(NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Custom Exception "+type+" does not have a empty constructor",e);
+            throw new RuntimeException("Custom Exception "+type+" does not have a empty constructor. Please provide a message and/or a cause error.",e);
         }
     }
     private E buildMessage() {
         try {
             return type.getDeclaredConstructor(String.class).newInstance(message);
         } catch(NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Custom Exception "+type+" does not have a constructor taking only a String instance",e);
+            throw new RuntimeException("Custom Exception "+type+" does not have a constructor taking only a String instance. Please provide a cause error or don't pass any message.",e);
         }
     }
     private E buildCause() {
         try {
             return type.getDeclaredConstructor(Throwable.class).newInstance(cause);
         } catch(NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Custom Exception "+type+" does not have a constructor taking only a Throwable instance",e);
+            throw new RuntimeException("Custom Exception "+type+" does not have a constructor taking only a Throwable instance. Please provide a message error or don't pass any cause.",e);
         }
     }
     private E buildMessageCause() {
         try {
             return type.getDeclaredConstructor(String.class, Throwable.class).newInstance(message,cause);
         } catch(NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Custom Exception "+type+" does not have a constructor taking both String and Throwable instances",e);
+            throw new RuntimeException("Custom Exception "+type+" does not have a constructor taking both String and Throwable instances. Please provide only a message ora cause error or none of them.",e);
         }
     }
 

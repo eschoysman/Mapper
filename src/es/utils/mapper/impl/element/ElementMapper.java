@@ -136,12 +136,17 @@ public class ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> {
 	
 	private GETTER_OUT getter(IN in) {
 		GETTER_OUT getterResult = null;
+//		// controllo se il cloner è abilitato e presente e in tal caso lo eseguo
+//		if(mapper.config().isDeepCopyEnabled() && mapper.config().getCloner()!=null) {
+//			getterResult = mapper.config().<GETTER_OUT>getCloner().apply(getter.apply(in));
+//		}
+//		else {
+//			getterResult = getter.apply(in);
+//		}
+		getterResult = getter.apply(in);
 		// controllo se il cloner è abilitato e presente e in tal caso lo eseguo
 		if(mapper.config().isDeepCopyEnabled() && mapper.config().getCloner()!=null) {
-			getterResult = mapper.config().<GETTER_OUT>getCloner().apply(getter.apply(in));
-		}
-		else {
-			getterResult = getter.apply(in);
+			getterResult = mapper.config().<GETTER_OUT>getCloner().apply(getterResult);
 		}
 		return getterResult;
 	}

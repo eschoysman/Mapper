@@ -165,7 +165,7 @@ public abstract class MapperObject<T,U> {
     		field.setAccessible(true);
 			try {
 				if(field.get(obj)==null) {
-					field.set(obj,fh.getDefautValueSupplier().get());
+					field.set(obj,fh.getDefaultValueSupplier().get());
 				}
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 			}

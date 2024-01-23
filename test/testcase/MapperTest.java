@@ -376,7 +376,7 @@ public class MapperTest {
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		To to = null;
 		RuntimeException exception = assertThrows(RuntimeException.class, ()->mapper.map(from, to, CustomException.forType(EmptyExampleException.class)));
-		assertThat(exception.getMessage()).isEqualTo("java.lang.RuntimeException: Custom Exception class exception.EmptyExampleException does not have a constructor taking only a Throwable instance");
+		assertThat(exception.getMessage()).isEqualTo("Custom Exception class exception.EmptyExampleException does not have a constructor taking only a Throwable instance. Please provide a message error or don't pass any cause.");
 	}
 	@Test
 	public void shouldThrowRuntimeExceptionWithNotExistingMappingByClass() throws MappingException {
@@ -402,7 +402,7 @@ public class MapperTest {
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		RuntimeException exception = assertThrows(RuntimeException.class, ()->mapper.map(from, new To(), CustomException.forType(EmptyExampleException.class).message("message")));
 		assertThat(exception.getMessage()).contains("Custom Exception class exception.EmptyExampleException does not have a constructor taking both String and Throwable instances");
-		assertThat(exception.getCause().toString()).contains("java.lang.RuntimeException: Custom Exception class exception.EmptyExampleException does not have a constructor taking both String and Throwable instances");
+		assertThat(exception.getCause().toString()).isEqualTo("java.lang.NoSuchMethodException: exception.EmptyExampleException.<init>(java.lang.String, java.lang.Throwable)");
 	}
 
 	@Test
@@ -420,7 +420,7 @@ public class MapperTest {
 		From from = new From("Pippo","Paperino",new From("InnerPippo","InnerPaperino"));
 		RuntimeException exception = assertThrows(RuntimeException.class, ()->mapper.map(from, CustomException.forType(EmptyExampleException.class).message("message")));
 		assertThat(exception.getMessage()).contains("Custom Exception class exception.EmptyExampleException does not have a constructor taking both String and Throwable instances");
-		assertThat(exception.getCause().toString()).contains("java.lang.RuntimeException: Custom Exception class exception.EmptyExampleException does not have a constructor taking both String and Throwable instances");
+		assertThat(exception.getCause().toString()).isEqualTo("java.lang.NoSuchMethodException: exception.EmptyExampleException.<init>(java.lang.String, java.lang.Throwable)");
 	}
 
 	@Test

@@ -158,7 +158,7 @@ public class FieldHolder {
 	 * @return the default value supplier of the field
 	 * @see DefaultValueStrategy
 	 */
-	public <TYPE> Supplier<TYPE> getDefautValueSupplier() {
+	public <TYPE> Supplier<TYPE> getDefaultValueSupplier() {
 		@SuppressWarnings("unchecked")
 		Supplier<TYPE> result = (Supplier<TYPE>)defaultValue;
 		return result;

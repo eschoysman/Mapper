@@ -203,7 +203,8 @@ public class Configuration {
 	 */
 	public Configuration setDefaultValueStrategy(DefaultValueStrategy... defaultValuesStrategy) {
 		EnumSet<DefaultValueStrategy> input = EnumSet.noneOf(DefaultValueStrategy.class);
-		Arrays.stream(defaultValuesStrategy).forEach(input::add);
+		input.addAll(Arrays.asList(defaultValuesStrategy));
+		// contains only INPUT and/or OUTPUT
 		if(!input.isEmpty() && !input.contains(NEVER) && !input.contains(DEFAULT) && !input.contains(ALWAYS) && !input.contains(CUSTOM)) {
 			input.add(CUSTOM);
 		}
@@ -218,7 +219,7 @@ public class Configuration {
 			this.defaultValuesStrategy = EnumSet.of(ALWAYS,INPUT,OUTPUT);
 			return this;
 		}
-		input.forEach(this.defaultValuesStrategy::add);
+		this.defaultValuesStrategy.addAll(input);
 		if((this.defaultValuesStrategy.contains(ALWAYS) || this.defaultValuesStrategy.contains(CUSTOM))
 				&& !this.defaultValuesStrategy.contains(INPUT) && !this.defaultValuesStrategy.contains(OUTPUT)) {
 			this.defaultValuesStrategy.add(INPUT);
@@ -231,7 +232,7 @@ public class Configuration {
 	}
 	/**
 	 * @param strategy the strategy to use
-	 * @return Returns {@code true} if the diven defaultValue strategy is set in the configurations, {@code false} otherwise
+	 * @return Returns {@code true} if the given defaultValue strategy is set in the configurations, {@code false} otherwise
 	 * @see #setDefaultValueStrategy(DefaultValueStrategy...)
 	 * @see DefaultValueStrategy
 	 */

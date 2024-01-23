@@ -133,7 +133,7 @@ public class Mapper {
 	 * @see #add(Class, Class, Function)
 	 */
 	public <T,U> ClassMapper<T,U> addForClass(Class<T> from, Class<U> to) throws MappingException {
-		ClassMapper<T,U> classMapper = new ClassMapper<T,U>(from,to);
+		ClassMapper<T,U> classMapper = new ClassMapper<>(from, to);
 		add(from,to,classMapper);
 		return classMapper;
 	}
@@ -202,7 +202,7 @@ public class Mapper {
 	public Mapper build() {
 		if(isDirty) {
 //			this.fieldHolderCache.keySet().forEach(k->this.fieldHolderCache.put(k,getAllFields(k)));
-			mappings.values().forEach(mapping->mapping.activate());
+			mappings.values().forEach(MapperObject::activate);
 			isDirty = false;
 		}
 		return this;

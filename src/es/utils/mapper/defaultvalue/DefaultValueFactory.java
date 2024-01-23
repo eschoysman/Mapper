@@ -35,7 +35,7 @@ public class DateFactory extends DefaultValueFactory&lt;Date&gt; {
  * @param <T> type of the object to be supplied
  * @see Default
  */
-public abstract class DefaultValueFactory<T>{
+public abstract class DefaultValueFactory<T> {
 
 	/**
 	 * The {@link Mapper} instance that can be used in the sub-class

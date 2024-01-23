@@ -1,17 +1,27 @@
 package testcase;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 import converter.ConverterDateTimestamp;
 import converter.ConverterDateTimestamp2;
 import es.utils.mapper.Mapper;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
+import es.utils.mapper.holder.suppliers.DefaultAnnotationSupplier2;
+import es.utils.mapper.utils.MapperUtil;
 import from.ConverterFrom;
 import from.From;
 import from.FromWithConverter;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 import to.ConverterTo;
 import to.To;
 import to.ToWithConverter;
+import utils.AlternativeConsole;
+import utils.MemoryAppender;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,6 +33,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ConverterTest {
+
+	private AlternativeConsole console;
+
+	@BeforeEach
+	public void beforeEach() {
+//		MapperLogger.enabled.put(LogConstant.TYPE.CREATION, LogConstant.LEVEL.MAPPER);
+		console = new AlternativeConsole();
+	}
+	@AfterEach
+	public void afterEach() {
+		console.reset();
+	}
 
 	@Test
 	public void shouldApplyConverterIfPresent() throws MappingNotFoundException, MappingException {
@@ -37,10 +59,9 @@ public class ConverterTest {
 	}
 
 	@Test
-	public void shouldThrowExceptioForNoEmptyConstructorOrMapperConverter() throws MappingNotFoundException, MappingException, IOException {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		PrintStream originalOut = System.out;
-		System.setOut(new PrintStream(out));
+	public void shouldThrowExceptioForNoEmptyConstructorOrMapperConverter() throws MappingNotFoundException, MappingException {
+		MemoryAppender memoryAppender = new MemoryAppender();
+		memoryAppender.init(MapperUtil.class);
 
 		Mapper mapper = new Mapper();
 		mapper.add(FromWithConverter.class, ToWithConverter.class);
@@ -48,16 +69,17 @@ public class ConverterTest {
 		FromWithConverter from = new FromWithConverter();
 		ToWithConverter to = mapper.map(from);
 		
-		String outString = out.toString();
-		out.flush();
-		out.close();
-		System.setOut(originalOut);
+		String outString = console.getOutString();
+
+		String logMessage = "WARNING - The converter for "+ConverterDateTimestamp2.class+" does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored.";
+		assertThat(memoryAppender.contains(logMessage, Level.WARN)).isTrue();
+		memoryAppender.end();
 
 		assertThat(to.getName()).isNull();
 		assertThat(outString).contains("WARNING - The converter for "+ConverterDateTimestamp2.class+" does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored."+System.lineSeparator());
 	}
 	@Test
-	public void shouldThrowExceptioForNoEmptyConstructorConverter() throws MappingNotFoundException, MappingException, IOException {
+	public void shouldThrowExceptioForNoEmptyConstructorConverter() throws MappingNotFoundException, MappingException {
 		Mapper mapper = new Mapper();
 		mapper.add(ConverterFrom.class, ConverterTo.class);
 		mapper.add(Date.class, Timestamp.class, d->new Timestamp(d.getTime()));
@@ -101,7 +123,7 @@ public class ConverterTest {
 	
 
 	@Test
-	public void shouldThrowMappingExceptionInConverterInBuilder() throws MappingNotFoundException, MappingException {
+	public void shouldThrowMappingExceptionInConverterInBuilder() {
     	ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PrintStream originalOut = System.out;
 		System.setOut(new PrintStream(out));

@@ -37,7 +37,7 @@ public class EMB_DefaultOutputStep {
 	@Test
 	public void shouldCreate_BuilderStep_DefaultInput_DefaultInput_Class() {
 		mapper.config().addDefaultValueSupplier(String.class, ()->"{no value}");
-		To<ClassMapperFromTest,String,String,ClassMapperToTest> step = prev.defaultOutputFor(String.class);
+		To<ClassMapperFromTest,String,String,ClassMapperToTest> step = prev.defaultOutputForType(String.class);
 		assertThat(step).isNotNull()
 						.isInstanceOf(To.class)
 						.isExactlyInstanceOf(EMBuilder.class)

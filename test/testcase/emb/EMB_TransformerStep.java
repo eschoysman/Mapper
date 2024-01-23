@@ -1,17 +1,25 @@
 package testcase.emb;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 import converter.ConverterDateTimestamp;
 import converter.ConverterDateTimestamp2;
 import es.utils.mapper.Mapper;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.exception.MappingNotFoundException;
 import es.utils.mapper.factory.builder.*;
+import es.utils.mapper.holder.suppliers.DefaultAnnotationSupplier2;
 import es.utils.mapper.impl.object.ClassMapper;
+import es.utils.mapper.utils.MapperUtil;
 import from.ClassMapperFromTest;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 import to.ClassMapperToTest;
 import utils.AlternativeConsole;
+import utils.MemoryAppender;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -25,14 +33,22 @@ public class EMB_TransformerStep {
 	private Mapper mapper;
 	private ClassMapper<ClassMapperFromTest,ClassMapperToTest> mapping;
 	private DefaultInput<ClassMapperFromTest,String,String,ClassMapperToTest> prev;
-	
+
+	private AlternativeConsole console;
+
 	@BeforeEach
 	public void beforeEach() throws MappingException {
 		mapper = new Mapper();
 		mapping = mapper.addForClass(ClassMapperFromTest.class,ClassMapperToTest.class);
 		prev = EMBuilder.using(mapper,mapping).from("name",ClassMapperFromTest::getNameFrom);
+		console = new AlternativeConsole();
 	}
-	
+	@AfterEach
+	public void afterEach() {
+		console.reset();
+	}
+
+
 	@Test
 	public void shouldCreate_TransformerStep_Transformer_cast() {
 		Transformer<ClassMapperFromTest,String,String,ClassMapperToTest> step = prev.cast(String.class);
@@ -56,12 +72,18 @@ public class EMB_TransformerStep {
 	}
 	@Test
 	public void shouldCreate_TransformerStep_Transform_Function_And_ClassKO() throws MappingException {
+		MemoryAppender memoryAppender = new MemoryAppender();
+		memoryAppender.init(MapperUtil.class);
+
 		mapper.config().addDefaultValueSupplier(String.class, ()->"{no value}");
-		AlternativeConsole console = new AlternativeConsole();
 		assertThrows(MappingException.class,()->prev.transform(s->new Date()).transform(ConverterDateTimestamp2.class));
-		String message = console.getOutString();
-		console.reset();
-		assertThat(message.trim()).contains("WARNING - The converter for class converter.ConverterDateTimestamp2 does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored.");
+//		String message = console.getOutString();
+
+		String logMessage = "WARNING - The converter for class converter.ConverterDateTimestamp2 does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored.";
+		assertThat(memoryAppender.contains(logMessage, Level.WARN)).isTrue();
+		memoryAppender.end();
+
+//		assertThat(message.trim()).contains("WARNING - The converter for class converter.ConverterDateTimestamp2 does not have a empty public contructor or a constructor accepting a Mapper instance; the converter is ignored.");
 	}
 	@Test
 	public void shouldCreate_TransformerStep_Transform_Predicate_Function() throws MappingException, MappingNotFoundException {

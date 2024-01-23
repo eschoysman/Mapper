@@ -1,11 +1,13 @@
 package es.utils.mapper.impl.object;
 
 import es.utils.doublekeymap.TwoKeyMap;
+import es.utils.functionalinterfaces.throwing.SupplierX;
 import es.utils.mapper.exception.CustomException;
 import es.utils.mapper.exception.MappingException;
 import es.utils.mapper.factory.CollectionFactory;
 import es.utils.mapper.factory.builder.EMBuilder;
 import es.utils.mapper.factory.builder.From;
+import es.utils.mapper.factory.builder.Name;
 import es.utils.mapper.holder.FieldHolder;
 import es.utils.mapper.impl.MapperObject;
 import es.utils.mapper.impl.element.ElementMapper;
@@ -128,10 +130,10 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	
 	/**
 	 * Create a Builder for the creation of a {@link ElementMapper} for this mapping.
-	 * @return The first step of the builder: {@link From}
+	 * @return The first optional step of the builder: {@link Name}, the first mandatory step is {@link From}
 	 * @see <a href="../../factory/builder/package-summary.html">builder package</a>
 	 */
-    public From<T,U> addMapping() {
+    public Name<T,U> addMapping() {
     	return EMBuilder.using(mapper,this);
     }
     /**
@@ -209,7 +211,12 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 					mapFieldWithTranformation(fieldName, fieldHolderFrom, fieldHolderTo);
 				}
 				else if(destFieldType.isAssignableFrom(srcFieldType)) {
-					addElementMapper(addMapping().from(fieldHolderFrom).defaultOutput(fieldHolderTo.getDefautValueSupplier()).to(fieldHolderTo).getElementMapper(),true);
+					ElementMapper<T,Object,Object,U> elementMapper = addMapping().from(fieldHolderFrom)
+																				 .defaultOutput(fieldHolderTo.getDefaultValueSupplier())
+//																				 .defaultValue(fieldHolderTo.getDefaultValueSupplier())
+																				 .to(fieldHolderTo)
+																				 .getElementMapper();
+					addElementMapper(elementMapper,true);
 				}
 			}
 		}
@@ -228,10 +235,22 @@ public class ClassMapper<T,U> extends MapperObject<T,U> {
 	private <GETTER_OUT,SETTER_IN> void mapFieldWithTranformation(String fieldName, FieldHolder srcFieldHolder, FieldHolder destFieldHolder) {
 		@SuppressWarnings("unchecked")
 		Function<GETTER_OUT,SETTER_IN> transformer = in->mapper.mapAsOptional(in,(Class<SETTER_IN>)destFieldHolder.getType()).orElse(null);
-		addElementMapper(addMapping().<GETTER_OUT>from(fieldName,srcFieldHolder).<SETTER_IN>transform(transformer::apply).defaultOutput(destFieldHolder.getDefautValueSupplier()).to(fieldName,destFieldHolder).getElementMapper(),true);
+		ElementMapper<T,GETTER_OUT,SETTER_IN,U> elementMapper = addMapping().<GETTER_OUT>from(fieldName,srcFieldHolder)
+																			.transform(transformer::apply)
+																			.defaultOutput(destFieldHolder.getDefaultValueSupplier())
+//																			.defaultValue((SupplierX<SETTER_IN>)destFieldHolder.getDefaultValueSupplier())
+																			.to(fieldName,destFieldHolder)
+																			.getElementMapper();
+		addElementMapper(elementMapper,true);
 	}
 	private <GETTER_OUT,SETTER_IN> void mapFieldWithConverter(String fieldName, FieldHolder srcFieldHolder, FieldHolder destFieldHolder, DirectMapper<GETTER_OUT,SETTER_IN> converter) {
-		addElementMapper(addMapping().<GETTER_OUT>from(fieldName,srcFieldHolder).transform(converter::mapOrNull).defaultOutput(destFieldHolder.getDefautValueSupplier()).to(fieldName,destFieldHolder).getElementMapper(),true);
+		ElementMapper<T,GETTER_OUT,SETTER_IN,U> elementMapper = addMapping().<GETTER_OUT>from(fieldName,srcFieldHolder)
+																			.transform(converter::mapOrNull)
+																			.defaultOutput(destFieldHolder.getDefaultValueSupplier())
+//																			.defaultValue((SupplierX<SETTER_IN>)destFieldHolder.getDefaultValueSupplier())
+																			.to(fieldName, destFieldHolder)
+																			.getElementMapper();
+		addElementMapper(elementMapper,true);
 	}
     
     private <GETTER_OUT,SETTER_IN> ClassMapper<T,U> addElementMapper(ElementMapper<T,GETTER_OUT,SETTER_IN,U> elementMapper, boolean isCalledDuringConstruction) {

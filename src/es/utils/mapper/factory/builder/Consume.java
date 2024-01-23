@@ -24,6 +24,6 @@ public interface Consume<IN, GETTER_OUT, SETTER_IN, OUT> {
 	 * @param consumer the consumer of the {@code SETTER_IN} value
 	 * @return a ElementMapper, result of the builder
 	 */
-	public Builder<IN,GETTER_OUT,Void,OUT> consume(ConsumerX<SETTER_IN> consumer);
+	Builder<IN,GETTER_OUT,Void,OUT> consume(ConsumerX<SETTER_IN> consumer);
 	
 }

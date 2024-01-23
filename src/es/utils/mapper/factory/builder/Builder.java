@@ -22,13 +22,13 @@ public interface Builder<IN,GETTER_OUT,SETTER_IN,OUT> {
 	 * @return a ElementMapper instance
 	 * @see ElementMapper
 	 */
-	public ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> getElementMapper();
+	ElementMapper<IN,GETTER_OUT,SETTER_IN,OUT> getElementMapper();
 	/**
 	 * Add the newly created elementMapper to the inner ClassMapper instance and return the ClassMapper. 
 	 * @return the original ClassMapper.
 	 * @see ClassMapper 
 	 * @see ElementMapper
 	 */
-	public ClassMapper<IN,OUT> create();
+	ClassMapper<IN,OUT> create();
 	
 }

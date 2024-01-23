@@ -27,6 +27,6 @@ public interface Name<IN,OUT> extends From<IN,OUT> {
 	 * @see DefaultOutput
 	 * @see To
 	 */
-	public From<IN,OUT> name(String name);
+	From<IN,OUT> name(String name);
 
 }

@@ -97,7 +97,7 @@ public class ConfigurationTest {
 		ToWithAnnotation to1 = mapper.map(from);
 		assertThat(to1).isNotNull();
 		assertThat(to1.getName()).isEqualTo("<No value>");
-		classMapper.addMapping().from("name",FromWithAnnotation::getName).transform(s->(CharSequence)s).defaultOutputFor(CharSequence.class).to("field",ToWithAnnotation::setField).create();
+		classMapper.addMapping().from("name",FromWithAnnotation::getName).transform(s->(CharSequence)s).defaultOutputForType(CharSequence.class).to("field",ToWithAnnotation::setField).create();
 		assertThat(classMapper.<String,CharSequence>getMapping("name").isPresent()).isFalse();
 		classMapper.<String,CharSequence>getMapping("name","field").get().setDefaultValue(CharSequence.class);
 		ToWithAnnotation to2 = mapper.map(from);
