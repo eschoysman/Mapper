@@ -35,7 +35,7 @@
 		<junit.version>5.5.0-M1</junit.version>
 		<junit.platform.runner.version>1.5.0-M1</junit.platform.runner.version>
 		<junit.engine.version>5.5.0-M1</junit.engine.version>
-		<assertj.version>3.12.2</assertj.version>
+		<assertj.version>3.27.7</assertj.version>
 		<clover.version>4.3.1</clover.version>
 		<maven.compiler.plugin>3.7.0</maven.compiler.plugin>
 		<maven.jar.plugin>3.1.2</maven.jar.plugin>
